@@ -1,12 +1,8 @@
-import Anthropic from '@anthropic-ai/sdk';
+const Anthropic = require('@anthropic-ai/sdk');
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
-
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Enable CORS
-  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
   res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
@@ -19,6 +15,10 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  const anthropic = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY,
+  });
 
   try {
     const { messages, systemPrompt } = req.body;
@@ -33,6 +33,6 @@ export default async function handler(req, res) {
     res.status(200).json({ content: response.content[0].text });
   } catch (error) {
     console.error('Anthropic API Error:', error);
-    res.status(500).json({ error: 'Failed to get response from Claude' });
+    res.status(500).json({ error: 'Failed to get response from Claude', details: error.message });
   }
-}
+};
