@@ -1141,12 +1141,28 @@ if (step === 'trial') {
                 setLoading(true);
                 
                 // Log the captured data
-                console.log('=== EMAIL CAPTURED ===');
-                console.log('Email:', userName);
-                console.log('Question:', trialQuestion);
-                console.log('Mentor Type:', mentorType);
-                console.log('Full Answers:', answers);
-                console.log('=====================');
+                // Send email to Loops
+try {
+  await fetch('https://app.loops.so/api/v1/contacts/create', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer 5a7b5af7beaddab5e6949a0142ccfb0a`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      email: userName,
+      firstName: answers.name,
+      source: 'Trial Question',
+      userGroup: mentorType,
+      trialQuestion: trialQuestion
+    })
+  });
+  
+  console.log('✅ Email captured in Loops:', userName);
+} catch (error) {
+  console.error('Loops error:', error);
+  // Don't break the flow if email capture fails
+}
                 
                 // TODO: Send to your email service here
                 // Example:
