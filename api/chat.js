@@ -1,6 +1,6 @@
-const Anthropic = require('@anthropic-ai/sdk');
+import Anthropic from '@anthropic-ai/sdk';
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -33,6 +33,9 @@ module.exports = async function handler(req, res) {
     res.status(200).json({ content: response.content[0].text });
   } catch (error) {
     console.error('Anthropic API Error:', error);
-    res.status(500).json({ error: 'Failed to get response from Claude', details: error.message });
+    res.status(500).json({ 
+      error: 'Failed to get response from Claude', 
+      details: error.message 
+    });
   }
-};
+}
