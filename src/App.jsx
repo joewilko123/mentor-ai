@@ -1373,30 +1373,26 @@ if (step === 'paywall') {
   };
 
   const handleCheckout = async () => {
-    try {
-      const response = await fetch('/api/create-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          priceId: plans[selectedPlan].priceId,
-          email: userName
-        }),
-      });
+  try {
+    const response = await fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        priceId: plans[selectedPlan].priceId,
+        email: userName
+      }),
+    });
 
-      const { sessionId } = await response.json();
-      const stripe = await stripePromise;
-      
-      const { error } = await stripe.redirectToCheckout({ sessionId });
-      
-      if (error) {
-        console.error('Stripe error:', error);
-        alert('Payment failed. Please try again.');
-      }
-    } catch (error) {
-      console.error('Checkout error:', error);
-      alert('Something went wrong. Please try again.');
-    }
-  };
+    const { url } = await response.json();
+    
+    // Redirect to Stripe Checkout URL
+    window.location.href = url;
+    
+  } catch (error) {
+    console.error('Checkout error:', error);
+    alert('Something went wrong. Please try again.');
+  }
+};
   
   return (
     <>
