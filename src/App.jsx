@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Send, ArrowLeft, X, ChevronRight } from 'lucide-react';
 import { MENTORS } from './mentors';
+import { loadStripe } from '@stripe/stripe-js';
 
+// Replace with your actual Stripe publishable key
+const stripePromise = loadStripe('pk_live_51TLmIhAis1rAntIhLOPu4DNmy2tt6pCBlOozaibuvrdiCodK6x0eVkX8fXI2NGsON5bLbfk373E4D0BbzJNDiQbY00o77tpXmD');
 const MENTOR_IMAGES = {
   carnegie: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ3l2LJg1CQ4-UtyhJ59CArSB0ZfYEnk0nig&s',
   jobs: 'https://goinswriter.com/wp-content/uploads/2011/10/steve-jobs.jpg',
@@ -1361,199 +1364,245 @@ try {
   }
 
   // Paywall
-  if (step === 'paywall') {
-    const t = THEMES[theme];
-    
-    return (
-      <>
-        <GlobalStyles />
-        <ThemeToggle theme={theme} setTheme={setTheme} />
-        <div className="noise" style={{ opacity: t.noise }} />
-        <div style={{
-          minHeight: '100vh',
-          background: t.bg,
-          padding: '40px 20px 60px',
-          overflow: 'auto'
-        }}>
-          <div style={{ maxWidth: '500px', margin: '0 auto' }}>
-            <h2 style={{
-              fontSize: '28px',
-              color: t.accent,
-              marginBottom: '12px',
-              textAlign: 'center',
-              fontWeight: '400',
-              fontFamily: "'Cormorant Garamond', serif"
-            }}>
-              Get unlimited access.
-            </h2>
-            <p style={{
-              fontSize: '15px',
-              color: t.textTertiary,
-              marginBottom: '40px',
-              textAlign: 'center'
-            }}>
-              Choose your plan:
-            </p>
+if (step === 'paywall') {
+  const t = THEMES[theme];
+  const [selectedPlan, setSelectedPlan] = useState('monthly');
+  
+  const plans = {
+    weekly: { priceId: 'price_1TLmQvAis1rAntIh0KlXXEeY', price: '$7', period: '/week', label: 'Try it out' },
+    monthly: { priceId: 'price_1TLmUiAis1rAntIhKgDjWR8Q', price: '$19', period: '/month', label: 'Best value', savings: 'Save $9/month vs weekly' },
+    yearly: { priceId: 'price_1TLmVcAis1rAntIhA2ug264E', price: '$297', period: '/year', label: 'One-time payment', savings: 'Never pay again' }
+  };
 
-            <div style={{ display: 'grid', gap: '16px', marginBottom: '32px' }}>
-              <div style={{
-                background: t.card,
-                border: `1px solid ${t.cardBorder}`,
-                borderRadius: '16px',
-                padding: '24px',
-                cursor: 'pointer'
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                  <div>
-                    <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>
-                      Weekly
-                    </h3>
-                    <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>
-                      Try it out
-                    </p>
-                  </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <p style={{ fontSize: '28px', color: t.text, margin: '0', fontWeight: '600' }}>
-                      $7
-                    </p>
-                    <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>
-                      /week
-                    </p>
-                  </div>
-                </div>
-              </div>
+  const handleCheckout = async () => {
+    try {
+      const response = await fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          priceId: plans[selectedPlan].priceId,
+          email: userName
+        }),
+      });
 
-              <div style={{
-                background: theme === 'dark' ? '#0f0f0f' : '#ffffff',
-                border: `2px solid ${t.accent}`,
-                borderRadius: '16px',
-                padding: '24px',
-                cursor: 'pointer',
-                position: 'relative'
-              }}>
-                <div style={{
-                  position: 'absolute',
-                  top: '-12px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  background: t.accent,
-                  color: theme === 'dark' ? '#000' : '#fff',
-                  padding: '4px 16px',
-                  borderRadius: '12px',
-                  fontSize: '11px',
-                  fontWeight: '700',
-                  letterSpacing: '0.5px'
-                }}>
-                  MOST POPULAR
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                  <div>
-                    <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>
-                      Monthly
-                    </h3>
-                    <p style={{ fontSize: '13px', color: t.accent, margin: 0 }}>
-                      Best value
-                    </p>
-                  </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <p style={{ fontSize: '28px', color: t.text, margin: '0', fontWeight: '600' }}>
-                      $19
-                    </p>
-                    <p style={{ fontSize: '12px', color: t.textTertiary, margin: 0 }}>
-                      /month
-                    </p>
-                  </div>
-                </div>
-                <p style={{ fontSize: '12px', color: t.textMuted, margin: '12px 0 0 0' }}>
-                  Save $9/month vs weekly
-                </p>
-              </div>
+      const { sessionId } = await response.json();
+      const stripe = await stripePromise;
+      
+      const { error } = await stripe.redirectToCheckout({ sessionId });
+      
+      if (error) {
+        console.error('Stripe error:', error);
+        alert('Payment failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Something went wrong. Please try again.');
+    }
+  };
+  
+  return (
+    <>
+      <GlobalStyles />
+      <ThemeToggle theme={theme} setTheme={setTheme} />
+      <div className="noise" style={{ opacity: t.noise }} />
+      <div style={{
+        minHeight: '100vh',
+        background: t.bg,
+        padding: '40px 20px 60px',
+        overflow: 'auto'
+      }}>
+        <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+          <h2 style={{
+            fontSize: '28px',
+            color: t.accent,
+            marginBottom: '12px',
+            textAlign: 'center',
+            fontWeight: '400',
+            fontFamily: "'Cormorant Garamond', serif"
+          }}>
+            Get unlimited access.
+          </h2>
+          <p style={{
+            fontSize: '15px',
+            color: t.textTertiary,
+            marginBottom: '40px',
+            textAlign: 'center'
+          }}>
+            Choose your plan:
+          </p>
 
-              <div style={{
-                background: t.card,
-                border: `1px solid ${t.cardBorder}`,
-                borderRadius: '16px',
-                padding: '24px',
-                cursor: 'pointer'
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                  <div>
-                    <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>
-                      Lifetime
-                    </h3>
-                    <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>
-                      One-time payment
-                    </p>
-                  </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <p style={{ fontSize: '28px', color: t.text, margin: '0', fontWeight: '600' }}>
-                      $297
-                    </p>
-                    <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>
-                      forever
-                    </p>
-                  </div>
-                </div>
-                <p style={{ fontSize: '12px', color: t.textMuted, margin: '12px 0 0 0' }}>
-                  Never pay again
-                </p>
-              </div>
-            </div>
-
-            <div style={{
-              background: t.card,
-              border: `1px solid ${t.cardBorder}`,
-              borderRadius: '12px',
-              padding: '20px',
-              marginBottom: '24px'
-            }}>
-              <p style={{ fontSize: '14px', color: t.textSecondary, margin: '0 0 12px 0', fontWeight: '500' }}>
-                What you get:
-              </p>
-              <p style={{ fontSize: '13px', color: t.textTertiary, margin: '0 0 8px 0', lineHeight: '1.6' }}>
-                ✓ Unlimited questions to all 7 mentors
-              </p>
-              <p style={{ fontSize: '13px', color: t.textTertiary, margin: '0 0 8px 0', lineHeight: '1.6' }}>
-                ✓ Save all your conversations
-              </p>
-              <p style={{ fontSize: '13px', color: t.textTertiary, margin: '0', lineHeight: '1.6' }}>
-                ✓ Cancel anytime
-              </p>
-            </div>
-
-            <button
-              onClick={() => alert('Stripe checkout would go here')}
+          <div style={{ display: 'grid', gap: '16px', marginBottom: '32px' }}>
+            {/* Weekly */}
+            <div 
+              onClick={() => setSelectedPlan('weekly')}
               style={{
-                width: '100%',
-                background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
-                color: theme === 'dark' ? '#000' : '#fff',
-                border: 'none',
-                borderRadius: '30px',
-                padding: '18px',
-                fontSize: '18px',
-                fontWeight: '700',
+                background: selectedPlan === 'weekly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card,
+                border: selectedPlan === 'weekly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`,
+                borderRadius: '16px',
+                padding: '24px',
                 cursor: 'pointer',
-                marginBottom: '16px',
-                boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.4)'
-              }}
-            >
-              Start Now →
-            </button>
+                transition: 'all 0.3s'
+              }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                <div>
+                  <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>
+                    Weekly
+                  </h3>
+                  <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>
+                    {plans.weekly.label}
+                  </p>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <p style={{ fontSize: '28px', color: t.text, margin: '0', fontWeight: '600' }}>
+                    {plans.weekly.price}
+                  </p>
+                  <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>
+                    {plans.weekly.period}
+                  </p>
+                </div>
+              </div>
+            </div>
 
-            <p style={{
-              fontSize: '12px',
-              color: t.textMuted,
-              textAlign: 'center',
-              margin: 0,
-              lineHeight: '1.5'
-            }}>
-              7-day money-back guarantee. Cancel anytime.
+            {/* Monthly - MOST POPULAR */}
+            <div 
+              onClick={() => setSelectedPlan('monthly')}
+              style={{
+                background: selectedPlan === 'monthly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card,
+                border: selectedPlan === 'monthly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`,
+                borderRadius: '16px',
+                padding: '24px',
+                cursor: 'pointer',
+                position: 'relative',
+                transition: 'all 0.3s'
+              }}>
+              <div style={{
+                position: 'absolute',
+                top: '-12px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: t.accent,
+                color: theme === 'dark' ? '#000' : '#fff',
+                padding: '4px 16px',
+                borderRadius: '12px',
+                fontSize: '11px',
+                fontWeight: '700',
+                letterSpacing: '0.5px'
+              }}>
+                MOST POPULAR
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                <div>
+                  <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>
+                    Monthly
+                  </h3>
+                  <p style={{ fontSize: '13px', color: t.accent, margin: 0 }}>
+                    {plans.monthly.label}
+                  </p>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <p style={{ fontSize: '28px', color: t.text, margin: '0', fontWeight: '600' }}>
+                    {plans.monthly.price}
+                  </p>
+                  <p style={{ fontSize: '12px', color: t.textTertiary, margin: 0 }}>
+                    {plans.monthly.period}
+                  </p>
+                </div>
+              </div>
+              <p style={{ fontSize: '12px', color: t.textMuted, margin: '12px 0 0 0' }}>
+                {plans.monthly.savings}
+              </p>
+            </div>
+
+            {/* Yearly */}
+            <div 
+              onClick={() => setSelectedPlan('yearly')}
+              style={{
+                background: selectedPlan === 'yearly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card,
+                border: selectedPlan === 'yearly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`,
+                borderRadius: '16px',
+                padding: '24px',
+                cursor: 'pointer',
+                transition: 'all 0.3s'
+              }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                <div>
+                  <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>
+                    Yearly
+                  </h3>
+                  <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>
+                    {plans.yearly.label}
+                  </p>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <p style={{ fontSize: '28px', color: t.text, margin: '0', fontWeight: '600' }}>
+                    {plans.yearly.price}
+                  </p>
+                  <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>
+                    {plans.yearly.period}
+                  </p>
+                </div>
+              </div>
+              <p style={{ fontSize: '12px', color: t.textMuted, margin: '12px 0 0 0' }}>
+                {plans.yearly.savings}
+              </p>
+            </div>
+          </div>
+
+          <div style={{
+            background: t.card,
+            border: `1px solid ${t.cardBorder}`,
+            borderRadius: '12px',
+            padding: '20px',
+            marginBottom: '24px'
+          }}>
+            <p style={{ fontSize: '14px', color: t.textSecondary, margin: '0 0 12px 0', fontWeight: '500' }}>
+              What you get:
+            </p>
+            <p style={{ fontSize: '13px', color: t.textTertiary, margin: '0 0 8px 0', lineHeight: '1.6' }}>
+              ✓ Unlimited questions to all 7 mentors
+            </p>
+            <p style={{ fontSize: '13px', color: t.textTertiary, margin: '0 0 8px 0', lineHeight: '1.6' }}>
+              ✓ Save all your conversations
+            </p>
+            <p style={{ fontSize: '13px', color: t.textTertiary, margin: '0', lineHeight: '1.6' }}>
+              ✓ Cancel anytime
             </p>
           </div>
+
+          <button
+            onClick={handleCheckout}
+            className="btn-primary"
+            style={{
+              width: '100%',
+              background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
+              color: theme === 'dark' ? '#000' : '#fff',
+              border: 'none',
+              borderRadius: '30px',
+              padding: '18px',
+              fontSize: '18px',
+              fontWeight: '700',
+              cursor: 'pointer',
+              marginBottom: '16px',
+              boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.4)'
+            }}
+          >
+            Start Now →
+          </button>
+
+          <p style={{
+            fontSize: '12px',
+            color: t.textMuted,
+            textAlign: 'center',
+            margin: 0,
+            lineHeight: '1.5'
+          }}>
+            7-day money-back guarantee. Cancel anytime.
+          </p>
         </div>
-      </>
-    );
-  }
+      </div>
+    </>
+  );
+}
 
   return <div>Loading...</div>;
 }
