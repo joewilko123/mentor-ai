@@ -1373,10 +1373,6 @@ if (step === 'paywall') {
   const handleCheckout = async () => {
   const plan = plans[selectedPlan];
   
-  console.log('selectedPlan:', selectedPlan);
-  console.log('plan:', plan);
-  console.log('userName:', userName);
-  
   if (!plan) {
     alert('Please select a plan first.');
     return;
