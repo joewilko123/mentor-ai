@@ -20,7 +20,7 @@ export default async function handler(req, res) {
 
     const session = await stripe.checkout.sessions.create({
       mode: priceId.includes('lifetime') ? 'payment' : 'subscription',
-      payment_method_types: ['card', 'apple_pay', 'google_pay'],
+      payment_method_types: ['card'],
       line_items: [
         {
           price: priceId,
