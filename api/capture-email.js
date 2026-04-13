@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     const response = await fetch('https://app.loops.so/api/v1/contacts/create', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer 5a7b5af7beaddab5e6949a0142ccfb0a`,
+        'Authorization': `Bearer ${process.env.LOOPS_API_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
