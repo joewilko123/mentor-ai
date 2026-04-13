@@ -1144,20 +1144,18 @@ if (step === 'trial') {
                 setLoading(true);
                 
                 // Log the captured data
-                // Send email to Loops
+                // Send email to Loops via our API
 try {
-  await fetch('https://app.loops.so/api/v1/contacts/create', {
+  await fetch('/api/capture-email', {
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer 5a7b5af7beaddab5e6949a0142ccfb0a`,
-      'Content-Type': 'application/json'
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       email: userName,
       firstName: answers.name,
       source: 'Trial Question',
       userGroup: mentorType,
-      trialQuestion: trialQuestion
+      trialQuestion: trialQuestion,
+      answers: answers // Send all the qualification answers
     })
   });
   
@@ -1369,9 +1367,9 @@ if (step === 'paywall') {
   const [selectedPlan, setSelectedPlan] = useState('monthly');
   
   const plans = {
-    weekly: { priceId: 'price_1TLmQvAis1rAntIh0KlXXEeY', price: '$7', period: '/week', label: 'Try it out' },
-    monthly: { priceId: 'price_1TLmUiAis1rAntIhKgDjWR8Q', price: '$19', period: '/month', label: 'Best value', savings: 'Save $9/month vs weekly' },
-    yearly: { priceId: 'price_1TLmVcAis1rAntIhA2ug264E', price: '$297', period: '/year', label: 'One-time payment', savings: 'Never pay again' }
+    weekly: { priceId: 'price_1TLmQvAis1rAntIh0KlXXEeY', price: '£7', period: '/week', label: 'Try it out' },
+    monthly: { priceId: 'price_1TLmUiAis1rAntIhKgDjWR8Q', price: '£19', period: '/month', label: 'Best value', savings: 'Save £9/month vs weekly' },
+    yearly: { priceId: 'price_1TLmVcAis1rAntIhA2ug264E', price: '£297', period: '/year', label: 'One-time payment', savings: 'Never pay again' }
   };
 
   const handleCheckout = async () => {
