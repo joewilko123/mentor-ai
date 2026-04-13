@@ -103,6 +103,98 @@ function App() {
     failedAt: ''
   });
 
+  useEffect(() => {
+    if (window.location.pathname === '/success') {
+      setStep('success');
+    }
+  }, []);
+
+  // Success Page
+  if (step === 'success') {
+    const t = THEMES[theme];
+    return (
+      <>
+        <GlobalStyles />
+        <ThemeToggle theme={theme} setTheme={setTheme} />
+        <div className="noise" style={{ opacity: t.noise }} />
+        <div style={{
+          minHeight: '100vh',
+          background: t.bg,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '40px 20px'
+        }}>
+          <div style={{ maxWidth: '420px', width: '100%', textAlign: 'center' }}>
+            <div style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 32px auto',
+              fontSize: '36px',
+              boxShadow: '0 0 40px rgba(212, 175, 55, 0.4)',
+              animation: 'fadeIn 0.6s ease-out'
+            }}>
+              ✓
+            </div>
+            <h1 style={{
+              fontSize: '28px',
+              color: t.text,
+              marginBottom: '12px',
+              fontWeight: '700',
+              animation: 'fadeIn 0.6s ease-out 0.2s backwards'
+            }}>
+              You're in.
+            </h1>
+            <p style={{
+              fontSize: '16px',
+              color: t.textSecondary,
+              marginBottom: '8px',
+              lineHeight: '1.6',
+              animation: 'fadeIn 0.6s ease-out 0.3s backwards'
+            }}>
+              Your access is now unlocked.
+            </p>
+            <p style={{
+              fontSize: '14px',
+              color: t.textMuted,
+              marginBottom: '48px',
+              lineHeight: '1.6',
+              animation: 'fadeIn 0.6s ease-out 0.4s backwards'
+            }}>
+              The greatest minds in history are waiting.
+            </p>
+            <button
+              onClick={() => {
+                window.history.pushState({}, '', '/');
+                setStep('mentor-select');
+              }}
+              style={{
+                width: '100%',
+                background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
+                color: theme === 'dark' ? '#000' : '#fff',
+                border: 'none',
+                borderRadius: '30px',
+                padding: '18px',
+                fontSize: '18px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                boxShadow: '0 4px 16px rgba(212, 175, 55, 0.4)',
+                animation: 'fadeIn 0.6s ease-out 0.5s backwards'
+              }}
+            >
+              Meet your mentors →
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   // Hero Screen
   if (step === 'hero') {
     const t = THEMES[theme];
@@ -411,30 +503,16 @@ function App() {
                   }}
                 />
                 <div>
-                  <p style={{ fontSize: '14px', color: t.accent, margin: 0, fontWeight: '600' }}>
-                    Steve Jobs
-                  </p>
-                  <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>
-                    Building & Creating
-                  </p>
+                  <p style={{ fontSize: '14px', color: t.accent, margin: 0, fontWeight: '600' }}>Steve Jobs</p>
+                  <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>Building & Creating</p>
                 </div>
               </div>
-              <div style={{
-                background: theme === 'dark' ? '#0a0a0a' : '#f0f0f0',
-                borderRadius: '12px',
-                padding: '14px',
-                marginBottom: '12px'
-              }}>
+              <div style={{ background: theme === 'dark' ? '#0a0a0a' : '#f0f0f0', borderRadius: '12px', padding: '14px', marginBottom: '12px' }}>
                 <p style={{ fontSize: '14px', color: t.text, margin: 0, lineHeight: '1.5' }}>
                   <strong>You:</strong> "I have an idea for a side project but I'm scared no one will care. How do I know if it's worth building?"
                 </p>
               </div>
-              <div style={{
-                background: theme === 'dark' ? '#1a1a1a' : '#ffffff',
-                border: `1px solid ${t.inputBorder}`,
-                borderRadius: '12px',
-                padding: '14px'
-              }}>
+              <div style={{ background: theme === 'dark' ? '#1a1a1a' : '#ffffff', border: `1px solid ${t.inputBorder}`, borderRadius: '12px', padding: '14px' }}>
                 <p style={{ fontSize: '14px', color: t.textSecondary, margin: 0, lineHeight: '1.6' }}>
                   <strong>Jobs:</strong> "You don't know. That's the point. Build it anyway. Not because you're sure it'll work—because you can't stop thinking about it. The worst case? You learn something. Best case? You make something people love. Stop asking for permission."
                 </p>
@@ -463,30 +541,16 @@ function App() {
                   }}
                 />
                 <div>
-                  <p style={{ fontSize: '14px', color: t.accent, margin: 0, fontWeight: '600' }}>
-                    Marcus Aurelius
-                  </p>
-                  <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>
-                    Mindset & Resilience
-                  </p>
+                  <p style={{ fontSize: '14px', color: t.accent, margin: 0, fontWeight: '600' }}>Marcus Aurelius</p>
+                  <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>Mindset & Resilience</p>
                 </div>
               </div>
-              <div style={{
-                background: theme === 'dark' ? '#0a0a0a' : '#f0f0f0',
-                borderRadius: '12px',
-                padding: '14px',
-                marginBottom: '12px'
-              }}>
+              <div style={{ background: theme === 'dark' ? '#0a0a0a' : '#f0f0f0', borderRadius: '12px', padding: '14px', marginBottom: '12px' }}>
                 <p style={{ fontSize: '14px', color: t.text, margin: 0, lineHeight: '1.5' }}>
                   <strong>You:</strong> "I feel like I'm behind everyone else my age. They're further ahead and I'm just getting started. How do I deal with this?"
                 </p>
               </div>
-              <div style={{
-                background: theme === 'dark' ? '#1a1a1a' : '#ffffff',
-                border: `1px solid ${t.inputBorder}`,
-                borderRadius: '12px',
-                padding: '14px'
-              }}>
+              <div style={{ background: theme === 'dark' ? '#1a1a1a' : '#ffffff', border: `1px solid ${t.inputBorder}`, borderRadius: '12px', padding: '14px' }}>
                 <p style={{ fontSize: '14px', color: t.textSecondary, margin: 0, lineHeight: '1.6' }}>
                   <strong>Marcus:</strong> "You're comparing your chapter 1 to someone else's chapter 20. Stop. The only race is against yesterday's version of yourself. Focus there. Everything else is distraction posing as wisdom."
                 </p>
@@ -515,30 +579,16 @@ function App() {
                   }}
                 />
                 <div>
-                  <p style={{ fontSize: '14px', color: t.accent, margin: 0, fontWeight: '600' }}>
-                    Andrew Carnegie
-                  </p>
-                  <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>
-                    Money & Career
-                  </p>
+                  <p style={{ fontSize: '14px', color: t.accent, margin: 0, fontWeight: '600' }}>Andrew Carnegie</p>
+                  <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>Money & Career</p>
                 </div>
               </div>
-              <div style={{
-                background: theme === 'dark' ? '#0a0a0a' : '#f0f0f0',
-                borderRadius: '12px',
-                padding: '14px',
-                marginBottom: '12px'
-              }}>
+              <div style={{ background: theme === 'dark' ? '#0a0a0a' : '#f0f0f0', borderRadius: '12px', padding: '14px', marginBottom: '12px' }}>
                 <p style={{ fontSize: '14px', color: t.text, margin: 0, lineHeight: '1.5' }}>
                   <strong>You:</strong> "I'm doing freelance work but charging way less than I should because I'm scared clients will say no. How do I raise my rates?"
                 </p>
               </div>
-              <div style={{
-                background: theme === 'dark' ? '#1a1a1a' : '#ffffff',
-                border: `1px solid ${t.inputBorder}`,
-                borderRadius: '12px',
-                padding: '14px'
-              }}>
+              <div style={{ background: theme === 'dark' ? '#1a1a1a' : '#ffffff', border: `1px solid ${t.inputBorder}`, borderRadius: '12px', padding: '14px' }}>
                 <p style={{ fontSize: '14px', color: t.textSecondary, margin: 0, lineHeight: '1.6' }}>
                   <strong>Carnegie:</strong> "You're not charging less because you're generous. You're charging less because you're scared. New clients get the new rate. Existing clients get a choice: new rate or we part ways professionally. The ones who stay value you. The ones who leave were never going to pay you what you're worth anyway."
                 </p>
@@ -578,41 +628,11 @@ function App() {
     const t = THEMES[theme];
 
     const questions = [
-      {
-        id: 1,
-        label: "First, what's your name?",
-        placeholder: "Your name",
-        key: 'name',
-        type: 'short'
-      },
-      {
-        id: 2,
-        label: "What's your biggest challenge right now?",
-        placeholder: "E.g., I'm stuck in a job I hate but scared to quit...",
-        key: 'biggestChallenge',
-        type: 'long'
-      },
-      {
-        id: 3,
-        label: "What are you actually trying to achieve?",
-        placeholder: "E.g., Build a business that lets me quit my 9-5, get promoted, develop unshakeable discipline...",
-        key: 'tryingToAchieve',
-        type: 'long'
-      },
-      {
-        id: 4,
-        label: "What's keeping you stuck?",
-        placeholder: "E.g., I don't know where to start, I'm afraid of failing, I lack the confidence...",
-        key: 'stuckOn',
-        type: 'long'
-      },
-      {
-        id: 5,
-        label: "What have you already tried that didn't work?",
-        placeholder: "E.g., Watched YouTube videos, asked ChatGPT, read books but nothing stuck...",
-        key: 'failedAt',
-        type: 'long'
-      }
+      { id: 1, label: "First, what's your name?", placeholder: "Your name", key: 'name', type: 'short' },
+      { id: 2, label: "What's your biggest challenge right now?", placeholder: "E.g., I'm stuck in a job I hate but scared to quit...", key: 'biggestChallenge', type: 'long' },
+      { id: 3, label: "What are you actually trying to achieve?", placeholder: "E.g., Build a business that lets me quit my 9-5, get promoted, develop unshakeable discipline...", key: 'tryingToAchieve', type: 'long' },
+      { id: 4, label: "What's keeping you stuck?", placeholder: "E.g., I don't know where to start, I'm afraid of failing, I lack the confidence...", key: 'stuckOn', type: 'long' },
+      { id: 5, label: "What have you already tried that didn't work?", placeholder: "E.g., Watched YouTube videos, asked ChatGPT, read books but nothing stuck...", key: 'failedAt', type: 'long' }
     ];
 
     const currentQuestion = questions[questionStep - 1];
@@ -629,9 +649,7 @@ function App() {
     };
 
     const handleBack = () => {
-      if (questionStep > 1) {
-        setQuestionStep(questionStep - 1);
-      }
+      if (questionStep > 1) setQuestionStep(questionStep - 1);
     };
 
     return (
@@ -648,43 +666,23 @@ function App() {
           flexDirection: 'column'
         }}>
           <div style={{ maxWidth: '500px', margin: '0 auto', width: '100%' }}>
-            <div style={{
-              display: 'flex',
-              gap: '8px',
-              marginBottom: '40px',
-              justifyContent: 'center'
-            }}>
-              {[1, 2, 3, 4, 5].map(step => (
-                <div
-                  key={step}
-                  style={{
-                    width: '40px',
-                    height: '4px',
-                    background: step <= questionStep ? t.accent : t.inputBorder,
-                    borderRadius: '2px',
-                    transition: 'all 0.3s'
-                  }}
-                />
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '40px', justifyContent: 'center' }}>
+              {[1, 2, 3, 4, 5].map(s => (
+                <div key={s} style={{
+                  width: '40px',
+                  height: '4px',
+                  background: s <= questionStep ? t.accent : t.inputBorder,
+                  borderRadius: '2px',
+                  transition: 'all 0.3s'
+                }} />
               ))}
             </div>
 
-            <h2 style={{
-              fontSize: '24px',
-              color: t.accent,
-              marginBottom: '12px',
-              textAlign: 'center',
-              fontWeight: '400'
-            }}>
-              {questionStep === 1 ? 'Let\'s personalize this for you.' : `Question ${questionStep} of 5`}
+            <h2 style={{ fontSize: '24px', color: t.accent, marginBottom: '12px', textAlign: 'center', fontWeight: '400' }}>
+              {questionStep === 1 ? "Let's personalize this for you." : `Question ${questionStep} of 5`}
             </h2>
 
-            <p style={{
-              fontSize: '16px',
-              color: t.textTertiary,
-              marginBottom: '32px',
-              textAlign: 'center',
-              lineHeight: '1.6'
-            }}>
+            <p style={{ fontSize: '16px', color: t.textTertiary, marginBottom: '32px', textAlign: 'center', lineHeight: '1.6' }}>
               {currentQuestion.label}
             </p>
 
@@ -693,11 +691,7 @@ function App() {
                 type="text"
                 value={currentAnswer}
                 onChange={(e) => setAnswers({ ...answers, [currentQuestion.key]: e.target.value })}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter' && currentAnswer.trim()) {
-                    handleNext();
-                  }
-                }}
+                onKeyPress={(e) => { if (e.key === 'Enter' && currentAnswer.trim()) handleNext(); }}
                 placeholder={currentQuestion.placeholder}
                 autoFocus
                 style={{
@@ -736,10 +730,7 @@ function App() {
               />
             )}
 
-            <div style={{
-              display: 'flex',
-              gap: '12px'
-            }}>
+            <div style={{ display: 'flex', gap: '12px' }}>
               {questionStep > 1 && (
                 <button
                   onClick={handleBack}
@@ -782,13 +773,7 @@ function App() {
             </div>
 
             {currentQuestion.type === 'long' && (
-              <p style={{
-                fontSize: '13px',
-                color: t.textMuted,
-                textAlign: 'center',
-                marginTop: '16px',
-                lineHeight: '1.5'
-              }}>
+              <p style={{ fontSize: '13px', color: t.textMuted, textAlign: 'center', marginTop: '16px', lineHeight: '1.5' }}>
                 The more specific you are, the better we can help you.
               </p>
             )}
@@ -807,59 +792,24 @@ function App() {
         <GlobalStyles />
         <ThemeToggle theme={theme} setTheme={setTheme} />
         <div className="noise" style={{ opacity: t.noise }} />
-        <div style={{
-          minHeight: '100vh',
-          background: t.bg,
-          padding: '40px 20px 60px',
-          overflow: 'auto'
-        }}>
+        <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto' }}>
           <div style={{ maxWidth: '500px', margin: '0 auto' }}>
-            <h2 style={{
-              fontSize: '24px',
-              color: t.accent,
-              marginBottom: '12px',
-              textAlign: 'center',
-              fontWeight: '400'
-            }}>
+            <h2 style={{ fontSize: '24px', color: t.accent, marginBottom: '12px', textAlign: 'center', fontWeight: '400' }}>
               Perfect, {userName}.
             </h2>
-            <p style={{
-              fontSize: '16px',
-              color: t.textTertiary,
-              marginBottom: '32px',
-              textAlign: 'center',
-              lineHeight: '1.6'
-            }}>
+            <p style={{ fontSize: '16px', color: t.textTertiary, marginBottom: '32px', textAlign: 'center', lineHeight: '1.6' }}>
               Which type of mentor would help you most right now?
             </p>
 
             <div style={{ display: 'grid', gap: '16px', marginBottom: '32px' }}>
               {[
-                { 
-                  type: 'business', 
-                  title: 'Business Mentor',
-                  desc: 'Strategy, pricing, growth, competition',
-                  mentors: 'Carnegie, Jobs, Rockefeller'
-                },
-                { 
-                  type: 'mindset', 
-                  title: 'Mindset Mentor',
-                  desc: 'Discipline, resilience, self-mastery',
-                  mentors: 'Marcus Aurelius, Seneca, Nietzsche'
-                },
-                { 
-                  type: 'leadership', 
-                  title: 'Leadership Mentor',
-                  desc: 'Decision-making, execution, vision',
-                  mentors: 'Napoleon, Jobs, Marcus Aurelius'
-                }
+                { type: 'business', title: 'Business Mentor', desc: 'Strategy, pricing, growth, competition', mentors: 'Carnegie, Jobs, Rockefeller' },
+                { type: 'mindset', title: 'Mindset Mentor', desc: 'Discipline, resilience, self-mastery', mentors: 'Marcus Aurelius, Seneca, Nietzsche' },
+                { type: 'leadership', title: 'Leadership Mentor', desc: 'Decision-making, execution, vision', mentors: 'Napoleon, Jobs, Marcus Aurelius' }
               ].map(option => (
                 <div
                   key={option.type}
-                  onClick={() => {
-                    setMentorType(option.type);
-                    setStep('trial');
-                  }}
+                  onClick={() => { setMentorType(option.type); setStep('trial'); }}
                   style={{
                     background: t.card,
                     border: `1px solid ${t.cardBorder}`,
@@ -869,29 +819,9 @@ function App() {
                     transition: 'all 0.3s'
                   }}
                 >
-                  <h3 style={{
-                    fontSize: '18px',
-                    color: t.text,
-                    margin: '0 0 8px 0',
-                    fontWeight: '500'
-                  }}>
-                    {option.title}
-                  </h3>
-                  <p style={{
-                    fontSize: '14px',
-                    color: t.textTertiary,
-                    margin: '0 0 8px 0',
-                    lineHeight: '1.5'
-                  }}>
-                    {option.desc}
-                  </p>
-                  <p style={{
-                    fontSize: '12px',
-                    color: t.accent,
-                    margin: 0
-                  }}>
-                    {option.mentors}
-                  </p>
+                  <h3 style={{ fontSize: '18px', color: t.text, margin: '0 0 8px 0', fontWeight: '500' }}>{option.title}</h3>
+                  <p style={{ fontSize: '14px', color: t.textTertiary, margin: '0 0 8px 0', lineHeight: '1.5' }}>{option.desc}</p>
+                  <p style={{ fontSize: '12px', color: t.accent, margin: 0 }}>{option.mentors}</p>
                 </div>
               ))}
             </div>
@@ -901,363 +831,216 @@ function App() {
     );
   }
 
-  // Trial Question - Email Capture Version
-if (step === 'trial') {
-  const t = THEMES[theme];
-  
-  return (
-    <>
-      <GlobalStyles />
-      <ThemeToggle theme={theme} setTheme={setTheme} />
-      <div className="noise" style={{ opacity: t.noise }} />
-      <div style={{
-        minHeight: '100vh',
-        background: t.bg,
-        padding: '40px 20px 60px',
-        overflow: 'auto',
-        position: 'relative'
-      }}>
-        <div style={{ maxWidth: '500px', margin: '0 auto' }}>
-          <h2 style={{
-            fontSize: '24px',
-            color: t.accent,
-            marginBottom: '12px',
-            textAlign: 'center',
-            fontWeight: '400'
-          }}>
-            Try it right now.
-          </h2>
-          <p style={{
-            fontSize: '16px',
-            color: t.textTertiary,
-            marginBottom: '32px',
-            textAlign: 'center',
-            lineHeight: '1.6'
-          }}>
-            Ask one question. Be as specific as possible.
-          </p>
-
-          <div style={{
-            background: t.card,
-            border: `1px solid ${t.accent}`,
-            borderRadius: '16px',
-            padding: '16px',
-            marginBottom: '24px'
-          }}>
-            <p style={{
-              fontSize: '13px',
-              color: t.accent,
-              margin: 0,
-              lineHeight: '1.5'
-            }}>
-              💡 Better question = better answer. Instead of "How do I grow my business?" try "I have 100 customers but revenue is flat. Should I raise prices or add features?"
+  // Trial Question
+  if (step === 'trial') {
+    const t = THEMES[theme];
+    
+    return (
+      <>
+        <GlobalStyles />
+        <ThemeToggle theme={theme} setTheme={setTheme} />
+        <div className="noise" style={{ opacity: t.noise }} />
+        <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto', position: 'relative' }}>
+          <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+            <h2 style={{ fontSize: '24px', color: t.accent, marginBottom: '12px', textAlign: 'center', fontWeight: '400' }}>
+              Try it right now.
+            </h2>
+            <p style={{ fontSize: '16px', color: t.textTertiary, marginBottom: '32px', textAlign: 'center', lineHeight: '1.6' }}>
+              Ask one question. Be as specific as possible.
             </p>
-          </div>
 
-          {/* Question Input - Always Visible */}
-          <div style={{
-            background: t.card,
-            border: `1px solid ${t.inputBorder}`,
-            borderRadius: '16px',
-            padding: '20px',
-            marginBottom: '24px'
-          }}>
-            <label style={{
-              display: 'block',
-              fontSize: '14px',
-              color: t.textTertiary,
-              marginBottom: '12px',
-              fontWeight: '500'
-            }}>
-              Your Question:
-            </label>
-            <textarea
-              value={trialQuestion}
-              onChange={(e) => setTrialQuestion(e.target.value)}
-              placeholder="Type your question here..."
-              rows={4}
-              style={{
-                width: '100%',
-                background: t.input,
-                border: `1px solid ${t.inputBorder}`,
-                borderRadius: '12px',
-                padding: '14px 16px',
-                fontSize: '16px',
-                color: t.text,
-                outline: 'none',
-                resize: 'none',
-                fontFamily: 'inherit',
-                marginBottom: trialQuestion.trim() ? '16px' : '0'
-              }}
-            />
+            <div style={{ background: t.card, border: `1px solid ${t.accent}`, borderRadius: '16px', padding: '16px', marginBottom: '24px' }}>
+              <p style={{ fontSize: '13px', color: t.accent, margin: 0, lineHeight: '1.5' }}>
+                💡 Better question = better answer. Instead of "How do I grow my business?" try "I have 100 customers but revenue is flat. Should I raise prices or add features?"
+              </p>
+            </div>
 
-            {/* Email Input - Shows when question is filled */}
-            {trialQuestion.trim() && !trialResponse && (
-              <div style={{ animation: 'slideUp 0.4s ease-out' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '14px',
-                  color: t.textTertiary,
-                  marginBottom: '12px',
-                  fontWeight: '500'
-                }}>
-                  Your Email:
-                </label>
-                <input
-                  type="email"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter' && userName.trim() && trialQuestion.trim()) {
-                      // Trigger get answer
-                      document.getElementById('get-answer-btn').click();
-                    }
-                  }}
-                  placeholder="your@email.com"
-                  style={{
-                    width: '100%',
-                    background: t.input,
-                    border: `1px solid ${t.inputBorder}`,
-                    borderRadius: '12px',
-                    padding: '14px 16px',
-                    fontSize: '16px',
-                    color: t.text,
-                    outline: 'none'
-                  }}
-                />
-                <p style={{
-                  fontSize: '12px',
-                  color: t.textMuted,
-                  margin: '8px 0 0 0',
-                  lineHeight: '1.5'
-                }}>
-                  We'll send you the answer. No spam, unsubscribe anytime.
+            <div style={{ background: t.card, border: `1px solid ${t.inputBorder}`, borderRadius: '16px', padding: '20px', marginBottom: '24px' }}>
+              <label style={{ display: 'block', fontSize: '14px', color: t.textTertiary, marginBottom: '12px', fontWeight: '500' }}>
+                Your Question:
+              </label>
+              <textarea
+                value={trialQuestion}
+                onChange={(e) => setTrialQuestion(e.target.value)}
+                placeholder="Type your question here..."
+                rows={4}
+                style={{
+                  width: '100%',
+                  background: t.input,
+                  border: `1px solid ${t.inputBorder}`,
+                  borderRadius: '12px',
+                  padding: '14px 16px',
+                  fontSize: '16px',
+                  color: t.text,
+                  outline: 'none',
+                  resize: 'none',
+                  fontFamily: 'inherit',
+                  marginBottom: trialQuestion.trim() ? '16px' : '0'
+                }}
+              />
+
+              {trialQuestion.trim() && !trialResponse && (
+                <div style={{ animation: 'slideUp 0.4s ease-out' }}>
+                  <label style={{ display: 'block', fontSize: '14px', color: t.textTertiary, marginBottom: '12px', fontWeight: '500' }}>
+                    Your Email:
+                  </label>
+                  <input
+                    type="email"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && userName.trim() && trialQuestion.trim()) {
+                        document.getElementById('get-answer-btn').click();
+                      }
+                    }}
+                    placeholder="your@email.com"
+                    style={{
+                      width: '100%',
+                      background: t.input,
+                      border: `1px solid ${t.inputBorder}`,
+                      borderRadius: '12px',
+                      padding: '14px 16px',
+                      fontSize: '16px',
+                      color: t.text,
+                      outline: 'none'
+                    }}
+                  />
+                  <p style={{ fontSize: '12px', color: t.textMuted, margin: '8px 0 0 0', lineHeight: '1.5' }}>
+                    We'll send you the answer. No spam, unsubscribe anytime.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {loading && (
+              <div style={{ background: t.input, border: `1px solid ${t.inputBorder}`, borderRadius: '12px', padding: '20px', textAlign: 'center', marginBottom: '24px' }}>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'center' }}>
+                  {[0, 0.2, 0.4].map((delay, i) => (
+                    <div key={i} style={{ width: '10px', height: '10px', borderRadius: '50%', background: t.accent, animation: `bounce 1.4s infinite ease-in-out both ${delay}s` }} />
+                  ))}
+                </div>
+                <p style={{ fontSize: '14px', color: t.textTertiary, margin: '12px 0 0 0' }}>
+                  Getting your personalized answer from {mentorType === 'business' ? 'Carnegie' : mentorType === 'mindset' ? 'Marcus Aurelius' : 'Napoleon'}...
                 </p>
               </div>
             )}
-          </div>
 
-          {loading && (
-            <div style={{
-              background: t.input,
-              border: `1px solid ${t.inputBorder}`,
-              borderRadius: '12px',
-              padding: '20px',
-              textAlign: 'center',
-              marginBottom: '24px'
-            }}>
-              <div style={{ 
-                display: 'flex', 
-                gap: '8px',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-                <div style={{
-                  width: '10px',
-                  height: '10px',
-                  borderRadius: '50%',
-                  background: t.accent,
-                  animation: 'bounce 1.4s infinite ease-in-out both'
-                }}></div>
-                <div style={{
-                  width: '10px',
-                  height: '10px',
-                  borderRadius: '50%',
-                  background: t.accent,
-                  animation: 'bounce 1.4s infinite ease-in-out both 0.2s'
-                }}></div>
-                <div style={{
-                  width: '10px',
-                  height: '10px',
-                  borderRadius: '50%',
-                  background: t.accent,
-                  animation: 'bounce 1.4s infinite ease-in-out both 0.4s'
-                }}></div>
+            {trialResponse && (
+              <div style={{ background: t.input, border: `1px solid ${t.inputBorder}`, borderRadius: '12px', padding: '20px', marginBottom: '24px', animation: 'slideUp 0.6s ease-out' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', paddingBottom: '16px', borderBottom: `1px solid ${t.inputBorder}` }}>
+                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>
+                    {mentorType === 'business' ? '💼' : mentorType === 'mindset' ? '🧘' : '⚔️'}
+                  </div>
+                  <div>
+                    <p style={{ fontSize: '14px', color: t.accent, margin: 0, fontWeight: '600' }}>
+                      {mentorType === 'business' ? 'Andrew Carnegie' : mentorType === 'mindset' ? 'Marcus Aurelius' : 'Napoleon Bonaparte'}
+                    </p>
+                    <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>
+                      {mentorType === 'business' ? 'Business Strategy' : mentorType === 'mindset' ? 'Stoic Philosophy' : 'Military Strategy'}
+                    </p>
+                  </div>
+                </div>
+                <p style={{ fontSize: '15px', color: t.textSecondary, margin: 0, lineHeight: '1.7', whiteSpace: 'pre-wrap' }}>
+                  {trialResponse}
+                </p>
               </div>
-              <p style={{
-                fontSize: '14px',
-                color: t.textTertiary,
-                margin: '12px 0 0 0'
-              }}>
-                Getting your personalized answer from {mentorType === 'business' ? 'Carnegie' : mentorType === 'mindset' ? 'Marcus Aurelius' : 'Napoleon'}...
-              </p>
-            </div>
-          )}
+            )}
 
-          {trialResponse && (
-            <div style={{
-              background: t.input,
-              border: `1px solid ${t.inputBorder}`,
-              borderRadius: '12px',
-              padding: '20px',
-              marginBottom: '24px',
-              animation: 'slideUp 0.6s ease-out'
-            }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                marginBottom: '16px',
-                paddingBottom: '16px',
-                borderBottom: `1px solid ${t.inputBorder}`
-              }}>
-                <div style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '50%',
+            {!trialResponse && (
+              <button
+                id="get-answer-btn"
+                onClick={async () => {
+                  if (!trialQuestion.trim() || !userName.trim() || loading) return;
+                  setLoading(true);
+                  try {
+                    await fetch('/api/capture-email', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        email: userName,
+                        firstName: answers.name,
+                        source: 'Trial Question',
+                        userGroup: mentorType,
+                        trialQuestion: trialQuestion,
+                        answers: answers
+                      })
+                    });
+                  } catch (error) {
+                    console.error('Loops error:', error);
+                  }
+
+                  let mentorId = 'jobs';
+                  if (mentorType === 'business') mentorId = 'carnegie';
+                  if (mentorType === 'mindset') mentorId = 'marcus';
+                  if (mentorType === 'leadership') mentorId = 'napoleon';
+                  const mentor = MENTORS.find(m => m.id === mentorId);
+
+                  try {
+                    const response = await fetch('/api/chat', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        messages: [{ role: 'user', content: trialQuestion }],
+                        systemPrompt: mentor.systemPrompt,
+                      }),
+                    });
+                    const data = await response.json();
+                    setTrialResponse(data.content);
+                  } catch (error) {
+                    console.error('Error:', error);
+                    setTrialResponse('Sorry, something went wrong. Please try again.');
+                  } finally {
+                    setLoading(false);
+                  }
+                }}
+                disabled={!trialQuestion.trim() || !userName.trim() || loading}
+                style={{
+                  width: '100%',
+                  background: (trialQuestion.trim() && userName.trim() && !loading)
+                    ? `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`
+                    : t.inputBorder,
+                  color: (trialQuestion.trim() && userName.trim() && !loading) ? (theme === 'dark' ? '#000' : '#fff') : t.textMuted,
+                  border: 'none',
+                  borderRadius: '30px',
+                  padding: '18px',
+                  fontSize: '17px',
+                  fontWeight: '600',
+                  cursor: (trialQuestion.trim() && userName.trim() && !loading) ? 'pointer' : 'not-allowed',
+                  boxShadow: (trialQuestion.trim() && userName.trim() && !loading)
+                    ? (theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.3)' : '0 4px 16px rgba(196, 154, 58, 0.3)')
+                    : 'none'
+                }}
+              >
+                Get My Answer →
+              </button>
+            )}
+
+            {trialResponse && (
+              <button
+                onClick={() => setStep('painDig')}
+                style={{
+                  width: '100%',
                   background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '20px'
-                }}>
-                  {mentorType === 'business' ? '💼' : mentorType === 'mindset' ? '🧘' : '⚔️'}
-                </div>
-                <div>
-                  <p style={{ fontSize: '14px', color: t.accent, margin: 0, fontWeight: '600' }}>
-                    {mentorType === 'business' ? 'Andrew Carnegie' : mentorType === 'mindset' ? 'Marcus Aurelius' : 'Napoleon Bonaparte'}
-                  </p>
-                  <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>
-                    {mentorType === 'business' ? 'Business Strategy' : mentorType === 'mindset' ? 'Stoic Philosophy' : 'Military Strategy'}
-                  </p>
-                </div>
-              </div>
-              <p style={{
-                fontSize: '15px',
-                color: t.textSecondary,
-                margin: 0,
-                lineHeight: '1.7',
-                whiteSpace: 'pre-wrap'
-              }}>
-                {trialResponse}
-              </p>
-            </div>
-          )}
-
-          {!trialResponse && (
-            <button
-              id="get-answer-btn"
-              onClick={async () => {
-                if (!trialQuestion.trim() || !userName.trim() || loading) return;
-                
-                setLoading(true);
-                
-                // Log the captured data
-                // Send email to Loops via our API
-try {
-  await fetch('/api/capture-email', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      email: userName,
-      firstName: answers.name,
-      source: 'Trial Question',
-      userGroup: mentorType,
-      trialQuestion: trialQuestion,
-      answers: answers // Send all the qualification answers
-    })
-  });
-  
-  console.log('✅ Email captured in Loops:', userName);
-} catch (error) {
-  console.error('Loops error:', error);
-  // Don't break the flow if email capture fails
-}
-                
-                // TODO: Send to your email service here
-                // Example:
-                // await fetch('https://your-backend.com/api/capture-email', {
-                //   method: 'POST',
-                //   headers: { 'Content-Type': 'application/json' },
-                //   body: JSON.stringify({
-                //     email: userName,
-                //     question: trialQuestion,
-                //     mentorType,
-                //     answers
-                //   })
-                // });
-                
-                let mentorId = 'jobs';
-                if (mentorType === 'business') mentorId = 'carnegie';
-                if (mentorType === 'mindset') mentorId = 'marcus';
-                if (mentorType === 'leadership') mentorId = 'napoleon';
-                
-                const mentor = MENTORS.find(m => m.id === mentorId);
-                
-                try {
-                  const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      messages: [{ role: 'user', content: trialQuestion }],
-                      systemPrompt: mentor.systemPrompt,
-                    }),
-                  });
-
-                  const data = await response.json();
-                  setTrialResponse(data.content);
-                } catch (error) {
-                  console.error('Error:', error);
-                  setTrialResponse('Sorry, something went wrong. Please try again.');
-                } finally {
-                  setLoading(false);
-                }
-              }}
-              disabled={!trialQuestion.trim() || !userName.trim() || loading}
-              style={{
-                width: '100%',
-                background: (trialQuestion.trim() && userName.trim() && !loading)
-                  ? `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`
-                  : t.inputBorder,
-                color: (trialQuestion.trim() && userName.trim() && !loading) ? (theme === 'dark' ? '#000' : '#fff') : t.textMuted,
-                border: 'none',
-                borderRadius: '30px',
-                padding: '18px',
-                fontSize: '17px',
-                fontWeight: '600',
-                cursor: (trialQuestion.trim() && userName.trim() && !loading) ? 'pointer' : 'not-allowed',
-                boxShadow: (trialQuestion.trim() && userName.trim() && !loading)
-                  ? (theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.3)' : '0 4px 16px rgba(196, 154, 58, 0.3)') 
-                  : 'none'
-              }}
-            >
-              Get My Answer →
-            </button>
-          )}
-
-          {trialResponse && (
-            <button
-              onClick={() => setStep('painDig')}
-              style={{
-                width: '100%',
-                background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
-                color: theme === 'dark' ? '#000' : '#fff',
-                border: 'none',
-                borderRadius: '30px',
-                padding: '18px',
-                fontSize: '17px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.3)' : '0 4px 16px rgba(196, 154, 58, 0.3)'
-              }}
-            >
-              Continue →
-            </button>
-          )}
-
-          <style>{`
-            @keyframes bounce {
-              0%, 80%, 100% { transform: scale(0); }
-              40% { transform: scale(1); }
-            }
-          `}</style>
+                  color: theme === 'dark' ? '#000' : '#fff',
+                  border: 'none',
+                  borderRadius: '30px',
+                  padding: '18px',
+                  fontSize: '17px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.3)' : '0 4px 16px rgba(196, 154, 58, 0.3)'
+                }}
+              >
+                Continue →
+              </button>
+            )}
+          </div>
         </div>
-      </div>
-    </>
-  );
-}
+      </>
+    );
+  }
 
-  // Pain Dig + Solution
+  // Pain Dig
   if (step === 'painDig') {
     const t = THEMES[theme];
     
@@ -1266,20 +1049,9 @@ try {
         <GlobalStyles />
         <ThemeToggle theme={theme} setTheme={setTheme} />
         <div className="noise" style={{ opacity: t.noise }} />
-        <div style={{
-          minHeight: '100vh',
-          background: t.bg,
-          padding: '40px 20px 60px',
-          overflow: 'auto'
-        }}>
+        <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto' }}>
           <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-            <h2 style={{
-              fontSize: '24px',
-              color: t.accent,
-              marginBottom: '24px',
-              textAlign: 'center',
-              fontWeight: '400'
-            }}>
+            <h2 style={{ fontSize: '24px', color: t.accent, marginBottom: '24px', textAlign: 'center', fontWeight: '400' }}>
               That answer you just got? That's the difference.
             </h2>
 
@@ -1293,41 +1065,17 @@ try {
               Actual strategic thinking from someone who's been exactly where you are.
             </p>
 
-            <div style={{
-              background: t.card,
-              border: `1px solid ${t.cardBorder}`,
-              borderRadius: '16px',
-              padding: '24px',
-              marginBottom: '32px'
-            }}>
-              <p style={{ fontSize: '16px', color: t.text, lineHeight: '1.6', marginBottom: '16px' }}>
-                <strong>Without Mentor:</strong>
-              </p>
-              <p style={{ fontSize: '15px', color: t.textTertiary, lineHeight: '1.6', marginBottom: '8px' }}>
-                → You scroll Twitter looking for answers
-              </p>
-              <p style={{ fontSize: '15px', color: t.textTertiary, lineHeight: '1.6', marginBottom: '8px' }}>
-                → You watch YouTube videos and take notes
-              </p>
-              <p style={{ fontSize: '15px', color: t.textTertiary, lineHeight: '1.6', marginBottom: '8px' }}>
-                → You ask ChatGPT and get safe, generic responses
-              </p>
-              <p style={{ fontSize: '15px', color: t.textTertiary, lineHeight: '1.6', marginBottom: '24px' }}>
-                → You make the decision anyway. Hope it works out.
-              </p>
+            <div style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '24px', marginBottom: '32px' }}>
+              <p style={{ fontSize: '16px', color: t.text, lineHeight: '1.6', marginBottom: '16px' }}><strong>Without Mentor:</strong></p>
+              <p style={{ fontSize: '15px', color: t.textTertiary, lineHeight: '1.6', marginBottom: '8px' }}>→ You scroll Twitter looking for answers</p>
+              <p style={{ fontSize: '15px', color: t.textTertiary, lineHeight: '1.6', marginBottom: '8px' }}>→ You watch YouTube videos and take notes</p>
+              <p style={{ fontSize: '15px', color: t.textTertiary, lineHeight: '1.6', marginBottom: '8px' }}>→ You ask ChatGPT and get safe, generic responses</p>
+              <p style={{ fontSize: '15px', color: t.textTertiary, lineHeight: '1.6', marginBottom: '24px' }}>→ You make the decision anyway. Hope it works out.</p>
 
-              <p style={{ fontSize: '16px', color: t.text, lineHeight: '1.6', marginBottom: '16px' }}>
-                <strong>With Mentor:</strong>
-              </p>
-              <p style={{ fontSize: '15px', color: t.accent, lineHeight: '1.6', marginBottom: '8px' }}>
-                → You ask someone who's solved your exact problem
-              </p>
-              <p style={{ fontSize: '15px', color: t.accent, lineHeight: '1.6', marginBottom: '8px' }}>
-                → You get direct, battle-tested frameworks
-              </p>
-              <p style={{ fontSize: '15px', color: t.accent, lineHeight: '1.6', marginBottom: '0' }}>
-                → You move forward with clarity and confidence
-              </p>
+              <p style={{ fontSize: '16px', color: t.text, lineHeight: '1.6', marginBottom: '16px' }}><strong>With Mentor:</strong></p>
+              <p style={{ fontSize: '15px', color: t.accent, lineHeight: '1.6', marginBottom: '8px' }}>→ You ask someone who's solved your exact problem</p>
+              <p style={{ fontSize: '15px', color: t.accent, lineHeight: '1.6', marginBottom: '8px' }}>→ You get direct, battle-tested frameworks</p>
+              <p style={{ fontSize: '15px', color: t.accent, lineHeight: '1.6', marginBottom: '0' }}>→ You move forward with clarity and confidence</p>
             </div>
 
             <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '8px', textAlign: 'center' }}>
@@ -1361,253 +1109,141 @@ try {
   }
 
   // Paywall
-if (step === 'paywall') {
-  const t = THEMES[theme];
-  
-  const plans = {
-    weekly: { priceId: 'price_1TLmQvAis1rAntIh0KlXXEeY', price: '£7', period: '/week', label: 'Try it out' },
-    monthly: { priceId: 'price_1TLmUiAis1rAntIhKgDjWR8Q', price: '£19', period: '/month', label: 'Best value', savings: 'Save £9/month vs weekly' },
-    yearly: { priceId: 'price_1TLmVcAis1rAntIhA2ug264E', price: '£297', period: '/year', label: 'One-time payment', savings: 'Never pay again' }
-  };
+  if (step === 'paywall') {
+    const t = THEMES[theme];
+    
+    const plans = {
+      weekly: { priceId: 'price_1TLmQvAis1rAntIh0KlXXEeY', price: '£7', period: '/week', label: 'Try it out' },
+      monthly: { priceId: 'price_1TLmUiAis1rAntIhKgDjWR8Q', price: '£19', period: '/month', label: 'Best value', savings: 'Save £9/month vs weekly' },
+      yearly: { priceId: 'price_1TLmVcAis1rAntIhA2ug264E', price: '£297', period: '/year', label: 'One-time payment', savings: 'Never pay again' }
+    };
 
-  const handleCheckout = async () => {
-  const plan = plans[selectedPlan];
-  
-  if (!plan) {
-    alert('Please select a plan first.');
-    return;
-  }
+    const handleCheckout = async () => {
+      const plan = plans[selectedPlan];
+      if (!plan) {
+        alert('Please select a plan first.');
+        return;
+      }
+      try {
+        const response = await fetch('/api/create-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            priceId: plan.priceId,
+            email: userName
+          }),
+        });
+        const data = await response.json();
+        if (!data.url) {
+          console.error('No URL returned from Stripe:', data);
+          alert('Payment error. Please try again.');
+          return;
+        }
+        window.location.href = data.url;
+      } catch (error) {
+        console.error('Checkout error:', error);
+        alert('Something went wrong. Please try again.');
+      }
+    };
+    
+    return (
+      <>
+        <GlobalStyles />
+        <ThemeToggle theme={theme} setTheme={setTheme} />
+        <div className="noise" style={{ opacity: t.noise }} />
+        <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto' }}>
+          <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+            <h2 style={{ fontSize: '28px', color: t.accent, marginBottom: '12px', textAlign: 'center', fontWeight: '400', fontFamily: "'Cormorant Garamond', serif" }}>
+              Get unlimited access.
+            </h2>
+            <p style={{ fontSize: '15px', color: t.textTertiary, marginBottom: '40px', textAlign: 'center' }}>
+              Choose your plan:
+            </p>
 
-  try {
-    const response = await fetch('/api/create-checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        priceId: plan.priceId,
-        email: userName
-      }),
-    });
-
-    const data = await response.json();
-    console.log('Checkout response:', data);
-
-    if (!data.url) {
-      console.error('No URL returned from Stripe:', data);
-      alert('Payment error. Please try again.');
-      return;
-    }
-
-    window.location.href = data.url;
-
-  } catch (error) {
-    console.error('Checkout error:', error);
-    alert('Something went wrong. Please try again.');
-  }
-};
-  
-  return (
-    <>
-      <GlobalStyles />
-      <ThemeToggle theme={theme} setTheme={setTheme} />
-      <div className="noise" style={{ opacity: t.noise }} />
-      <div style={{
-        minHeight: '100vh',
-        background: t.bg,
-        padding: '40px 20px 60px',
-        overflow: 'auto'
-      }}>
-        <div style={{ maxWidth: '500px', margin: '0 auto' }}>
-          <h2 style={{
-            fontSize: '28px',
-            color: t.accent,
-            marginBottom: '12px',
-            textAlign: 'center',
-            fontWeight: '400',
-            fontFamily: "'Cormorant Garamond', serif"
-          }}>
-            Get unlimited access.
-          </h2>
-          <p style={{
-            fontSize: '15px',
-            color: t.textTertiary,
-            marginBottom: '40px',
-            textAlign: 'center'
-          }}>
-            Choose your plan:
-          </p>
-
-          <div style={{ display: 'grid', gap: '16px', marginBottom: '32px' }}>
-            {/* Weekly */}
-            <div 
-              onClick={() => setSelectedPlan('weekly')}
-              style={{
-                background: selectedPlan === 'weekly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card,
-                border: selectedPlan === 'weekly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`,
-                borderRadius: '16px',
-                padding: '24px',
-                cursor: 'pointer',
-                transition: 'all 0.3s'
-              }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                <div>
-                  <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>
-                    Weekly
-                  </h3>
-                  <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>
-                    {plans.weekly.label}
-                  </p>
+            <div style={{ display: 'grid', gap: '16px', marginBottom: '32px' }}>
+              {/* Weekly */}
+              <div onClick={() => setSelectedPlan('weekly')} style={{ background: selectedPlan === 'weekly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card, border: selectedPlan === 'weekly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '24px', cursor: 'pointer', transition: 'all 0.3s' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div>
+                    <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>Weekly</h3>
+                    <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>{plans.weekly.label}</p>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <p style={{ fontSize: '28px', color: t.text, margin: '0', fontWeight: '600' }}>{plans.weekly.price}</p>
+                    <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>{plans.weekly.period}</p>
+                  </div>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <p style={{ fontSize: '28px', color: t.text, margin: '0', fontWeight: '600' }}>
-                    {plans.weekly.price}
-                  </p>
-                  <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>
-                    {plans.weekly.period}
-                  </p>
+              </div>
+
+              {/* Monthly */}
+              <div onClick={() => setSelectedPlan('monthly')} style={{ background: selectedPlan === 'monthly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card, border: selectedPlan === 'monthly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '24px', cursor: 'pointer', position: 'relative', transition: 'all 0.3s' }}>
+                <div style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: t.accent, color: theme === 'dark' ? '#000' : '#fff', padding: '4px 16px', borderRadius: '12px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.5px' }}>
+                  MOST POPULAR
                 </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                  <div>
+                    <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>Monthly</h3>
+                    <p style={{ fontSize: '13px', color: t.accent, margin: 0 }}>{plans.monthly.label}</p>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <p style={{ fontSize: '28px', color: t.text, margin: '0', fontWeight: '600' }}>{plans.monthly.price}</p>
+                    <p style={{ fontSize: '12px', color: t.textTertiary, margin: 0 }}>{plans.monthly.period}</p>
+                  </div>
+                </div>
+                <p style={{ fontSize: '12px', color: t.textMuted, margin: '12px 0 0 0' }}>{plans.monthly.savings}</p>
+              </div>
+
+              {/* Yearly */}
+              <div onClick={() => setSelectedPlan('yearly')} style={{ background: selectedPlan === 'yearly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card, border: selectedPlan === 'yearly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '24px', cursor: 'pointer', transition: 'all 0.3s' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                  <div>
+                    <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>Yearly</h3>
+                    <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>{plans.yearly.label}</p>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <p style={{ fontSize: '28px', color: t.text, margin: '0', fontWeight: '600' }}>{plans.yearly.price}</p>
+                    <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>{plans.yearly.period}</p>
+                  </div>
+                </div>
+                <p style={{ fontSize: '12px', color: t.textMuted, margin: '12px 0 0 0' }}>{plans.yearly.savings}</p>
               </div>
             </div>
 
-            {/* Monthly - MOST POPULAR */}
-            <div 
-              onClick={() => setSelectedPlan('monthly')}
+            <div style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '12px', padding: '20px', marginBottom: '24px' }}>
+              <p style={{ fontSize: '14px', color: t.textSecondary, margin: '0 0 12px 0', fontWeight: '500' }}>What you get:</p>
+              <p style={{ fontSize: '13px', color: t.textTertiary, margin: '0 0 8px 0', lineHeight: '1.6' }}>✓ Unlimited questions to all 7 mentors</p>
+              <p style={{ fontSize: '13px', color: t.textTertiary, margin: '0 0 8px 0', lineHeight: '1.6' }}>✓ Save all your conversations</p>
+              <p style={{ fontSize: '13px', color: t.textTertiary, margin: '0', lineHeight: '1.6' }}>✓ Cancel anytime</p>
+            </div>
+
+            <button
+              onClick={handleCheckout}
+              className="btn-primary"
               style={{
-                background: selectedPlan === 'monthly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card,
-                border: selectedPlan === 'monthly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`,
-                borderRadius: '16px',
-                padding: '24px',
-                cursor: 'pointer',
-                position: 'relative',
-                transition: 'all 0.3s'
-              }}>
-              <div style={{
-                position: 'absolute',
-                top: '-12px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                background: t.accent,
+                width: '100%',
+                background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
                 color: theme === 'dark' ? '#000' : '#fff',
-                padding: '4px 16px',
-                borderRadius: '12px',
-                fontSize: '11px',
+                border: 'none',
+                borderRadius: '30px',
+                padding: '18px',
+                fontSize: '18px',
                 fontWeight: '700',
-                letterSpacing: '0.5px'
-              }}>
-                MOST POPULAR
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                <div>
-                  <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>
-                    Monthly
-                  </h3>
-                  <p style={{ fontSize: '13px', color: t.accent, margin: 0 }}>
-                    {plans.monthly.label}
-                  </p>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <p style={{ fontSize: '28px', color: t.text, margin: '0', fontWeight: '600' }}>
-                    {plans.monthly.price}
-                  </p>
-                  <p style={{ fontSize: '12px', color: t.textTertiary, margin: 0 }}>
-                    {plans.monthly.period}
-                  </p>
-                </div>
-              </div>
-              <p style={{ fontSize: '12px', color: t.textMuted, margin: '12px 0 0 0' }}>
-                {plans.monthly.savings}
-              </p>
-            </div>
-
-            {/* Yearly */}
-            <div 
-              onClick={() => setSelectedPlan('yearly')}
-              style={{
-                background: selectedPlan === 'yearly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card,
-                border: selectedPlan === 'yearly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`,
-                borderRadius: '16px',
-                padding: '24px',
                 cursor: 'pointer',
-                transition: 'all 0.3s'
-              }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                <div>
-                  <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>
-                    Yearly
-                  </h3>
-                  <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>
-                    {plans.yearly.label}
-                  </p>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <p style={{ fontSize: '28px', color: t.text, margin: '0', fontWeight: '600' }}>
-                    {plans.yearly.price}
-                  </p>
-                  <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>
-                    {plans.yearly.period}
-                  </p>
-                </div>
-              </div>
-              <p style={{ fontSize: '12px', color: t.textMuted, margin: '12px 0 0 0' }}>
-                {plans.yearly.savings}
-              </p>
-            </div>
-          </div>
+                marginBottom: '16px',
+                boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.4)'
+              }}
+            >
+              Start Now →
+            </button>
 
-          <div style={{
-            background: t.card,
-            border: `1px solid ${t.cardBorder}`,
-            borderRadius: '12px',
-            padding: '20px',
-            marginBottom: '24px'
-          }}>
-            <p style={{ fontSize: '14px', color: t.textSecondary, margin: '0 0 12px 0', fontWeight: '500' }}>
-              What you get:
-            </p>
-            <p style={{ fontSize: '13px', color: t.textTertiary, margin: '0 0 8px 0', lineHeight: '1.6' }}>
-              ✓ Unlimited questions to all 7 mentors
-            </p>
-            <p style={{ fontSize: '13px', color: t.textTertiary, margin: '0 0 8px 0', lineHeight: '1.6' }}>
-              ✓ Save all your conversations
-            </p>
-            <p style={{ fontSize: '13px', color: t.textTertiary, margin: '0', lineHeight: '1.6' }}>
-              ✓ Cancel anytime
+            <p style={{ fontSize: '12px', color: t.textMuted, textAlign: 'center', margin: 0, lineHeight: '1.5' }}>
+              7-day money-back guarantee. Cancel anytime.
             </p>
           </div>
-
-          <button
-            onClick={handleCheckout}
-            className="btn-primary"
-            style={{
-              width: '100%',
-              background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
-              color: theme === 'dark' ? '#000' : '#fff',
-              border: 'none',
-              borderRadius: '30px',
-              padding: '18px',
-              fontSize: '18px',
-              fontWeight: '700',
-              cursor: 'pointer',
-              marginBottom: '16px',
-              boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.4)'
-            }}
-          >
-            Start Now →
-          </button>
-
-          <p style={{
-            fontSize: '12px',
-            color: t.textMuted,
-            textAlign: 'center',
-            margin: 0,
-            lineHeight: '1.5'
-          }}>
-            7-day money-back guarantee. Cancel anytime.
-          </p>
         </div>
-      </div>
-    </>
-  );
-}
+      </>
+    );
+  }
 
   return <div>Loading...</div>;
 }
@@ -1640,12 +1276,8 @@ const ThemeToggle = ({ theme, setTheme }) => (
       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       fontSize: '24px'
     }}
-    onMouseEnter={(e) => {
-      e.currentTarget.style.transform = 'scale(1.1) rotate(15deg)';
-    }}
-    onMouseLeave={(e) => {
-      e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-    }}
+    onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.1) rotate(15deg)'; }}
+    onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1) rotate(0deg)'; }}
   >
     {theme === 'dark' ? '☀️' : '🌙'}
   </button>
@@ -1656,72 +1288,32 @@ const GlobalStyles = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap');
     
-    * {
-      box-sizing: border-box;
-    }
-    
-    body {
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-    }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 0; overflow-x: hidden; }
     
     @keyframes fadeIn {
-      from { 
-        opacity: 0; 
-        transform: translateY(20px);
-      }
-      to { 
-        opacity: 1; 
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    
     @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    
     @keyframes shimmer {
-      0% {
-        background-position: -1000px 0;
-      }
-      100% {
-        background-position: 1000px 0;
-      }
+      0% { background-position: -1000px 0; }
+      100% { background-position: 1000px 0; }
     }
-    
     @keyframes float {
-      0%, 100% {
-        transform: translateY(0px);
-      }
-      50% {
-        transform: translateY(-10px);
-      }
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
     }
-    
     @keyframes pulse {
-      0%, 100% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0.5;
-      }
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
-    
     @keyframes bounce {
-      0%, 80%, 100% { 
-        transform: scale(0); 
-      }
-      40% { 
-        transform: scale(1); 
-      }
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
     }
     
     .gradient-text {
@@ -1732,23 +1324,18 @@ const GlobalStyles = () => (
       background-clip: text;
       animation: shimmer 3s linear infinite;
     }
-    
     .glass-card {
       background: rgba(20, 20, 20, 0.6);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       border: 1px solid rgba(212, 175, 55, 0.1);
-      box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
-    
     .btn-primary {
       position: relative;
       overflow: hidden;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
     .btn-primary::before {
       content: '';
       position: absolute;
@@ -1761,24 +1348,12 @@ const GlobalStyles = () => (
       transform: translate(-50%, -50%);
       transition: width 0.6s, height 0.6s;
     }
-    
-    .btn-primary:active::before {
-      width: 300px;
-      height: 300px;
-    }
-    
-    textarea::placeholder,
-    input::placeholder {
-      color: #666;
-      opacity: 1;
-    }
-    
+    .btn-primary:active::before { width: 300px; height: 300px; }
+    textarea::placeholder, input::placeholder { color: #666; opacity: 1; }
     .noise {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       pointer-events: none;
       z-index: 1;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E");
