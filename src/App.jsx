@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Send, ArrowLeft, X, ChevronRight } from 'lucide-react';
 import { MENTORS } from './mentors';
-import { loadStripe } from '@stripe/stripe-js';
 
 // Replace with your actual Stripe publishable key
-const stripePromise = loadStripe('pk_live_51TLmIhAis1rAntIhLOPu4DNmy2tt6pCBlOozaibuvrdiCodK6x0eVkX8fXI2NGsON5bLbfk373E4D0BbzJNDiQbY00o77tpXmD');
 const MENTOR_IMAGES = {
   carnegie: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ3l2LJg1CQ4-UtyhJ59CArSB0ZfYEnk0nig&s',
   jobs: 'https://goinswriter.com/wp-content/uploads/2011/10/steve-jobs.jpg',
