@@ -21,21 +21,29 @@ export default async function handler(req, res) {
   });
 
   try {
-    const { messages, systemPrompt } = req.body;
+  const { messages, systemPrompt } = req.body;
 
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      system: systemPrompt,
-      messages: messages,
-    });
+  const response = await anthropic.messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 1000,
+    system: systemPrompt,
+    messages: messages,
+  });
 
-    res.status(200).json({ content: response.content[0].text });
-  } catch (error) {
-    console.error('Anthropic API Error:', error);
-    res.status(500).json({ 
-      error: 'Failed to get response from Claude', 
-      details: error.message 
+  res.status(200).json({ content: response.content[0].text });
+} catch (error) {
+  console.error('Anthropic API Error:', error);
+  
+  // If Anthropic is overloaded, return a friendly error
+  if (error.status === 529) {
+    return res.status(503).json({ 
+      error: 'Our AI is experiencing high demand right now. Please try again in a moment.' 
     });
   }
+  
+  res.status(500).json({ 
+    error: 'Failed to get response from Claude', 
+    details: error.message 
+  });
+}
 }
