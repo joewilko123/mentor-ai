@@ -86,6 +86,7 @@ const THEMES = {
 function App() {
   const [step, setStep] = useState('hero');
   const [theme, setTheme] = useState('dark');
+  const [selectedPlan, setSelectedPlan] = useState('monthly');
   const [userName, setUserName] = useState('');
   const [userGoal, setUserGoal] = useState('');
   const [mentorType, setMentorType] = useState('');
@@ -1364,7 +1365,6 @@ try {
   // Paywall
 if (step === 'paywall') {
   const t = THEMES[theme];
-  const [selectedPlan, setSelectedPlan] = useState('monthly');
   
   const plans = {
     weekly: { priceId: 'price_1TLmQvAis1rAntIh0KlXXEeY', price: '£7', period: '/week', label: 'Try it out' },
