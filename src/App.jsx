@@ -1371,21 +1371,38 @@ if (step === 'paywall') {
   };
 
   const handleCheckout = async () => {
+  const plan = plans[selectedPlan];
+  
+  console.log('selectedPlan:', selectedPlan);
+  console.log('plan:', plan);
+  console.log('userName:', userName);
+  
+  if (!plan) {
+    alert('Please select a plan first.');
+    return;
+  }
+
   try {
     const response = await fetch('/api/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        priceId: plans[selectedPlan].priceId,
+      body: JSON.stringify({
+        priceId: plan.priceId,
         email: userName
       }),
     });
 
-    const { url } = await response.json();
-    
-    // Redirect to Stripe Checkout URL
-    window.location.href = url;
-    
+    const data = await response.json();
+    console.log('Checkout response:', data);
+
+    if (!data.url) {
+      console.error('No URL returned from Stripe:', data);
+      alert('Payment error. Please try again.');
+      return;
+    }
+
+    window.location.href = data.url;
+
   } catch (error) {
     console.error('Checkout error:', error);
     alert('Something went wrong. Please try again.');
