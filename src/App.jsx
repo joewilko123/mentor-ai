@@ -1106,7 +1106,7 @@ function App() {
         </div>
       </>
     );
-  }
+  } 
 
   // Paywall
   if (step === 'paywall') {
