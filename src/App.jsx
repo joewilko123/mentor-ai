@@ -1113,7 +1113,7 @@ function App() {
     const t = THEMES[theme];
     
     const plans = {
-      weekly: { priceId: 'price_1TLmQvAis1rAntIh0KlXXEeY', price: '£7', period: '/week', label: 'Try it out' },
+      weekly: { priceId: 'price_1TM2hnAis1rAntIhstKTtpHk', price: '£7', period: '/week', label: 'Try it out' },
       monthly: { priceId: 'price_1TLmUiAis1rAntIhKgDjWR8Q', price: '£19', period: '/month', label: 'Best value', savings: 'Save £9/month vs weekly' },
       yearly: { priceId: 'price_1TLmVcAis1rAntIhA2ug264E', price: '£297', period: '/year', label: 'One-time payment', savings: 'Never pay again' }
     };
