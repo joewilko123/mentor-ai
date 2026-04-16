@@ -171,7 +171,7 @@ function App() {
             <button
               onClick={() => {
                 window.history.pushState({}, '', '/');
-                setStep('mentor-select');
+                setStep('mentorSelect');
               }}
               style={{
                 width: '100%',
