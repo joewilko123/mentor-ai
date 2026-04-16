@@ -1,5 +1,3 @@
-console.log('STRIPE KEY PREFIX:', process.env.STRIPE_SECRET_KEY?.substring(0, 10));
-// force redeploy
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
