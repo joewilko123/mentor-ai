@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Send, ArrowLeft, X, ChevronRight } from 'lucide-react';
 import { MENTORS } from './mentors';
 
-// Replace with your actual Stripe publishable key
 const MENTOR_IMAGES = {
   carnegie: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ3l2LJg1CQ4-UtyhJ59CArSB0ZfYEnk0nig&s',
   jobs: 'https://goinswriter.com/wp-content/uploads/2011/10/steve-jobs.jpg',
@@ -102,12 +101,42 @@ function App() {
     stuckOn: '',
     failedAt: ''
   });
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     if (window.location.pathname === '/success') {
       setStep('success');
     }
   }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const handleSendMessage = async () => {
+    if (!input.trim() || loading || !selectedMentor) return;
+    const userMessage = { role: 'user', content: input };
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
+    setLoading(true);
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [...messages, userMessage],
+          systemPrompt: selectedMentor.systemPrompt,
+        }),
+      });
+      const data = await response.json();
+      setMessages(prev => [...prev, { role: 'assistant', content: data.content }]);
+    } catch (error) {
+      console.error('Error:', error);
+      setMessages(prev => [...prev, { role: 'assistant', content: 'My apologies, I seem to be having difficulty connecting. Please try again.' }]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Success Page
   if (step === 'success') {
@@ -141,37 +170,19 @@ function App() {
             }}>
               ✓
             </div>
-            <h1 style={{
-              fontSize: '28px',
-              color: t.text,
-              marginBottom: '12px',
-              fontWeight: '700',
-              animation: 'fadeIn 0.6s ease-out 0.2s backwards'
-            }}>
+            <h1 style={{ fontSize: '28px', color: t.text, marginBottom: '12px', fontWeight: '700', animation: 'fadeIn 0.6s ease-out 0.2s backwards' }}>
               You're in.
             </h1>
-            <p style={{
-              fontSize: '16px',
-              color: t.textSecondary,
-              marginBottom: '8px',
-              lineHeight: '1.6',
-              animation: 'fadeIn 0.6s ease-out 0.3s backwards'
-            }}>
+            <p style={{ fontSize: '16px', color: t.textSecondary, marginBottom: '8px', lineHeight: '1.6', animation: 'fadeIn 0.6s ease-out 0.3s backwards' }}>
               Your access is now unlocked.
             </p>
-            <p style={{
-              fontSize: '14px',
-              color: t.textMuted,
-              marginBottom: '48px',
-              lineHeight: '1.6',
-              animation: 'fadeIn 0.6s ease-out 0.4s backwards'
-            }}>
+            <p style={{ fontSize: '14px', color: t.textMuted, marginBottom: '48px', lineHeight: '1.6', animation: 'fadeIn 0.6s ease-out 0.4s backwards' }}>
               The greatest minds in history are waiting.
             </p>
             <button
               onClick={() => {
                 window.history.pushState({}, '', '/');
-                setStep('mentorSelect');
+                setStep('chat');
               }}
               style={{
                 width: '100%',
@@ -189,6 +200,332 @@ function App() {
             >
               Meet your mentors →
             </button>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // Mentor Grid (post-payment)
+  if (step === 'chat' && !selectedMentor) {
+    const t = THEMES[theme];
+    return (
+      <>
+        <GlobalStyles />
+        <ThemeToggle theme={theme} setTheme={setTheme} />
+        <div className="noise" style={{ opacity: t.noise }} />
+        <div style={{
+          minHeight: '100vh',
+          background: t.bg,
+          padding: '40px 20px 60px',
+          overflow: 'auto'
+        }}>
+          <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+              <h1 className="gradient-text" style={{
+                fontSize: '42px',
+                fontWeight: '500',
+                margin: '0 0 12px 0',
+                letterSpacing: '2px',
+                fontFamily: "'Cormorant Garamond', serif"
+              }}>
+                Mentor
+              </h1>
+              <p style={{ fontSize: '16px', color: t.textTertiary, margin: 0 }}>
+                Choose your mentor. Ask anything.
+              </p>
+            </div>
+
+            <div style={{ display: 'grid', gap: '16px' }}>
+              {MENTORS.map((mentor, i) => (
+                <div
+                  key={mentor.id}
+                  onClick={() => {
+                    setSelectedMentor(mentor);
+                    setMessages([]);
+                  }}
+                  style={{
+                    background: t.card,
+                    border: `1px solid ${t.cardBorder}`,
+                    borderRadius: '16px',
+                    padding: '20px',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s',
+                    display: 'flex',
+                    gap: '16px',
+                    alignItems: 'flex-start',
+                    animation: `slideUp 0.4s ease-out ${i * 0.05}s backwards`
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.border = `1px solid ${t.accent}`;
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.border = `1px solid ${t.cardBorder}`;
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
+                >
+                  <img
+                    src={MENTOR_IMAGES[mentor.id]}
+                    alt={mentor.name}
+                    style={{
+                      width: '64px',
+                      height: '64px',
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      filter: 'grayscale(100%)',
+                      border: `2px solid ${t.accent}`,
+                      flexShrink: 0
+                    }}
+                  />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
+                      <h3 style={{ fontSize: '18px', color: t.text, margin: 0, fontWeight: '600' }}>
+                        {mentor.name}
+                      </h3>
+                      <span style={{ fontSize: '12px', color: t.textMuted, flexShrink: 0, marginLeft: '8px' }}>
+                        {mentor.era}
+                      </span>
+                    </div>
+                    <p style={{ fontSize: '13px', color: t.accent, margin: '0 0 8px 0', fontWeight: '500' }}>
+                      {MENTOR_INFO[mentor.id]?.knownFor}
+                    </p>
+                    <p style={{ fontSize: '13px', color: t.textTertiary, margin: 0, lineHeight: '1.5' }}>
+                      {MENTOR_INFO[mentor.id]?.bestWith}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // Chat Interface
+  if (step === 'chat' && selectedMentor) {
+    const t = THEMES[theme];
+    return (
+      <>
+        <GlobalStyles />
+        <ThemeToggle theme={theme} setTheme={setTheme} />
+        <div className="noise" style={{ opacity: t.noise }} />
+        <div style={{
+          height: '100vh',
+          background: t.bg,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden'
+        }}>
+          {/* Header */}
+          <div style={{
+            padding: '16px 20px',
+            borderBottom: `1px solid ${t.cardBorder}`,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px',
+            background: theme === 'dark' ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.8)',
+            backdropFilter: 'blur(10px)',
+            flexShrink: 0
+          }}>
+            <button
+              onClick={() => { setSelectedMentor(null); setMessages([]); }}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: t.textTertiary,
+                cursor: 'pointer',
+                padding: '4px',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <img
+              src={MENTOR_IMAGES[selectedMentor.id]}
+              alt={selectedMentor.name}
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                objectFit: 'cover',
+                filter: 'grayscale(100%)',
+                border: `2px solid ${t.accent}`
+              }}
+            />
+            <div>
+              <h3 style={{ fontSize: '16px', color: t.text, margin: 0, fontWeight: '600' }}>
+                {selectedMentor.name}
+              </h3>
+              <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>
+                {selectedMentor.title}
+              </p>
+            </div>
+          </div>
+
+          {/* Messages */}
+          <div style={{
+            flex: 1,
+            overflowY: 'auto',
+            padding: '24px 20px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px'
+          }}>
+            {messages.length === 0 && (
+              <div style={{ textAlign: 'center', marginTop: '40px', animation: 'fadeIn 0.6s ease-out' }}>
+                <div style={{ fontSize: '48px', marginBottom: '16px' }}>{selectedMentor.avatar}</div>
+                <h3 style={{ fontSize: '20px', color: t.text, marginBottom: '8px', fontWeight: '500' }}>
+                  {selectedMentor.name}
+                </h3>
+                <p style={{ fontSize: '14px', color: t.textTertiary, maxWidth: '400px', margin: '0 auto', lineHeight: '1.6' }}>
+                  {selectedMentor.specialty}
+                </p>
+                <p style={{ fontSize: '13px', color: t.textMuted, maxWidth: '400px', margin: '16px auto 0', lineHeight: '1.6' }}>
+                  Ask me anything. Be specific — the more context you give, the better my advice.
+                </p>
+              </div>
+            )}
+
+            {messages.map((msg, i) => (
+              <div
+                key={i}
+                style={{
+                  display: 'flex',
+                  justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start',
+                  animation: 'slideUp 0.3s ease-out'
+                }}
+              >
+                {msg.role === 'assistant' && (
+                  <img
+                    src={MENTOR_IMAGES[selectedMentor.id]}
+                    alt={selectedMentor.name}
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      filter: 'grayscale(100%)',
+                      border: `1px solid ${t.accent}`,
+                      marginRight: '8px',
+                      flexShrink: 0,
+                      alignSelf: 'flex-end'
+                    }}
+                  />
+                )}
+                <div style={{
+                  maxWidth: '75%',
+                  padding: '12px 16px',
+                  borderRadius: msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+                  background: msg.role === 'user'
+                    ? `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`
+                    : (theme === 'dark' ? '#1a1a1a' : '#ffffff'),
+                  border: msg.role === 'assistant' ? `1px solid ${t.inputBorder}` : 'none',
+                  color: msg.role === 'user' ? '#000' : t.textSecondary,
+                  fontSize: '15px',
+                  lineHeight: '1.6',
+                  whiteSpace: 'pre-wrap'
+                }}>
+                  {msg.content}
+                </div>
+              </div>
+            ))}
+
+            {loading && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <img
+                  src={MENTOR_IMAGES[selectedMentor.id]}
+                  alt={selectedMentor.name}
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    filter: 'grayscale(100%)',
+                    border: `1px solid ${t.accent}`
+                  }}
+                />
+                <div style={{
+                  background: theme === 'dark' ? '#1a1a1a' : '#ffffff',
+                  border: `1px solid ${t.inputBorder}`,
+                  borderRadius: '18px',
+                  padding: '12px 16px',
+                  display: 'flex',
+                  gap: '4px',
+                  alignItems: 'center'
+                }}>
+                  {[0, 0.2, 0.4].map((delay, i) => (
+                    <div key={i} style={{
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      background: t.accent,
+                      animation: `bounce 1.4s infinite ease-in-out both ${delay}s`
+                    }} />
+                  ))}
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input */}
+          <div style={{
+            padding: '16px 20px',
+            borderTop: `1px solid ${t.cardBorder}`,
+            background: theme === 'dark' ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.8)',
+            backdropFilter: 'blur(10px)',
+            flexShrink: 0
+          }}>
+            <div style={{ display: 'flex', gap: '12px', maxWidth: '700px', margin: '0 auto' }}>
+              <input
+                type="text"
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyPress={e => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
+                placeholder={`Ask ${selectedMentor.name} anything...`}
+                style={{
+                  flex: 1,
+                  background: t.input,
+                  border: `1px solid ${t.inputBorder}`,
+                  borderRadius: '24px',
+                  padding: '14px 20px',
+                  fontSize: '15px',
+                  color: t.text,
+                  outline: 'none',
+                  fontFamily: 'inherit'
+                }}
+              />
+              <button
+                onClick={handleSendMessage}
+                disabled={!input.trim() || loading}
+                style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  background: (input.trim() && !loading)
+                    ? `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`
+                    : t.inputBorder,
+                  border: 'none',
+                  cursor: (input.trim() && !loading) ? 'pointer' : 'not-allowed',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  boxShadow: (input.trim() && !loading) ? '0 4px 12px rgba(212, 175, 55, 0.4)' : 'none',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <Send size={18} color={input.trim() && !loading ? '#000' : '#666'} />
+              </button>
+            </div>
           </div>
         </div>
       </>
@@ -348,9 +685,7 @@ function App() {
                   fontWeight: '500',
                   cursor: 'pointer',
                   width: '100%',
-                  boxShadow: theme === 'dark'
-                    ? '0 4px 16px rgba(0, 0, 0, 0.3)'
-                    : '0 4px 16px rgba(0, 0, 0, 0.1)',
+                  boxShadow: theme === 'dark' ? '0 4px 16px rgba(0, 0, 0, 0.3)' : '0 4px 16px rgba(0, 0, 0, 0.1)',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                 }}
               >
@@ -386,9 +721,7 @@ function App() {
                   fontWeight: '500',
                   cursor: 'pointer',
                   width: '100%',
-                  boxShadow: theme === 'dark'
-                    ? '0 4px 16px rgba(0, 0, 0, 0.3)'
-                    : '0 4px 16px rgba(0, 0, 0, 0.1)',
+                  boxShadow: theme === 'dark' ? '0 4px 16px rgba(0, 0, 0, 0.3)' : '0 4px 16px rgba(0, 0, 0, 0.1)',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                 }}
               >
@@ -464,44 +797,15 @@ function App() {
         <GlobalStyles />
         <ThemeToggle theme={theme} setTheme={setTheme} />
         <div className="noise" style={{ opacity: t.noise }} />
-        <div style={{
-          minHeight: '100vh',
-          background: t.bg,
-          padding: '40px 20px 60px',
-          overflow: 'auto'
-        }}>
+        <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto' }}>
           <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-            <h2 style={{
-              fontSize: '24px',
-              color: t.accent,
-              marginBottom: '32px',
-              textAlign: 'center',
-              fontWeight: '400'
-            }}>
+            <h2 style={{ fontSize: '24px', color: t.accent, marginBottom: '32px', textAlign: 'center', fontWeight: '400' }}>
               Here's how it works:
             </h2>
 
-            <div className="glass-card" style={{
-              borderRadius: '16px',
-              padding: '24px',
-              marginBottom: '24px',
-              animation: 'slideUp 0.6s ease-out',
-              background: t.card,
-              border: `1px solid ${t.cardBorder}`
-            }}>
+            <div className="glass-card" style={{ borderRadius: '16px', padding: '24px', marginBottom: '24px', animation: 'slideUp 0.6s ease-out', background: t.card, border: `1px solid ${t.cardBorder}` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-                <img 
-                  src={MENTOR_IMAGES.jobs}
-                  alt="Steve Jobs"
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    filter: 'grayscale(100%)',
-                    border: `2px solid ${t.accent}`
-                  }}
-                />
+                <img src={MENTOR_IMAGES.jobs} alt="Steve Jobs" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(100%)', border: `2px solid ${t.accent}` }} />
                 <div>
                   <p style={{ fontSize: '14px', color: t.accent, margin: 0, fontWeight: '600' }}>Steve Jobs</p>
                   <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>Building & Creating</p>
@@ -519,27 +823,9 @@ function App() {
               </div>
             </div>
 
-            <div className="glass-card" style={{
-              borderRadius: '16px',
-              padding: '24px',
-              marginBottom: '24px',
-              animation: 'slideUp 0.6s ease-out 0.2s backwards',
-              background: t.card,
-              border: `1px solid ${t.cardBorder}`
-            }}>
+            <div className="glass-card" style={{ borderRadius: '16px', padding: '24px', marginBottom: '24px', animation: 'slideUp 0.6s ease-out 0.2s backwards', background: t.card, border: `1px solid ${t.cardBorder}` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-                <img 
-                  src={MENTOR_IMAGES.marcus}
-                  alt="Marcus Aurelius"
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    filter: 'grayscale(100%)',
-                    border: `2px solid ${t.accent}`
-                  }}
-                />
+                <img src={MENTOR_IMAGES.marcus} alt="Marcus Aurelius" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(100%)', border: `2px solid ${t.accent}` }} />
                 <div>
                   <p style={{ fontSize: '14px', color: t.accent, margin: 0, fontWeight: '600' }}>Marcus Aurelius</p>
                   <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>Mindset & Resilience</p>
@@ -557,27 +843,9 @@ function App() {
               </div>
             </div>
 
-            <div className="glass-card" style={{
-              borderRadius: '16px',
-              padding: '24px',
-              marginBottom: '32px',
-              animation: 'slideUp 0.6s ease-out 0.4s backwards',
-              background: t.card,
-              border: `1px solid ${t.cardBorder}`
-            }}>
+            <div className="glass-card" style={{ borderRadius: '16px', padding: '24px', marginBottom: '32px', animation: 'slideUp 0.6s ease-out 0.4s backwards', background: t.card, border: `1px solid ${t.cardBorder}` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-                <img 
-                  src={MENTOR_IMAGES.carnegie}
-                  alt="Andrew Carnegie"
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    filter: 'grayscale(100%)',
-                    border: `2px solid ${t.accent}`
-                  }}
-                />
+                <img src={MENTOR_IMAGES.carnegie} alt="Andrew Carnegie" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(100%)', border: `2px solid ${t.accent}` }} />
                 <div>
                   <p style={{ fontSize: '14px', color: t.accent, margin: 0, fontWeight: '600' }}>Andrew Carnegie</p>
                   <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>Money & Career</p>
@@ -609,9 +877,7 @@ function App() {
                 fontWeight: '600',
                 cursor: 'pointer',
                 width: '100%',
-                boxShadow: theme === 'dark'
-                  ? '0 8px 24px rgba(212, 175, 55, 0.4)'
-                  : '0 8px 24px rgba(196, 154, 58, 0.3)',
+                boxShadow: theme === 'dark' ? '0 8px 24px rgba(212, 175, 55, 0.4)' : '0 8px 24px rgba(196, 154, 58, 0.3)',
                 animation: 'shimmer 3s linear infinite'
               }}
             >
@@ -657,24 +923,11 @@ function App() {
         <GlobalStyles />
         <ThemeToggle theme={theme} setTheme={setTheme} />
         <div className="noise" style={{ opacity: t.noise }} />
-        <div style={{
-          minHeight: '100vh',
-          background: t.bg,
-          padding: '40px 20px 60px',
-          overflow: 'auto',
-          display: 'flex',
-          flexDirection: 'column'
-        }}>
+        <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto', display: 'flex', flexDirection: 'column' }}>
           <div style={{ maxWidth: '500px', margin: '0 auto', width: '100%' }}>
             <div style={{ display: 'flex', gap: '8px', marginBottom: '40px', justifyContent: 'center' }}>
               {[1, 2, 3, 4, 5].map(s => (
-                <div key={s} style={{
-                  width: '40px',
-                  height: '4px',
-                  background: s <= questionStep ? t.accent : t.inputBorder,
-                  borderRadius: '2px',
-                  transition: 'all 0.3s'
-                }} />
+                <div key={s} style={{ width: '40px', height: '4px', background: s <= questionStep ? t.accent : t.inputBorder, borderRadius: '2px', transition: 'all 0.3s' }} />
               ))}
             </div>
 
@@ -694,17 +947,7 @@ function App() {
                 onKeyPress={(e) => { if (e.key === 'Enter' && currentAnswer.trim()) handleNext(); }}
                 placeholder={currentQuestion.placeholder}
                 autoFocus
-                style={{
-                  width: '100%',
-                  background: t.input,
-                  border: `1px solid ${t.inputBorder}`,
-                  borderRadius: '12px',
-                  padding: '16px',
-                  fontSize: '16px',
-                  color: t.text,
-                  outline: 'none',
-                  marginBottom: '24px'
-                }}
+                style={{ width: '100%', background: t.input, border: `1px solid ${t.inputBorder}`, borderRadius: '12px', padding: '16px', fontSize: '16px', color: t.text, outline: 'none', marginBottom: '24px' }}
               />
             ) : (
               <textarea
@@ -713,39 +956,13 @@ function App() {
                 placeholder={currentQuestion.placeholder}
                 rows={5}
                 autoFocus
-                style={{
-                  width: '100%',
-                  background: t.input,
-                  border: `1px solid ${t.inputBorder}`,
-                  borderRadius: '12px',
-                  padding: '16px',
-                  fontSize: '16px',
-                  color: t.text,
-                  outline: 'none',
-                  resize: 'none',
-                  fontFamily: 'inherit',
-                  marginBottom: '24px',
-                  lineHeight: '1.6'
-                }}
+                style={{ width: '100%', background: t.input, border: `1px solid ${t.inputBorder}`, borderRadius: '12px', padding: '16px', fontSize: '16px', color: t.text, outline: 'none', resize: 'none', fontFamily: 'inherit', marginBottom: '24px', lineHeight: '1.6' }}
               />
             )}
 
             <div style={{ display: 'flex', gap: '12px' }}>
               {questionStep > 1 && (
-                <button
-                  onClick={handleBack}
-                  style={{
-                    flex: 1,
-                    background: t.input,
-                    color: t.textTertiary,
-                    border: `1px solid ${t.inputBorder}`,
-                    borderRadius: '30px',
-                    padding: '16px',
-                    fontSize: '16px',
-                    fontWeight: '500',
-                    cursor: 'pointer'
-                  }}
-                >
+                <button onClick={handleBack} style={{ flex: 1, background: t.input, color: t.textTertiary, border: `1px solid ${t.inputBorder}`, borderRadius: '30px', padding: '16px', fontSize: '16px', fontWeight: '500', cursor: 'pointer' }}>
                   ← Back
                 </button>
               )}
@@ -755,9 +972,7 @@ function App() {
                 style={{
                   flex: questionStep > 1 ? 1 : 'auto',
                   width: questionStep === 1 ? '100%' : 'auto',
-                  background: currentAnswer.trim()
-                    ? `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`
-                    : t.inputBorder,
+                  background: currentAnswer.trim() ? `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)` : t.inputBorder,
                   color: currentAnswer.trim() ? (theme === 'dark' ? '#000' : '#fff') : t.textMuted,
                   border: 'none',
                   borderRadius: '30px',
@@ -810,14 +1025,7 @@ function App() {
                 <div
                   key={option.type}
                   onClick={() => { setMentorType(option.type); setStep('trial'); }}
-                  style={{
-                    background: t.card,
-                    border: `1px solid ${t.cardBorder}`,
-                    borderRadius: '16px',
-                    padding: '20px',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s'
-                  }}
+                  style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '20px', cursor: 'pointer', transition: 'all 0.3s' }}
                 >
                   <h3 style={{ fontSize: '18px', color: t.text, margin: '0 0 8px 0', fontWeight: '500' }}>{option.title}</h3>
                   <p style={{ fontSize: '14px', color: t.textTertiary, margin: '0 0 8px 0', lineHeight: '1.5' }}>{option.desc}</p>
@@ -894,16 +1102,7 @@ function App() {
                       }
                     }}
                     placeholder="your@email.com"
-                    style={{
-                      width: '100%',
-                      background: t.input,
-                      border: `1px solid ${t.inputBorder}`,
-                      borderRadius: '12px',
-                      padding: '14px 16px',
-                      fontSize: '16px',
-                      color: t.text,
-                      outline: 'none'
-                    }}
+                    style={{ width: '100%', background: t.input, border: `1px solid ${t.inputBorder}`, borderRadius: '12px', padding: '14px 16px', fontSize: '16px', color: t.text, outline: 'none' }}
                   />
                   <p style={{ fontSize: '12px', color: t.textMuted, margin: '8px 0 0 0', lineHeight: '1.5' }}>
                     We'll send you the answer. No spam, unsubscribe anytime.
@@ -1106,7 +1305,7 @@ function App() {
         </div>
       </>
     );
-  } 
+  }
 
   // Paywall
   if (step === 'paywall') {
@@ -1128,10 +1327,7 @@ function App() {
         const response = await fetch('/api/create-checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            priceId: plan.priceId,
-            email: userName
-          }),
+          body: JSON.stringify({ priceId: plan.priceId, email: userName }),
         });
         const data = await response.json();
         if (!data.url) {
@@ -1161,7 +1357,6 @@ function App() {
             </p>
 
             <div style={{ display: 'grid', gap: '16px', marginBottom: '32px' }}>
-              {/* Weekly */}
               <div onClick={() => setSelectedPlan('weekly')} style={{ background: selectedPlan === 'weekly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card, border: selectedPlan === 'weekly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '24px', cursor: 'pointer', transition: 'all 0.3s' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <div>
@@ -1175,7 +1370,6 @@ function App() {
                 </div>
               </div>
 
-              {/* Monthly */}
               <div onClick={() => setSelectedPlan('monthly')} style={{ background: selectedPlan === 'monthly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card, border: selectedPlan === 'monthly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '24px', cursor: 'pointer', position: 'relative', transition: 'all 0.3s' }}>
                 <div style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: t.accent, color: theme === 'dark' ? '#000' : '#fff', padding: '4px 16px', borderRadius: '12px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.5px' }}>
                   MOST POPULAR
@@ -1193,7 +1387,6 @@ function App() {
                 <p style={{ fontSize: '12px', color: t.textMuted, margin: '12px 0 0 0' }}>{plans.monthly.savings}</p>
               </div>
 
-              {/* Yearly */}
               <div onClick={() => setSelectedPlan('yearly')} style={{ background: selectedPlan === 'yearly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card, border: selectedPlan === 'yearly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '24px', cursor: 'pointer', transition: 'all 0.3s' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
                   <div>
