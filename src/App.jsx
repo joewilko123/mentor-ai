@@ -601,7 +601,7 @@ function App() {
               opacity: 0,
               animation: 'fadeIn 1s ease-out 0.3s forwards'
             }}>
-              History's greatest minds. On demand.
+              History's greatest minds. Whenever you want.
             </p>
             <button
               className="btn-primary"
