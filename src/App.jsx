@@ -925,11 +925,20 @@ function App() {
         <div className="noise" style={{ opacity: t.noise }} />
         <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto', display: 'flex', flexDirection: 'column' }}>
           <div style={{ maxWidth: '500px', margin: '0 auto', width: '100%' }}>
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '40px', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', justifyContent: 'center' }}>
               {[1, 2, 3, 4, 5].map(s => (
                 <div key={s} style={{ width: '40px', height: '4px', background: s <= questionStep ? t.accent : t.inputBorder, borderRadius: '2px', transition: 'all 0.3s' }} />
               ))}
             </div>
+            <p style={{ fontSize: '13px', color: t.textMuted, textAlign: 'center', marginBottom: '28px' }}>
+              {[
+                "Let's figure out where you are...",
+                "Most people never ask this question...",
+                "Getting clearer...",
+                "Almost there...",
+                "Last one. Make it count."
+              ][questionStep - 1]}
+            </p>
 
             <h2 style={{ fontSize: '24px', color: t.accent, marginBottom: '12px', textAlign: 'center', fontWeight: '400' }}>
               {questionStep === 1 ? "Let's personalize this for you." : `Question ${questionStep} of 5`}
