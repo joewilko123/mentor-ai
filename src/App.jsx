@@ -101,11 +101,15 @@ function App() {
     stuckOn: '',
     failedAt: ''
   });
+  const [openFaq, setOpenFaq] = useState(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
     if (window.location.pathname === '/success') {
+      localStorage.setItem('mentor_access', 'true');
       setStep('success');
+    } else if (localStorage.getItem('mentor_access') === 'true') {
+      setStep('chat');
     }
   }, []);
 
@@ -1441,6 +1445,32 @@ function App() {
             <p style={{ fontSize: '12px', color: t.textMuted, textAlign: 'center', margin: 0, lineHeight: '1.5' }}>
               7-day money-back guarantee. Cancel anytime.
             </p>
+
+            <div style={{ marginTop: '40px' }}>
+              <p style={{ fontSize: '11px', color: t.textMuted, textAlign: 'center', marginBottom: '16px', letterSpacing: '1.5px', textTransform: 'uppercase' }}>FAQ</p>
+              {[
+                { q: "Is this just ChatGPT?", a: "No. These mentors are trained to think, speak and reason exactly as the historical figure would — with their specific philosophies, frameworks and blind spots. You're not getting generic AI. You're getting Carnegie's actual worldview on your problem." },
+                { q: "Will it actually help me or just sound good?", a: "That depends on what you bring to it. Vague questions get vague answers. Specific situations get specific frameworks. The more real you are with it, the more useful it becomes." },
+                { q: "What if I don't know which mentor to ask?", a: "Start with the one whose life most resembles what you're trying to build. Building a business from nothing? Carnegie. Struggling with pressure and discipline? Marcus Aurelius. Making a big strategic decision? Napoleon." },
+                { q: "Can I cancel anytime?", a: "Yes. No forms, no phone calls. Cancel in one click from your Stripe billing portal." },
+                { q: "What if it's not for me?", a: "7-day money-back guarantee. If you don't find it useful in the first week, reply to your welcome email and I'll refund you in full. No questions asked." }
+              ].map((faq, i) => (
+                <div key={i} style={{ borderBottom: `1px solid ${t.inputBorder}` }}>
+                  <button
+                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                    style={{ width: '100%', background: 'none', border: 'none', padding: '16px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', textAlign: 'left', gap: '12px' }}
+                  >
+                    <span style={{ fontSize: '14px', color: t.textSecondary, fontWeight: '500' }}>{faq.q}</span>
+                    <span style={{ fontSize: '20px', color: t.textMuted, flexShrink: 0, transition: 'transform 0.2s', transform: openFaq === i ? 'rotate(45deg)' : 'rotate(0deg)', display: 'inline-block' }}>+</span>
+                  </button>
+                  {openFaq === i && (
+                    <p style={{ fontSize: '14px', color: t.textTertiary, lineHeight: '1.6', margin: '0 0 16px 0' }}>
+                      {faq.a}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </>
