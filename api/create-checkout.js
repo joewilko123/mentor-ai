@@ -27,7 +27,7 @@ export default async function handler(req, res) {
           quantity: 1,
         },
       ],
-      customer_email: email,
+      ...(email && email.includes('@') ? { customer_email: email } : {}),
       success_url: `${req.headers.origin || 'https://mentorapp.tech'}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.origin || 'https://mentorapp.tech'}`,
       allow_promotion_codes: true,
