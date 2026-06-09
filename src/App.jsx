@@ -102,6 +102,8 @@ function App() {
     failedAt: ''
   });
   const [openFaq, setOpenFaq] = useState(null);
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const [upgradeMessage, setUpgradeMessage] = useState('');
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -130,8 +132,21 @@ function App() {
         body: JSON.stringify({
           messages: [...messages, userMessage],
           systemPrompt: selectedMentor.systemPrompt,
+          email: userName,
+          mentorId: selectedMentor.id,
         }),
       });
+      if (response.status === 403) {
+        const data = await response.json();
+        if (data.error === 'limit_reached') {
+          setUpgradeMessage("You've used all your messages for this week. Upgrade to continue.");
+        } else if (data.error === 'mentor_locked') {
+          setUpgradeMessage('This mentor is locked on your current plan. Upgrade to unlock all 7 mentors.');
+        }
+        setShowUpgrade(true);
+        setMessages(prev => prev.slice(0, -1));
+        return;
+      }
       const data = await response.json();
       setMessages(prev => [...prev, { role: 'assistant', content: data.content }]);
     } catch (error) {
@@ -474,6 +489,28 @@ function App() {
             )}
             <div ref={messagesEndRef} />
           </div>
+
+          {/* Upgrade Banner */}
+          {showUpgrade && (
+            <div style={{
+              padding: '12px 20px',
+              background: theme === 'dark' ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.9)',
+              borderTop: `1px solid ${t.cardBorder}`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '16px',
+              flexShrink: 0
+            }}>
+              <p style={{ fontSize: '13px', color: t.accent, margin: 0, lineHeight: '1.5' }}>{upgradeMessage}</p>
+              <button
+                onClick={() => { setStep('paywall'); setShowUpgrade(false); }}
+                style={{ background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '20px', padding: '8px 16px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
+              >
+                Upgrade Plan →
+              </button>
+            </div>
+          )}
 
           {/* Input */}
           <div style={{
@@ -1371,7 +1408,7 @@ function App() {
 
             <div style={{ display: 'grid', gap: '16px', marginBottom: '32px' }}>
               <div onClick={() => setSelectedPlan('weekly')} style={{ background: selectedPlan === 'weekly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card, border: selectedPlan === 'weekly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '24px', cursor: 'pointer', transition: 'all 0.3s' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
                   <div>
                     <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>Weekly</h3>
                     <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>{plans.weekly.label}</p>
@@ -1381,13 +1418,16 @@ function App() {
                     <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>{plans.weekly.period}</p>
                   </div>
                 </div>
+                {['3 mentors (Carnegie, Marcus Aurelius, Napoleon)', '30 messages per week'].map(f => (
+                  <p key={f} style={{ fontSize: '12px', color: t.textTertiary, margin: '0 0 4px 0', lineHeight: '1.5' }}>✓ {f}</p>
+                ))}
               </div>
 
               <div onClick={() => setSelectedPlan('monthly')} style={{ background: selectedPlan === 'monthly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card, border: selectedPlan === 'monthly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '24px', cursor: 'pointer', position: 'relative', transition: 'all 0.3s' }}>
                 <div style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: t.accent, color: theme === 'dark' ? '#000' : '#fff', padding: '4px 16px', borderRadius: '12px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.5px' }}>
                   MOST POPULAR
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
                   <div>
                     <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>Monthly</h3>
                     <p style={{ fontSize: '13px', color: t.accent, margin: 0 }}>{plans.monthly.label}</p>
@@ -1397,13 +1437,16 @@ function App() {
                     <p style={{ fontSize: '12px', color: t.textTertiary, margin: 0 }}>{plans.monthly.period}</p>
                   </div>
                 </div>
+                {['All 7 mentors', 'Unlimited messages', 'Image uploads (coming soon)', 'Conversation history'].map(f => (
+                  <p key={f} style={{ fontSize: '12px', color: t.textTertiary, margin: '0 0 4px 0', lineHeight: '1.5' }}>✓ {f}</p>
+                ))}
                 <p style={{ fontSize: '12px', color: t.textMuted, margin: '12px 0 0 0' }}>{plans.monthly.savings}</p>
               </div>
 
               <div onClick={() => setSelectedPlan('yearly')} style={{ background: selectedPlan === 'yearly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card, border: selectedPlan === 'yearly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '24px', cursor: 'pointer', transition: 'all 0.3s' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
                   <div>
-                    <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>Yearly</h3>
+                    <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>Lifetime</h3>
                     <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>{plans.yearly.label}</p>
                   </div>
                   <div style={{ textAlign: 'right' }}>
@@ -1411,6 +1454,9 @@ function App() {
                     <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>{plans.yearly.period}</p>
                   </div>
                 </div>
+                {['Everything in Monthly', 'Early access to new mentors', 'Request new mentors', 'Downloadable transcripts'].map(f => (
+                  <p key={f} style={{ fontSize: '12px', color: t.textTertiary, margin: '0 0 4px 0', lineHeight: '1.5' }}>✓ {f}</p>
+                ))}
                 <p style={{ fontSize: '12px', color: t.textMuted, margin: '12px 0 0 0' }}>{plans.yearly.savings}</p>
               </div>
             </div>
