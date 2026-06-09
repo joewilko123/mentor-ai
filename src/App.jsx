@@ -1421,6 +1421,11 @@ function App() {
                 {['3 mentors (Carnegie, Marcus Aurelius, Napoleon)', '30 messages per week'].map(f => (
                   <p key={f} style={{ fontSize: '12px', color: t.textTertiary, margin: '0 0 4px 0', lineHeight: '1.5' }}>✓ {f}</p>
                 ))}
+                {selectedPlan === 'weekly' && (
+                  <button onClick={(e) => { e.stopPropagation(); handleCheckout(); }} className="btn-primary" style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '16px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', marginTop: '16px', boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.4)' }}>
+                    Start Now →
+                  </button>
+                )}
               </div>
 
               <div onClick={() => setSelectedPlan('monthly')} style={{ background: selectedPlan === 'monthly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card, border: selectedPlan === 'monthly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '24px', cursor: 'pointer', position: 'relative', transition: 'all 0.3s' }}>
@@ -1441,6 +1446,11 @@ function App() {
                   <p key={f} style={{ fontSize: '12px', color: t.textTertiary, margin: '0 0 4px 0', lineHeight: '1.5' }}>✓ {f}</p>
                 ))}
                 <p style={{ fontSize: '12px', color: t.textMuted, margin: '12px 0 0 0' }}>{plans.monthly.savings}</p>
+                {selectedPlan === 'monthly' && (
+                  <button onClick={(e) => { e.stopPropagation(); handleCheckout(); }} className="btn-primary" style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '16px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', marginTop: '16px', boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.4)' }}>
+                    Start Now →
+                  </button>
+                )}
               </div>
 
               <div onClick={() => setSelectedPlan('yearly')} style={{ background: selectedPlan === 'yearly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card, border: selectedPlan === 'yearly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '24px', cursor: 'pointer', transition: 'all 0.3s' }}>
@@ -1458,35 +1468,13 @@ function App() {
                   <p key={f} style={{ fontSize: '12px', color: t.textTertiary, margin: '0 0 4px 0', lineHeight: '1.5' }}>✓ {f}</p>
                 ))}
                 <p style={{ fontSize: '12px', color: t.textMuted, margin: '12px 0 0 0' }}>{plans.yearly.savings}</p>
+                {selectedPlan === 'yearly' && (
+                  <button onClick={(e) => { e.stopPropagation(); handleCheckout(); }} className="btn-primary" style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '16px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', marginTop: '16px', boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.4)' }}>
+                    Start Now →
+                  </button>
+                )}
               </div>
             </div>
-
-            <div style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '12px', padding: '20px', marginBottom: '24px' }}>
-              <p style={{ fontSize: '14px', color: t.textSecondary, margin: '0 0 12px 0', fontWeight: '500' }}>What you get:</p>
-              <p style={{ fontSize: '13px', color: t.textTertiary, margin: '0 0 8px 0', lineHeight: '1.6' }}>✓ Unlimited questions to all 7 mentors</p>
-              <p style={{ fontSize: '13px', color: t.textTertiary, margin: '0 0 8px 0', lineHeight: '1.6' }}>✓ Save all your conversations</p>
-              <p style={{ fontSize: '13px', color: t.textTertiary, margin: '0', lineHeight: '1.6' }}>✓ Cancel anytime</p>
-            </div>
-
-            <button
-              onClick={handleCheckout}
-              className="btn-primary"
-              style={{
-                width: '100%',
-                background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
-                color: theme === 'dark' ? '#000' : '#fff',
-                border: 'none',
-                borderRadius: '30px',
-                padding: '18px',
-                fontSize: '18px',
-                fontWeight: '700',
-                cursor: 'pointer',
-                marginBottom: '16px',
-                boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.4)'
-              }}
-            >
-              Start Now →
-            </button>
 
             <p style={{ fontSize: '12px', color: t.textMuted, textAlign: 'center', margin: 0, lineHeight: '1.5' }}>
               7-day money-back guarantee. Cancel anytime.
