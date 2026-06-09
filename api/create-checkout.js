@@ -19,7 +19,7 @@ export default async function handler(req, res) {
     const { priceId, email } = req.body;
 
     const session = await stripe.checkout.sessions.create({
-      mode: priceId.includes('lifetime') ? 'payment' : 'subscription',
+      mode: priceId === 'price_1TM2nrAis1rAntIhgHWzLP6j' ? 'payment' : 'subscription',
       payment_method_types: ['card'],
       line_items: [
         {
