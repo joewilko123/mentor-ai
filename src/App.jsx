@@ -312,17 +312,9 @@ function App() {
               }}>
                 Mentor
               </h1>
-              <p style={{ fontSize: '16px', color: t.textTertiary, margin: '0 0 16px 0' }}>
+              <p style={{ fontSize: '16px', color: t.textTertiary, margin: 0 }}>
                 Choose your mentor. Ask anything.
               </p>
-              <button
-                onClick={() => setStep('readingList')}
-                style={{ background: 'none', border: `1px solid ${t.cardBorder}`, borderRadius: '20px', padding: '8px 20px', fontSize: '13px', color: t.textTertiary, cursor: 'pointer', transition: 'all 0.2s' }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = t.accent; e.currentTarget.style.color = t.accent; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = t.cardBorder; e.currentTarget.style.color = t.textTertiary; }}
-              >
-                Reading List
-              </button>
             </div>
 
             <div style={{ display: 'grid', gap: '16px' }}>
@@ -385,7 +377,75 @@ function App() {
                   </div>
                 </div>
               ))}
+              <div
+                onClick={() => setStep('readingListIntro')}
+                style={{ background: t.card, border: `1px solid ${t.accent}`, borderRadius: '16px', padding: '20px', cursor: 'pointer', transition: 'all 0.3s', display: 'flex', gap: '16px', alignItems: 'center', animation: 'slideUp 0.4s ease-out 0.35s backwards' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.background = theme === 'dark' ? 'rgba(212, 175, 55, 0.05)' : 'rgba(196, 154, 58, 0.05)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = t.card; }}
+              >
+                <span style={{ fontSize: '36px', flexShrink: 0 }}>📚</span>
+                <div>
+                  <h3 style={{ fontSize: '18px', color: t.accent, margin: '0 0 4px 0', fontWeight: '600' }}>Reading List</h3>
+                  <p style={{ fontSize: '13px', color: t.textTertiary, margin: 0, lineHeight: '1.5' }}>The exact books each mentor says shaped their thinking. 35 books. Zero fluff.</p>
+                </div>
+              </div>
+              <div
+                onClick={() => setStep('warRoom')}
+                style={{ background: t.card, border: `1px solid ${t.accent}`, borderRadius: '16px', padding: '20px', cursor: 'pointer', transition: 'all 0.3s', display: 'flex', gap: '16px', alignItems: 'center', animation: 'slideUp 0.4s ease-out 0.4s backwards' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.background = theme === 'dark' ? 'rgba(212, 175, 55, 0.05)' : 'rgba(196, 154, 58, 0.05)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = t.card; }}
+              >
+                <span style={{ fontSize: '36px', flexShrink: 0 }}>⚔️</span>
+                <div>
+                  <h3 style={{ fontSize: '18px', color: t.accent, margin: '0 0 4px 0', fontWeight: '600' }}>The War Room</h3>
+                  <p style={{ fontSize: '13px', color: t.textTertiary, margin: 0, lineHeight: '1.5' }}>Bring every mentor into one room. One question. Seven answers.</p>
+                </div>
+              </div>
             </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // Reading List Intro Screen
+  if (step === 'warRoom') {
+    return <WarRoomScreen theme={theme} setTheme={setTheme} setStep={setStep} />;
+  }
+
+  if (step === 'readingListIntro') {
+    const t = THEMES[theme];
+    return (
+      <>
+        <GlobalStyles />
+        <ThemeToggle theme={theme} setTheme={setTheme} />
+        <div className="noise" style={{ opacity: t.noise }} />
+        <div style={{ minHeight: '100vh', background: t.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
+          <div style={{ maxWidth: '500px', width: '100%' }}>
+            <button
+              onClick={() => setStep('chat')}
+              style={{ background: 'none', border: 'none', color: t.textTertiary, cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', marginBottom: '40px' }}
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <div style={{ textAlign: 'center', marginBottom: '40px', animation: 'fadeIn 0.6s ease-out' }}>
+              <div style={{ fontSize: '64px', marginBottom: '24px' }}>📚</div>
+              <h1 style={{ fontSize: '32px', color: t.text, margin: '0 0 20px 0', fontWeight: '600', fontFamily: "'Cormorant Garamond', serif", lineHeight: '1.2' }}>
+                The Books That Built Them
+              </h1>
+              <p style={{ fontSize: '16px', color: t.textSecondary, lineHeight: '1.7', margin: '0 0 20px 0' }}>
+                Every mentor on this app was shaped by what they read. These aren't generic recommendations. These are the specific books each historical figure read, studied, or wrote — explained in their own voice, with the reason it mattered.
+              </p>
+              <p style={{ fontSize: '16px', color: t.textSecondary, lineHeight: '1.7', margin: 0 }}>
+                Stop buying books you never read. Start with the ones that actually changed history.
+              </p>
+            </div>
+            <button
+              onClick={() => setStep('readingList')}
+              style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '18px', fontSize: '17px', fontWeight: '600', cursor: 'pointer', boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.3)', animation: 'fadeIn 0.6s ease-out 0.3s backwards' }}
+            >
+              Show me the books →
+            </button>
           </div>
         </div>
       </>
@@ -1196,7 +1256,7 @@ function App() {
               ].map(option => (
                 <div
                   key={option.type}
-                  onClick={() => { setMentorType(option.type); setStep('trial'); }}
+                  onClick={() => { setMentorType(option.type); setStep('mentorProfile'); }}
                   style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '20px', cursor: 'pointer', transition: 'all 0.3s' }}
                 >
                   <h3 style={{ fontSize: '18px', color: t.text, margin: '0 0 8px 0', fontWeight: '500' }}>{option.title}</h3>
@@ -1205,6 +1265,90 @@ function App() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // Mentor Profile
+  if (step === 'mentorProfile') {
+    const t = THEMES[theme];
+    const mentorIdMap = { business: 'carnegie', mindset: 'marcus', leadership: 'napoleon' };
+    const profileMentorId = mentorIdMap[mentorType] || 'carnegie';
+    const profileMentor = MENTORS.find(m => m.id === profileMentorId);
+    const traitsMap = {
+      business: ['Strategic Thinker', 'Wealth Builder', 'Ruthless Executor'],
+      mindset: ['Stoic Resilience', 'Self Mastery', 'Inner Clarity'],
+      leadership: ['Bold Decisiveness', 'Strategic Vision', 'Controlled Aggression'],
+    };
+    const traits = traitsMap[mentorType] || traitsMap.business;
+    const firstName = profileMentor.name.split(' ')[0];
+
+    return (
+      <>
+        <GlobalStyles />
+        <ThemeToggle theme={theme} setTheme={setTheme} />
+        <div className="noise" style={{ opacity: t.noise }} />
+
+        {/* Cinematic backdrop */}
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 0,
+          backgroundImage: `url(${MENTOR_IMAGES[profileMentorId]})`,
+          backgroundSize: 'cover', backgroundPosition: 'center top',
+          filter: 'blur(40px) grayscale(100%)',
+          opacity: theme === 'dark' ? 0.07 : 0.04,
+          transform: 'scale(1.1)',
+        }} />
+
+        <div style={{ minHeight: '100vh', background: t.bg, padding: '60px 20px 80px', overflow: 'auto', position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ maxWidth: '460px', width: '100%', textAlign: 'center' }}>
+
+            <p style={{ fontSize: '11px', color: t.accent, letterSpacing: '4px', textTransform: 'uppercase', margin: '0 0 36px 0', animation: 'fadeIn 0.6s ease-out' }}>
+              YOUR MENTOR PROFILE
+            </p>
+
+            {/* Photo with glow ring */}
+            <div style={{ position: 'relative', width: '148px', height: '148px', margin: '0 auto 28px auto', animation: 'fadeIn 0.8s ease-out 0.15s backwards' }}>
+              <div style={{ position: 'absolute', inset: '-3px', borderRadius: '50%', background: `linear-gradient(135deg, ${t.accent}, ${t.accentLight}, ${t.accent})`, animation: 'glowPulse 3s ease-in-out infinite' }} />
+              <img
+                src={MENTOR_IMAGES[profileMentorId]}
+                alt={profileMentor.name}
+                style={{ width: '148px', height: '148px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(80%)', position: 'relative', zIndex: 1 }}
+              />
+            </div>
+
+            <h1 className="gradient-text" style={{ fontSize: '38px', fontWeight: '500', margin: '0 0 10px 0', fontFamily: "'Cormorant Garamond', serif", animation: 'slideUp 0.6s ease-out 0.3s backwards' }}>
+              {profileMentor.name}
+            </h1>
+
+            <p style={{ fontSize: '15px', color: t.textSecondary, margin: '0 0 24px 0', lineHeight: '1.6', animation: 'slideUp 0.6s ease-out 0.4s backwards' }}>
+              Based on where you are, {profileMentor.name} is the mind you need right now.
+            </p>
+
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '32px', animation: 'slideUp 0.6s ease-out 0.5s backwards' }}>
+              {traits.map(trait => (
+                <span key={trait} style={{ fontSize: '12px', color: t.accent, border: `1px solid rgba(212, 175, 55, 0.4)`, borderRadius: '20px', padding: '5px 14px', letterSpacing: '0.3px' }}>
+                  {trait}
+                </span>
+              ))}
+            </div>
+
+            <div style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '20px 24px', marginBottom: '32px', textAlign: 'left', animation: 'slideUp 0.6s ease-out 0.6s backwards' }}>
+              <p style={{ fontSize: '14px', color: t.textMuted, lineHeight: '1.7', margin: 0 }}>
+                You said your biggest challenge is{' '}
+                <em style={{ color: t.textSecondary, fontStyle: 'italic' }}>"{answers.biggestChallenge}"</em>.{' '}
+                {firstName} has faced this. Here's the difference — he won.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setStep('trial')}
+              className="btn-primary"
+              style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '18px', fontSize: '18px', fontWeight: '700', cursor: 'pointer', boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.4)', animation: 'slideUp 0.6s ease-out 0.7s backwards' }}
+            >
+              Meet {firstName} →
+            </button>
           </div>
         </div>
       </>
@@ -1457,7 +1601,7 @@ function App() {
             </p>
 
             <button
-              onClick={() => setStep('paywall')}
+              onClick={() => setStep('transformation')}
               style={{
                 width: '100%',
                 background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
@@ -1477,6 +1621,11 @@ function App() {
         </div>
       </>
     );
+  }
+
+  // Transformation Screen
+  if (step === 'transformation') {
+    return <TransformationScreen theme={theme} setTheme={setTheme} setStep={setStep} />;
   }
 
   // Paywall
@@ -1636,6 +1785,291 @@ function App() {
   return <div>Loading...</div>;
 }
 
+// War Room Screen Component
+const WarRoomScreen = ({ theme, setTheme, setStep }) => {
+  const t = THEMES[theme];
+  const [question, setQuestion] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [arrivedResponses, setArrivedResponses] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleConsult = async () => {
+    if (!question.trim() || isLoading) return;
+    setIsLoading(true);
+    setSubmitted(true);
+    setArrivedResponses([]);
+
+    const promises = MENTORS.map(mentor =>
+      fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [{ role: 'user', content: question }],
+          systemPrompt: mentor.systemPrompt,
+        }),
+      })
+        .then(r => r.json())
+        .then(data => {
+          setArrivedResponses(prev => [...prev, { mentor, response: data.content || 'No response received.' }]);
+        })
+        .catch(() => {
+          setArrivedResponses(prev => [...prev, { mentor, response: 'My apologies, I could not respond at this time.' }]);
+        })
+    );
+
+    await Promise.allSettled(promises);
+    setIsLoading(false);
+  };
+
+  const stillLoading = isLoading;
+  const allDone = submitted && !isLoading && arrivedResponses.length === MENTORS.length;
+
+  return (
+    <>
+      <GlobalStyles />
+      <ThemeToggle theme={theme} setTheme={setTheme} />
+      <div className="noise" style={{ opacity: t.noise }} />
+      <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto' }}>
+        <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+
+          <button
+            onClick={() => setStep('chat')}
+            style={{ background: 'none', border: 'none', color: t.textTertiary, cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', marginBottom: '40px' }}
+          >
+            <ArrowLeft size={20} />
+          </button>
+
+          <div style={{ textAlign: 'center', marginBottom: '40px', animation: 'fadeIn 0.6s ease-out' }}>
+            <p style={{ fontSize: '11px', color: t.accent, letterSpacing: '4px', textTransform: 'uppercase', margin: '0 0 16px 0' }}>
+              THE WAR ROOM
+            </p>
+            <h1 style={{ fontSize: '36px', color: t.text, margin: '0 0 12px 0', fontFamily: "'Cormorant Garamond', serif", fontWeight: '500' }}>
+              Seven minds. One question.
+            </h1>
+            <p style={{ fontSize: '16px', color: t.textMuted, margin: 0 }}>
+              Ask anything. Every mentor answers.
+            </p>
+          </div>
+
+          {!submitted && (
+            <div style={{ animation: 'slideUp 0.6s ease-out 0.2s backwards' }}>
+              <textarea
+                value={question}
+                onChange={e => setQuestion(e.target.value)}
+                placeholder="Ask something worth debating..."
+                rows={5}
+                style={{ width: '100%', background: t.input, border: `1px solid ${t.inputBorder}`, borderRadius: '16px', padding: '16px', fontSize: '16px', color: t.text, outline: 'none', resize: 'none', fontFamily: 'inherit', lineHeight: '1.6', marginBottom: '16px', boxSizing: 'border-box' }}
+              />
+              <button
+                onClick={handleConsult}
+                disabled={!question.trim()}
+                style={{ width: '100%', background: question.trim() ? `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)` : t.inputBorder, color: question.trim() ? (theme === 'dark' ? '#000' : '#fff') : t.textMuted, border: 'none', borderRadius: '30px', padding: '16px', fontSize: '17px', fontWeight: '600', cursor: question.trim() ? 'pointer' : 'not-allowed', boxShadow: question.trim() ? (theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.3)') : 'none' }}
+              >
+                Consult All Mentors →
+              </button>
+            </div>
+          )}
+
+          {submitted && (
+            <div style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '16px 20px', marginBottom: '32px', animation: 'fadeIn 0.4s ease-out' }}>
+              <p style={{ fontSize: '11px', color: t.textMuted, margin: '0 0 6px 0', textTransform: 'uppercase', letterSpacing: '1px' }}>Your question</p>
+              <p style={{ fontSize: '15px', color: t.textSecondary, margin: 0, lineHeight: '1.6' }}>{question}</p>
+            </div>
+          )}
+
+          {submitted && stillLoading && (
+            <div style={{ textAlign: 'center', marginBottom: '32px', animation: 'fadeIn 0.4s ease-out' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
+                {MENTORS.map((mentor, i) => {
+                  const hasArrived = arrivedResponses.some(r => r.mentor.id === mentor.id);
+                  return (
+                    <img
+                      key={mentor.id}
+                      src={MENTOR_IMAGES[mentor.id]}
+                      alt={mentor.name}
+                      style={{ width: '44px', height: '44px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(100%)', border: `2px solid ${hasArrived ? t.accent : t.inputBorder}`, animation: hasArrived ? 'none' : `pulse 1.5s ease-in-out infinite`, animationDelay: `${i * 0.2}s`, opacity: hasArrived ? 1 : 0.6, transition: 'all 0.4s' }}
+                    />
+                  );
+                })}
+              </div>
+              <p style={{ fontSize: '14px', color: t.textMuted, margin: 0 }}>
+                The council is deliberating... ({arrivedResponses.length}/{MENTORS.length})
+              </p>
+            </div>
+          )}
+
+          <div>
+            {arrivedResponses.map((item) => (
+              <div
+                key={item.mentor.id}
+                style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '20px', marginBottom: '16px', animation: 'slideUp 0.5s ease-out' }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '14px', paddingBottom: '14px', borderBottom: `1px solid ${t.inputBorder}` }}>
+                  <img src={MENTOR_IMAGES[item.mentor.id]} alt={item.mentor.name} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(100%)', border: `2px solid ${t.accent}`, flexShrink: 0 }} />
+                  <div>
+                    <p style={{ fontSize: '15px', color: t.accent, margin: 0, fontWeight: '600' }}>{item.mentor.name}</p>
+                    <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>{item.mentor.title}</p>
+                  </div>
+                </div>
+                <p style={{ fontSize: '15px', color: t.textSecondary, margin: 0, lineHeight: '1.7', whiteSpace: 'pre-wrap' }}>
+                  {item.response}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {allDone && (
+            <button
+              onClick={() => { setSubmitted(false); setArrivedResponses([]); setQuestion(''); setIsLoading(false); }}
+              style={{ width: '100%', background: 'none', border: `1px solid ${t.cardBorder}`, borderRadius: '30px', padding: '14px', fontSize: '15px', color: t.textTertiary, cursor: 'pointer', marginTop: '8px', transition: 'all 0.2s' }}
+            >
+              Ask another question
+            </button>
+          )}
+
+        </div>
+      </div>
+    </>
+  );
+};
+
+// Transformation Screen Component
+const TransformationScreen = ({ theme, setTheme, setStep }) => {
+  const t = THEMES[theme];
+  const ref0 = useRef(null);
+  const ref1 = useRef(null);
+  const ref2 = useRef(null);
+  const featuresRef = useRef(null);
+  const [visible, setVisible] = useState([false, false, false]);
+  const [featuresVisible, setFeaturesVisible] = useState(false);
+
+  useEffect(() => {
+    const items = [
+      { ref: ref0, index: 0 },
+      { ref: ref1, index: 1 },
+      { ref: ref2, index: 2 },
+    ];
+    const observers = items.map(({ ref, index }) => {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => setVisible(prev => { const n = [...prev]; n[index] = true; return n; }), index * 150);
+            observer.disconnect();
+          }
+        },
+        { threshold: 0.15 }
+      );
+      if (ref.current) observer.observe(ref.current);
+      return observer;
+    });
+
+    const featObs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setFeaturesVisible(true); featObs.disconnect(); } },
+      { threshold: 0.15 }
+    );
+    if (featuresRef.current) featObs.observe(featuresRef.current);
+
+    return () => { observers.forEach(o => o.disconnect()); featObs.disconnect(); };
+  }, []);
+
+  const outcomes = [
+    { num: '01', title: 'You stop guessing.', body: 'Every decision you make right now is a coin flip. With Mentor, every answer comes from someone who has already solved your exact problem. The guesswork ends.' },
+    { num: '02', title: 'You move faster.', body: "The biggest cost in building anything isn't money. It's time lost to indecision and wrong turns. One conversation with Carnegie or Napoleon can save you months." },
+    { num: '03', title: 'You become someone different.', body: "This isn't information. It's identity. Spending time inside the minds of the greatest people who ever lived changes how you think, how you carry yourself, and what you believe is possible." },
+  ];
+
+  const refs = [ref0, ref1, ref2];
+
+  const features = [
+    '7 legendary mentors', 'Unlimited conversations', 'Reading List — 35 books',
+    'Image uploads (coming soon)', 'Conversation history', 'Downloadable transcripts',
+    'Early access to new mentors', 'Request new mentors',
+  ];
+
+  return (
+    <>
+      <GlobalStyles />
+      <ThemeToggle theme={theme} setTheme={setTheme} />
+      <div className="noise" style={{ opacity: t.noise }} />
+      <div style={{ minHeight: '100vh', background: t.bg, padding: '80px 20px 80px', overflow: 'auto' }}>
+        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+
+          <div style={{ textAlign: 'center', marginBottom: '80px', animation: 'fadeIn 0.8s ease-out' }}>
+            <p style={{ fontSize: '11px', color: t.textMuted, letterSpacing: '4px', textTransform: 'uppercase', margin: '0 0 20px 0' }}>
+              THE DIFFERENCE
+            </p>
+            <h1 className="gradient-text" style={{ fontSize: '42px', fontWeight: '500', margin: '0 0 16px 0', fontFamily: "'Cormorant Garamond', serif", lineHeight: '1.2' }}>
+              This is what changes.
+            </h1>
+            <p style={{ fontSize: '16px', color: t.textMuted, fontWeight: '300', margin: 0, animation: 'fadeIn 0.8s ease-out 0.3s backwards' }}>
+              When you finally have the right people in your corner.
+            </p>
+          </div>
+
+          {outcomes.map((o, i) => (
+            <div key={i}>
+              <div
+                ref={refs[i]}
+                style={{
+                  position: 'relative',
+                  padding: '40px 0',
+                  opacity: visible[i] ? 1 : 0,
+                  transform: visible[i] ? 'translateY(0)' : 'translateY(30px)',
+                  transition: `opacity 0.6s ease-out, transform 0.6s ease-out`,
+                }}
+              >
+                <div style={{ position: 'absolute', top: '10px', left: '-8px', fontSize: '96px', fontWeight: '700', color: t.accent, opacity: 0.12, lineHeight: 1, fontFamily: "'Cormorant Garamond', serif", userSelect: 'none', animation: 'float 6s ease-in-out infinite' }}>
+                  {o.num}
+                </div>
+                <h2 style={{ fontSize: '22px', color: t.text, margin: '0 0 12px 0', fontWeight: '700', position: 'relative' }}>
+                  {o.title}
+                </h2>
+                <p style={{ fontSize: '15px', color: t.textTertiary, lineHeight: '1.7', margin: 0, position: 'relative' }}>
+                  {o.body}
+                </p>
+              </div>
+              {i < 2 && (
+                <div style={{ height: '1px', background: `linear-gradient(to right, transparent, ${t.accent}, transparent)`, opacity: 0.25 }} />
+              )}
+            </div>
+          ))}
+
+          <div
+            ref={featuresRef}
+            style={{ marginTop: '80px', opacity: featuresVisible ? 1 : 0, transform: featuresVisible ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease-out, transform 0.6s ease-out' }}
+          >
+            <p style={{ fontSize: '11px', color: t.accent, letterSpacing: '4px', textTransform: 'uppercase', margin: '0 0 32px 0', textAlign: 'center' }}>
+              INSIDE MENTOR
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '12px 32px', marginBottom: '64px' }}>
+              {features.map(f => (
+                <div key={f} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={{ color: t.accent, fontSize: '14px', flexShrink: 0 }}>✓</span>
+                  <span style={{ fontSize: '15px', color: t.textSecondary }}>{f}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ textAlign: 'center' }}>
+            <button
+              onClick={() => setStep('paywall')}
+              className="btn-primary"
+              style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '18px', fontSize: '18px', fontWeight: '700', cursor: 'pointer', marginBottom: '16px', boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.4)' }}
+            >
+              Show me pricing →
+            </button>
+            <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>
+              Join the people who stopped figuring it out alone.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </>
+  );
+};
+
 // Theme Toggle Component
 const ThemeToggle = ({ theme, setTheme }) => (
   <button
@@ -1702,6 +2136,10 @@ const GlobalStyles = () => (
     @keyframes bounce {
       0%, 80%, 100% { transform: scale(0); }
       40% { transform: scale(1); }
+    }
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.4), 0 0 40px rgba(212, 175, 55, 0.1); }
+      50% { box-shadow: 0 0 40px rgba(212, 175, 55, 0.8), 0 0 80px rgba(212, 175, 55, 0.3); }
     }
     
     .gradient-text {
