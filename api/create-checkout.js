@@ -19,7 +19,7 @@ export default async function handler(req, res) {
     const { priceId, email } = req.body;
 
     const session = await stripe.checkout.sessions.create({
-      mode: priceId === 'price_1TM2nrAis1rAntIhgHWzLP6j' ? 'payment' : 'subscription',
+      mode: priceId.includes('lifetime') ? 'payment' : 'subscription',
       payment_method_types: ['card'],
       line_items: [
         {
@@ -27,7 +27,7 @@ export default async function handler(req, res) {
           quantity: 1,
         },
       ],
-      ...(email && email.includes('@') ? { customer_email: email } : {}),
+      customer_email: email,
       success_url: `${req.headers.origin || 'https://mentorapp.tech'}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.origin || 'https://mentorapp.tech'}`,
       allow_promotion_codes: true,
