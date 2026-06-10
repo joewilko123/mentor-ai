@@ -2041,5 +2041,3 @@ const GlobalStyles = () => (
 );
 
 export default App;
-
-
