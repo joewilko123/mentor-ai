@@ -97,23 +97,20 @@ const DEFAULT_ACCOUNT = {
   email: ''
 };
 
-const readStoredValue = (key, fallback) => {
-  if (typeof window === 'undefined') return fallback;
-
-  const rawValue = window.localStorage.getItem(key);
-  if (rawValue == null) return fallback;
-
-  try {
-    return JSON.parse(rawValue);
-  } catch {
-    return rawValue;
-  }
-};
-
 function App() {
   const [step, setStep] = useState('hero');
-  const [theme, setTheme] = useState(() => readStoredValue(STORAGE_KEYS.theme, 'dark'));
-  const [selectedPlan, setSelectedPlan] = useState(() => readStoredValue(STORAGE_KEYS.plan, 'monthly'));
+  const [theme, setTheme] = useState(() => {
+    try {
+      const v = window.localStorage.getItem(STORAGE_KEYS.theme);
+      return v != null ? JSON.parse(v) : 'dark';
+    } catch { return 'dark'; }
+  });
+  const [selectedPlan, setSelectedPlan] = useState(() => {
+    try {
+      const v = window.localStorage.getItem(STORAGE_KEYS.plan);
+      return v != null ? JSON.parse(v) : 'monthly';
+    } catch { return 'monthly'; }
+  });
   const [userName, setUserName] = useState('');
   const [userGoal, setUserGoal] = useState('');
   const [mentorType, setMentorType] = useState('');
@@ -124,7 +121,12 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [questionStep, setQuestionStep] = useState(1);
-  const [accountProfile, setAccountProfile] = useState(() => readStoredValue(STORAGE_KEYS.account, DEFAULT_ACCOUNT));
+  const [accountProfile, setAccountProfile] = useState(() => {
+    try {
+      const v = window.localStorage.getItem(STORAGE_KEYS.account);
+      return v != null ? JSON.parse(v) : DEFAULT_ACCOUNT;
+    } catch { return DEFAULT_ACCOUNT; }
+  });
   const [accountDraft, setAccountDraft] = useState(DEFAULT_ACCOUNT);
   const [editingAccount, setEditingAccount] = useState(false);
   const [billingBusy, setBillingBusy] = useState(false);
