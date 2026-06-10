@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Send, ArrowLeft, X, ChevronRight } from 'lucide-react';
+import { Send, ArrowLeft, X, ChevronRight, Settings, LogOut, Moon, Sun, Mail, User, CreditCard, PencilLine } from 'lucide-react';
 import { MENTORS } from './mentors';
 
 const MENTOR_IMAGES = {
@@ -45,21 +45,21 @@ const MENTOR_INFO = {
 
 const THEMES = {
   dark: {
-    bg: 'radial-gradient(ellipse at top, #1a1614 0%, #0d0c0a 60%, #0d0c0a 100%)',
-    bgSolid: '#0d0c0a',
+    bg: 'radial-gradient(ellipse at top, #1a1a1a 0%, #0a0a0a 50%, #000000 100%)',
+    bgSolid: '#0a0a0a',
     text: '#fff',
     textSecondary: '#ccc',
     textTertiary: '#888',
-    textMuted: '#555',
-    accent: '#c9a84c',
-    accentLight: '#e8d08a',
-    card: 'rgba(255,255,255,0.03)',
-    cardBorder: 'rgba(255,255,255,0.06)',
-    input: '#141210',
-    inputBorder: '#2a2825',
-    orb1: 'rgba(201, 168, 76, 0.05)',
-    orb2: 'rgba(201, 168, 76, 0.04)',
-    noise: 0
+    textMuted: '#666',
+    accent: '#d4af37',
+    accentLight: '#f8e5a0',
+    card: 'rgba(20, 20, 20, 0.6)',
+    cardBorder: 'rgba(212, 175, 55, 0.1)',
+    input: '#1a1a1a',
+    inputBorder: '#333',
+    orb1: 'rgba(212, 175, 55, 0.1)',
+    orb2: 'rgba(212, 175, 55, 0.08)',
+    noise: 0.03
   },
   light: {
     bg: 'radial-gradient(ellipse at top, #ffffff 0%, #f5f5f5 50%, #eeeeee 100%)',
@@ -71,71 +71,49 @@ const THEMES = {
     accent: '#c49a3a',
     accentLight: '#d4af37',
     card: 'rgba(255, 255, 255, 0.8)',
-    cardBorder: 'rgba(201, 168, 76, 0.2)',
+    cardBorder: 'rgba(196, 154, 58, 0.2)',
     input: '#f5f5f5',
     inputBorder: '#ddd',
-    orb1: 'rgba(201, 168, 76, 0.08)',
-    orb2: 'rgba(201, 168, 76, 0.06)',
+    orb1: 'rgba(196, 154, 58, 0.08)',
+    orb2: 'rgba(196, 154, 58, 0.06)',
     noise: 0.015
   }
 };
 
-const READING_LIST = {
-  carnegie: [
-    { title: 'The Gospel of Wealth', author: 'Andrew Carnegie', reason: 'I wrote it. Read what I actually believed about money and responsibility.' },
-    { title: 'How to Win Friends and Influence People', author: 'Dale Carnegie', reason: 'Master people. Everything else follows.' },
-    { title: 'The Autobiography of Benjamin Franklin', author: 'Benjamin Franklin', reason: 'The original self-made man. Study him.' },
-    { title: 'Think and Grow Rich', author: 'Napoleon Hill', reason: 'He interviewed me. The principles are sound.' },
-    { title: 'The Score Takes Care of Itself', author: 'Bill Walsh', reason: 'Systems beat talent every time. This is why.' },
-  ],
-  jobs: [
-    { title: "Zen Mind, Beginner's Mind", author: 'Shunryu Suzuki', reason: "See everything fresh. Experts are blind to what's obvious." },
-    { title: "The Innovator's Dilemma", author: 'Clayton Christensen', reason: "Understand why great companies die. Then don't." },
-    { title: 'Autobiography of a Yogi', author: 'Paramahansa Yogananda', reason: "Changed my life at 17. Still the most important book I've read." },
-    { title: 'King Lear', author: 'Shakespeare', reason: 'Power, betrayal, vision. Everything about building something great is in here.' },
-    { title: 'Only the Paranoid Survive', author: 'Andy Grove', reason: "Stay hungry. Stay paranoid. They're the same thing." },
-  ],
-  marcus: [
-    { title: 'Meditations', author: 'Marcus Aurelius', reason: 'My private notes. Not written for you — which is exactly why you should read them.' },
-    { title: 'Letters from a Stoic', author: 'Seneca', reason: 'My contemporary. Sharper than most give him credit for.' },
-    { title: 'The Obstacle Is the Way', author: 'Ryan Holiday', reason: 'A modern translation of what we actually meant.' },
-    { title: 'Discourses', author: 'Epictetus', reason: 'He was a slave who understood freedom better than any emperor.' },
-    { title: "Man's Search for Meaning", author: 'Viktor Frankl', reason: 'Stoicism tested in the worst conditions imaginable. He passed.' },
-  ],
-  napoleon: [
-    { title: 'The Art of War', author: 'Sun Tzu', reason: 'I read it. Then I improved on it.' },
-    { title: 'Julius Caesar', author: 'Shakespeare', reason: "Study Caesar's mistakes. I did." },
-    { title: 'On War', author: 'Carl von Clausewitz', reason: 'He wrote about me. The principles are correct.' },
-    { title: 'The 48 Laws of Power', author: 'Robert Greene', reason: 'Every law is something I either used or had used against me.' },
-    { title: 'Genghis Khan and the Making of the Modern World', author: 'Jack Weatherford', reason: 'The greatest conqueror. Understand his system.' },
-  ],
-  seneca: [
-    { title: 'Letters from a Stoic', author: 'Seneca', reason: 'Start here. Everything I believed is in these letters.' },
-    { title: 'Meditations', author: 'Marcus Aurelius', reason: 'My student emperor. He listened better than most.' },
-    { title: 'The Shortness of Life', author: 'Seneca', reason: 'You are wasting time reading this list instead of living. Go.' },
-    { title: 'Essays', author: 'Michel de Montaigne', reason: 'He understood that self-knowledge is the only knowledge worth having.' },
-    { title: 'The Death of Ivan Ilyich', author: 'Leo Tolstoy', reason: 'A man who realised too late he had lived wrong. Do not be him.' },
-  ],
-  rockefeller: [
-    { title: 'Random Reminiscences of Men and Events', author: 'John D. Rockefeller', reason: 'My own words. Unfiltered.' },
-    { title: 'Titan', author: 'Ron Chernow', reason: 'The most accurate account of how I actually operated.' },
-    { title: 'The Outsiders', author: 'William Thorndike', reason: 'Capital allocation is the only skill that truly compounds. This book proves it.' },
-    { title: "Poor Charlie's Almanack", author: 'Charlie Munger', reason: 'Mental models built wealth for Buffett. They will for you too.' },
-    { title: 'The Richest Man in Babylon', author: 'George S. Clason', reason: 'Simple principles. Almost nobody actually follows them.' },
-  ],
-  nietzsche: [
-    { title: 'Thus Spoke Zarathustra', author: 'Friedrich Nietzsche', reason: 'My masterpiece. You will not understand it the first time. Read it anyway.' },
-    { title: 'Beyond Good and Evil', author: 'Friedrich Nietzsche', reason: 'Everything you were taught about morality is a cage. This is the key.' },
-    { title: 'The Will to Power', author: 'Friedrich Nietzsche', reason: 'My unfinished work. The most honest thing I ever wrote.' },
-    { title: 'Antifragile', author: 'Nassim Taleb', reason: 'He understood what I meant by what does not kill me.' },
-    { title: 'The Trial', author: 'Franz Kafka', reason: 'A man destroyed by systems he never questioned. Do not be Josef K.' },
-  ],
+const PLAN_DETAILS = {
+  weekly: { name: 'Weekly', priceId: 'price_1TM2nrAis1rAntIhgHWzLP6j', price: '£7', period: '/week', label: 'Try it out' },
+  monthly: { name: 'Monthly', priceId: 'price_1TM2nSAis1rAntIhrzVU3kBi', price: '£19', period: '/month', label: 'Best value', savings: 'Save £9/month vs weekly' },
+  yearly: { name: 'Yearly', priceId: 'price_1TM2nrAis1rAntIhgHWzLP6j', price: '£297', period: '/year', label: 'One-time payment', savings: 'Never pay again' }
+};
+
+const STORAGE_KEYS = {
+  theme: 'mentor-ai-theme',
+  account: 'mentor-ai-account',
+  plan: 'mentor-ai-plan'
+};
+
+const DEFAULT_ACCOUNT = {
+  name: '',
+  email: ''
+};
+
+const readStoredValue = (key, fallback) => {
+  if (typeof window === 'undefined') return fallback;
+
+  const rawValue = window.localStorage.getItem(key);
+  if (rawValue == null) return fallback;
+
+  try {
+    return JSON.parse(rawValue);
+  } catch {
+    return rawValue;
+  }
 };
 
 function App() {
   const [step, setStep] = useState('hero');
-  const [theme, setTheme] = useState('dark');
-  const [selectedPlan, setSelectedPlan] = useState('monthly');
+  const [theme, setTheme] = useState(() => readStoredValue(STORAGE_KEYS.theme, 'dark'));
+  const [selectedPlan, setSelectedPlan] = useState(() => readStoredValue(STORAGE_KEYS.plan, 'monthly'));
   const [userName, setUserName] = useState('');
   const [userGoal, setUserGoal] = useState('');
   const [mentorType, setMentorType] = useState('');
@@ -146,6 +124,10 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [questionStep, setQuestionStep] = useState(1);
+  const [accountProfile, setAccountProfile] = useState(() => readStoredValue(STORAGE_KEYS.account, DEFAULT_ACCOUNT));
+  const [accountDraft, setAccountDraft] = useState(DEFAULT_ACCOUNT);
+  const [editingAccount, setEditingAccount] = useState(false);
+  const [billingBusy, setBillingBusy] = useState(false);
   const [answers, setAnswers] = useState({
     name: '',
     biggestChallenge: '',
@@ -153,19 +135,65 @@ function App() {
     stuckOn: '',
     failedAt: ''
   });
-  const [openFaq, setOpenFaq] = useState(null);
-  const [showUpgrade, setShowUpgrade] = useState(false);
-  const [upgradeMessage, setUpgradeMessage] = useState('');
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
     if (window.location.pathname === '/success') {
-      localStorage.setItem('mentor_access', 'true');
       setStep('success');
-    } else if (localStorage.getItem('mentor_access') === 'true') {
-      setStep('chat');
+    } else if (window.location.pathname === '/settings') {
+      setStep('settings');
     }
   }, []);
+
+  useEffect(() => {
+    const onPopState = () => {
+      if (window.location.pathname === '/success') {
+        setStep('success');
+        return;
+      }
+
+      if (window.location.pathname === '/settings') {
+        setStep('settings');
+        return;
+      }
+
+      setStep(selectedMentor ? 'chat' : 'hero');
+    };
+
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, [selectedMentor]);
+
+  useEffect(() => {
+    window.localStorage.setItem(STORAGE_KEYS.theme, JSON.stringify(theme));
+  }, [theme]);
+
+  useEffect(() => {
+    window.localStorage.setItem(STORAGE_KEYS.plan, JSON.stringify(selectedPlan));
+  }, [selectedPlan]);
+
+  useEffect(() => {
+    window.localStorage.setItem(STORAGE_KEYS.account, JSON.stringify(accountProfile));
+  }, [accountProfile]);
+
+  useEffect(() => {
+    if (answers.name && answers.name !== accountProfile.name) {
+      setAccountProfile(prev => ({ ...prev, name: answers.name }));
+    }
+  }, [answers.name]);
+
+  useEffect(() => {
+    if (userName.includes('@') && userName !== accountProfile.email) {
+      setAccountProfile(prev => ({ ...prev, email: userName }));
+    }
+  }, [userName]);
+
+  useEffect(() => {
+    if (step === 'settings') {
+      setAccountDraft(accountProfile);
+      setEditingAccount(false);
+    }
+  }, [step, accountProfile]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -184,21 +212,8 @@ function App() {
         body: JSON.stringify({
           messages: [...messages, userMessage],
           systemPrompt: selectedMentor.systemPrompt,
-          email: userName,
-          mentorId: selectedMentor.id,
         }),
       });
-      if (response.status === 403) {
-        const data = await response.json();
-        if (data.error === 'limit_reached') {
-          setUpgradeMessage("You've used all your messages for this week. Upgrade to continue.");
-        } else if (data.error === 'mentor_locked') {
-          setUpgradeMessage('This mentor is locked on your current plan. Upgrade to unlock all 7 mentors.');
-        }
-        setShowUpgrade(true);
-        setMessages(prev => prev.slice(0, -1));
-        return;
-      }
       const data = await response.json();
       setMessages(prev => [...prev, { role: 'assistant', content: data.content }]);
     } catch (error) {
@@ -206,6 +221,70 @@ function App() {
       setMessages(prev => [...prev, { role: 'assistant', content: 'My apologies, I seem to be having difficulty connecting. Please try again.' }]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const openSettings = () => {
+    window.history.pushState({}, '', '/settings');
+    setStep('settings');
+  };
+
+  const returnToMainApp = () => {
+    window.history.pushState({}, '', '/');
+    setStep('chat');
+  };
+
+  const handleLogout = () => {
+    window.history.pushState({}, '', '/');
+    setStep('hero');
+    setSelectedMentor(null);
+    setMessages([]);
+    setInput('');
+    setLoading(false);
+    setTrialQuestion('');
+    setTrialResponse('');
+    setMentorType('');
+  };
+
+  const handleAccountSave = () => {
+    const nextProfile = {
+      name: accountDraft.name.trim(),
+      email: accountDraft.email.trim()
+    };
+
+    setAccountProfile(nextProfile);
+    setAnswers(prev => ({ ...prev, name: nextProfile.name }));
+    setUserName(nextProfile.email);
+    setEditingAccount(false);
+  };
+
+  const openBillingPortal = async () => {
+    const email = accountProfile.email || userName;
+    if (!email) {
+      alert('Add an email address first so Stripe can find your subscription.');
+      return;
+    }
+
+    setBillingBusy(true);
+    try {
+      const response = await fetch('/api/create-portal-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await response.json();
+
+      if (!data.url) {
+        throw new Error(data.error || 'Unable to open Stripe portal');
+      }
+
+      window.location.href = data.url;
+    } catch (error) {
+      console.error('Billing portal error:', error);
+      alert('Unable to open Stripe right now. Please try again.');
+    } finally {
+      setBillingBusy(false);
     }
   };
 
@@ -236,7 +315,7 @@ function App() {
               justifyContent: 'center',
               margin: '0 auto 32px auto',
               fontSize: '36px',
-              boxShadow: '0 0 40px rgba(201, 168, 76, 0.3)',
+              boxShadow: '0 0 40px rgba(212, 175, 55, 0.4)',
               animation: 'fadeIn 0.6s ease-out'
             }}>
               ✓
@@ -265,22 +344,12 @@ function App() {
                 fontSize: '18px',
                 fontWeight: '700',
                 cursor: 'pointer',
-                boxShadow: '0 4px 16px rgba(201, 168, 76, 0.3)',
+                boxShadow: '0 4px 16px rgba(212, 175, 55, 0.4)',
                 animation: 'fadeIn 0.6s ease-out 0.5s backwards'
               }}
             >
               Meet your mentors →
             </button>
-            <div style={{ marginTop: '24px', animation: 'fadeIn 0.6s ease-out 0.7s backwards' }}>
-              <p style={{ fontSize: '12px', color: t.textMuted, margin: '0 0 4px 0' }}>
-                Add to your home screen for the best experience.
-              </p>
-              <p style={{ fontSize: '12px', color: t.textMuted, margin: 0, lineHeight: '1.5' }}>
-                {/iphone|ipad|ipod/i.test(navigator.userAgent)
-                  ? 'Tap the share button below then tap Add to Home Screen.'
-                  : 'Tap the menu button then Add to Home Screen.'}
-              </p>
-            </div>
           </div>
         </div>
       </>
@@ -294,6 +363,7 @@ function App() {
       <>
         <GlobalStyles />
         <ThemeToggle theme={theme} setTheme={setTheme} />
+        <SettingsButton theme={theme} onClick={openSettings} />
         <div className="noise" style={{ opacity: t.noise }} />
         <div style={{
           minHeight: '100vh',
@@ -317,7 +387,7 @@ function App() {
               </p>
             </div>
 
-            <div style={{ display: 'grid', gap: '24px' }}>
+            <div style={{ display: 'grid', gap: '16px' }}>
               {MENTORS.map((mentor, i) => (
                 <div
                   key={mentor.id}
@@ -329,20 +399,20 @@ function App() {
                     background: t.card,
                     border: `1px solid ${t.cardBorder}`,
                     borderRadius: '16px',
-                    padding: '28px',
+                    padding: '20px',
                     cursor: 'pointer',
                     transition: 'all 0.3s',
                     display: 'flex',
-                    gap: '20px',
+                    gap: '16px',
                     alignItems: 'flex-start',
                     animation: `slideUp 0.4s ease-out ${i * 0.05}s backwards`
                   }}
                   onMouseEnter={e => {
-                    e.currentTarget.style.background = theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)';
+                    e.currentTarget.style.border = `1px solid ${t.accent}`;
                     e.currentTarget.style.transform = 'translateY(-2px)';
                   }}
                   onMouseLeave={e => {
-                    e.currentTarget.style.background = t.card;
+                    e.currentTarget.style.border = `1px solid ${t.cardBorder}`;
                     e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
@@ -350,8 +420,8 @@ function App() {
                     src={MENTOR_IMAGES[mentor.id]}
                     alt={mentor.name}
                     style={{
-                      width: '80px',
-                      height: '80px',
+                      width: '64px',
+                      height: '64px',
                       borderRadius: '50%',
                       objectFit: 'cover',
                       filter: 'grayscale(100%)',
@@ -360,155 +430,24 @@ function App() {
                     }}
                   />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: '11px', color: t.textMuted, margin: '0 0 4px 0', letterSpacing: '0.5px' }}>
-                      {mentor.era}
-                    </p>
-                    <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500', fontFamily: "'Cormorant Garamond', serif" }}>
-                      {mentor.name}
-                    </h3>
-                    <p style={{ fontSize: '13px', color: t.accent, margin: '0 0 10px 0', fontWeight: '400' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
+                      <h3 style={{ fontSize: '18px', color: t.text, margin: 0, fontWeight: '600' }}>
+                        {mentor.name}
+                      </h3>
+                      <span style={{ fontSize: '12px', color: t.textMuted, flexShrink: 0, marginLeft: '8px' }}>
+                        {mentor.era}
+                      </span>
+                    </div>
+                    <p style={{ fontSize: '13px', color: t.accent, margin: '0 0 8px 0', fontWeight: '500' }}>
                       {MENTOR_INFO[mentor.id]?.knownFor}
                     </p>
-                    <p style={{ fontSize: '13px', color: t.textTertiary, margin: 0, lineHeight: '1.6' }}>
+                    <p style={{ fontSize: '13px', color: t.textTertiary, margin: 0, lineHeight: '1.5' }}>
                       {MENTOR_INFO[mentor.id]?.bestWith}
                     </p>
                   </div>
                 </div>
               ))}
-              <div
-                onClick={() => setStep('readingListIntro')}
-                style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '36px 28px', cursor: 'pointer', transition: 'all 0.3s', position: 'relative', textAlign: 'center', animation: 'slideUp 0.4s ease-out 0.35s backwards' }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.background = theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)'; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = t.card; }}
-              >
-                <div style={{ fontSize: '48px', marginBottom: '16px', lineHeight: 1 }}>📚</div>
-                <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 8px 0', fontWeight: '500', fontFamily: "'Cormorant Garamond', serif" }}>Reading List</h3>
-                <p style={{ fontSize: '14px', color: t.textTertiary, margin: 0, lineHeight: '1.6' }}>The exact books each mentor says shaped their thinking. 35 books. Zero fluff.</p>
-                <span style={{ position: 'absolute', bottom: '20px', right: '24px', fontSize: '16px', color: `rgba(201,168,76,0.5)` }}>→</span>
-              </div>
-              <div
-                onClick={() => setStep('warRoom')}
-                style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '36px 28px', cursor: 'pointer', transition: 'all 0.3s', position: 'relative', textAlign: 'center', animation: 'slideUp 0.4s ease-out 0.4s backwards' }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.background = theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)'; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = t.card; }}
-              >
-                <div style={{ fontSize: '48px', marginBottom: '16px', lineHeight: 1 }}>⚔️</div>
-                <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 8px 0', fontWeight: '500', fontFamily: "'Cormorant Garamond', serif" }}>The War Room</h3>
-                <p style={{ fontSize: '14px', color: t.textTertiary, margin: 0, lineHeight: '1.6' }}>Bring every mentor into one room. One question. Seven answers.</p>
-                <span style={{ position: 'absolute', bottom: '20px', right: '24px', fontSize: '16px', color: `rgba(201,168,76,0.5)` }}>→</span>
-              </div>
-              <div
-                onClick={() => setStep('dailyDrop')}
-                style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '36px 28px', cursor: 'pointer', transition: 'all 0.3s', position: 'relative', textAlign: 'center', animation: 'slideUp 0.4s ease-out 0.45s backwards' }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.background = theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)'; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = t.card; }}
-              >
-                <div style={{ fontSize: '48px', marginBottom: '16px', lineHeight: 1 }}>🔥</div>
-                <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 8px 0', fontWeight: '500', fontFamily: "'Cormorant Garamond', serif" }}>Daily Drop</h3>
-                <p style={{ fontSize: '14px', color: t.textTertiary, margin: 0, lineHeight: '1.6' }}>One mentor. One insight. Every day.</p>
-                <span style={{ position: 'absolute', bottom: '20px', right: '24px', fontSize: '16px', color: `rgba(201,168,76,0.5)` }}>→</span>
-              </div>
             </div>
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  // Reading List Intro Screen
-  if (step === 'warRoom') {
-    return <WarRoomScreen theme={theme} setTheme={setTheme} setStep={setStep} />;
-  }
-
-  if (step === 'dailyDrop') {
-    return <DailyDropScreen theme={theme} setTheme={setTheme} setStep={setStep} setSelectedMentor={setSelectedMentor} />;
-  }
-
-  if (step === 'readingListIntro') {
-    const t = THEMES[theme];
-    return (
-      <>
-        <GlobalStyles />
-        <ThemeToggle theme={theme} setTheme={setTheme} />
-        <div className="noise" style={{ opacity: t.noise }} />
-        <div style={{ minHeight: '100vh', background: t.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
-          <div style={{ maxWidth: '500px', width: '100%' }}>
-            <button
-              onClick={() => setStep('chat')}
-              style={{ background: 'none', border: 'none', color: t.textTertiary, cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', marginBottom: '40px' }}
-            >
-              <ArrowLeft size={20} />
-            </button>
-            <div style={{ textAlign: 'center', marginBottom: '40px', animation: 'fadeIn 0.6s ease-out' }}>
-              <div style={{ fontSize: '64px', marginBottom: '24px' }}>📚</div>
-              <h1 style={{ fontSize: '32px', color: t.text, margin: '0 0 20px 0', fontWeight: '600', fontFamily: "'Cormorant Garamond', serif", lineHeight: '1.2' }}>
-                The Books That Built Them
-              </h1>
-              <p style={{ fontSize: '16px', color: t.textSecondary, lineHeight: '1.7', margin: '0 0 20px 0' }}>
-                Every mentor on this app was shaped by what they read. These aren't generic recommendations. These are the specific books each historical figure read, studied, or wrote — explained in their own voice, with the reason it mattered.
-              </p>
-              <p style={{ fontSize: '16px', color: t.textSecondary, lineHeight: '1.7', margin: 0 }}>
-                Stop buying books you never read. Start with the ones that actually changed history.
-              </p>
-            </div>
-            <button
-              onClick={() => setStep('readingList')}
-              style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '18px', fontSize: '17px', fontWeight: '600', cursor: 'pointer', boxShadow: theme === 'dark' ? '0 4px 16px rgba(201, 168, 76, 0.3)' : '0 4px 16px rgba(201, 168, 76, 0.25)', animation: 'fadeIn 0.6s ease-out 0.3s backwards' }}
-            >
-              Show me the books →
-            </button>
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  // Reading List Screen
-  if (step === 'readingList') {
-    const t = THEMES[theme];
-    return (
-      <>
-        <GlobalStyles />
-        <ThemeToggle theme={theme} setTheme={setTheme} />
-        <div className="noise" style={{ opacity: t.noise }} />
-        <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto' }}>
-          <div style={{ maxWidth: '700px', margin: '0 auto' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '40px' }}>
-              <button
-                onClick={() => setStep('chat')}
-                style={{ background: 'none', border: 'none', color: t.textTertiary, cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', flexShrink: 0 }}
-              >
-                <ArrowLeft size={20} />
-              </button>
-              <h1 className="gradient-text" style={{ fontSize: '28px', fontWeight: '500', margin: 0, letterSpacing: '2px', fontFamily: "'Cormorant Garamond', serif" }}>
-                Reading List
-              </h1>
-            </div>
-
-            {MENTORS.map((mentor, mi) => (
-              <div key={mentor.id} style={{ marginBottom: '40px', animation: `slideUp 0.4s ease-out ${mi * 0.05}s backwards` }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '14px' }}>
-                  <img
-                    src={MENTOR_IMAGES[mentor.id]}
-                    alt={mentor.name}
-                    style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(100%)', border: `2px solid ${t.accent}`, flexShrink: 0 }}
-                  />
-                  <div>
-                    <h2 style={{ fontSize: '17px', color: t.accent, margin: '0 0 2px 0', fontWeight: '600' }}>{mentor.name}</h2>
-                    <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>{mentor.era}</p>
-                  </div>
-                </div>
-                <div style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', overflow: 'hidden' }}>
-                  {READING_LIST[mentor.id].map((book, bi) => (
-                    <div key={bi} style={{ padding: '16px 20px', borderBottom: bi < READING_LIST[mentor.id].length - 1 ? `1px solid ${t.inputBorder}` : 'none' }}>
-                      <p style={{ fontSize: '14px', color: t.textSecondary, margin: '0 0 2px 0', fontWeight: '600' }}>{book.title}</p>
-                      <p style={{ fontSize: '12px', color: t.textMuted, margin: '0 0 6px 0' }}>{book.author}</p>
-                      <p style={{ fontSize: '13px', color: t.textTertiary, margin: 0, lineHeight: '1.5', fontStyle: 'italic' }}>"{book.reason}"</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </>
@@ -522,6 +461,7 @@ function App() {
       <>
         <GlobalStyles />
         <ThemeToggle theme={theme} setTheme={setTheme} />
+        <SettingsButton theme={theme} onClick={openSettings} />
         <div className="noise" style={{ opacity: t.noise }} />
         <div style={{
           height: '100vh',
@@ -632,10 +572,10 @@ function App() {
                   padding: '12px 16px',
                   borderRadius: msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
                   background: msg.role === 'user'
-                    ? 'rgba(255,255,255,0.08)'
-                    : (theme === 'dark' ? '#141210' : '#ffffff'),
-                  border: msg.role === 'assistant' ? `1px solid ${t.inputBorder}` : '1px solid rgba(255,255,255,0.1)',
-                  color: t.textSecondary,
+                    ? `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`
+                    : (theme === 'dark' ? '#1a1a1a' : '#ffffff'),
+                  border: msg.role === 'assistant' ? `1px solid ${t.inputBorder}` : 'none',
+                  color: msg.role === 'user' ? '#000' : t.textSecondary,
                   fontSize: '15px',
                   lineHeight: '1.6',
                   whiteSpace: 'pre-wrap'
@@ -683,28 +623,6 @@ function App() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Upgrade Banner */}
-          {showUpgrade && (
-            <div style={{
-              padding: '12px 20px',
-              background: theme === 'dark' ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.9)',
-              borderTop: `1px solid ${t.cardBorder}`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '16px',
-              flexShrink: 0
-            }}>
-              <p style={{ fontSize: '13px', color: t.accent, margin: 0, lineHeight: '1.5' }}>{upgradeMessage}</p>
-              <button
-                onClick={() => { setStep('paywall'); setShowUpgrade(false); }}
-                style={{ background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '20px', padding: '8px 16px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
-              >
-                Upgrade Plan →
-              </button>
-            </div>
-          )}
-
           {/* Input */}
           <div style={{
             padding: '16px 20px',
@@ -729,7 +647,7 @@ function App() {
                   flex: 1,
                   background: t.input,
                   border: `1px solid ${t.inputBorder}`,
-                  borderRadius: '32px',
+                  borderRadius: '24px',
                   padding: '14px 20px',
                   fontSize: '15px',
                   color: t.text,
@@ -753,6 +671,7 @@ function App() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
+                  boxShadow: (input.trim() && !loading) ? '0 4px 12px rgba(212, 175, 55, 0.4)' : 'none',
                   transition: 'all 0.2s'
                 }}
               >
@@ -815,22 +734,22 @@ function App() {
             animation: 'fadeIn 1s ease-out'
           }}>
             <h1 className="gradient-text" style={{
-              fontSize: '72px',
+              fontSize: '56px',
               fontWeight: '500',
-              margin: '0 0 24px 0',
-              letterSpacing: '4px',
+              margin: '0 0 20px 0',
+              letterSpacing: '3px',
               fontFamily: "'Cormorant Garamond', serif",
+              textShadow: `0 0 40px ${t.orb1}`
             }}>
               Mentor
             </h1>
             <p style={{
-              fontSize: '20px',
+              fontSize: '18px',
               color: t.textTertiary,
-              maxWidth: '480px',
-              margin: '0 auto 64px',
-              lineHeight: '1.8',
+              maxWidth: '500px',
+              margin: '0 auto 60px',
+              lineHeight: '1.6',
               fontWeight: '300',
-              letterSpacing: '0.01em',
               opacity: 0,
               animation: 'fadeIn 1s ease-out 0.3s forwards'
             }}>
@@ -842,14 +761,16 @@ function App() {
               style={{
                 background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 50%, ${t.accent} 100%)`,
                 backgroundSize: '200% 200%',
-                color: '#000',
+                color: theme === 'dark' ? '#000' : '#fff',
                 border: 'none',
                 borderRadius: '30px',
-                padding: '16px 48px',
-                fontSize: '16px',
+                padding: '18px 56px',
+                fontSize: '17px',
                 fontWeight: '600',
                 cursor: 'pointer',
-                letterSpacing: '0.03em',
+                boxShadow: theme === 'dark'
+                  ? '0 8px 24px rgba(212, 175, 55, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+                  : '0 8px 24px rgba(196, 154, 58, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
                 opacity: 0,
                 animation: 'fadeIn 1s ease-out 0.6s forwards, shimmer 3s linear infinite'
               }}
@@ -880,86 +801,126 @@ function App() {
         }}>
           <div style={{ maxWidth: '600px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
             <h2 style={{
-              fontSize: '48px',
-              color: t.text,
-              marginBottom: '56px',
+              fontSize: '28px',
+              color: t.accent,
+              marginBottom: '40px',
               textAlign: 'center',
               fontWeight: '400',
               fontFamily: "'Cormorant Garamond', serif",
-              lineHeight: '1.2',
               animation: 'fadeIn 0.8s ease-out'
             }}>
-              You know you're capable of more.<br />But you're figuring it out alone.
+              You know you're capable of more. But you're figuring it out alone.
             </h2>
 
-            <div style={{ marginBottom: '0', animation: 'slideUp 0.6s ease-out' }}>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
+            <div style={{ marginBottom: '32px', animation: 'slideUp 0.6s ease-out' }}>
+              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '12px' }}>
                 You're ambitious. You want to build something. Achieve something. Become someone.
               </p>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
+              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '12px' }}>
                 But the path isn't clear. Should you start that business? Ask for the raise? Quit and bet on yourself?
               </p>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '0' }}>
+              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '24px' }}>
                 You're making life-changing decisions with YouTube videos and Reddit threads.
               </p>
+              <button
+                className="btn-primary"
+                onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
+                style={{
+                  background: theme === 'dark'
+                    ? 'linear-gradient(145deg, #1a1a1a 0%, #141414 100%)'
+                    : 'linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%)',
+                  color: t.accent,
+                  border: `1px solid ${t.cardBorder}`,
+                  borderRadius: '30px',
+                  padding: '14px 32px',
+                  fontSize: '15px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  width: '100%',
+                  boxShadow: theme === 'dark' ? '0 4px 16px rgba(0, 0, 0, 0.3)' : '0 4px 16px rgba(0, 0, 0, 0.1)',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                }}
+              >
+                This sounds familiar
+              </button>
             </div>
 
-            <div style={{ height: '1px', background: `linear-gradient(to right, transparent, ${t.accent}, transparent)`, opacity: 0.2, margin: '48px 0' }} />
-
-            <div style={{ marginBottom: '0', animation: 'slideUp 0.6s ease-out 0.2s backwards' }}>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
+            <div style={{ marginBottom: '32px', animation: 'slideUp 0.6s ease-out 0.2s backwards' }}>
+              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '12px' }}>
                 Meanwhile, people who aren't smarter than you are winning.
               </p>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
+              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '12px' }}>
                 They have mentors. People who've been there. Who know what works and what's a waste of time.
               </p>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
+              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '12px' }}>
                 You? You're Googling it. Trial and error. Learning the hard way.
               </p>
-              <p style={{ fontSize: '28px', color: t.text, lineHeight: '1.4', margin: '0', fontFamily: "'Cormorant Garamond', serif", fontWeight: '400' }}>
+              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '24px' }}>
                 The gap isn't talent. It's guidance.
               </p>
+              <button
+                className="btn-primary"
+                onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
+                style={{
+                  background: theme === 'dark'
+                    ? 'linear-gradient(145deg, #1a1a1a 0%, #141414 100%)'
+                    : 'linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%)',
+                  color: t.accent,
+                  border: `1px solid ${t.cardBorder}`,
+                  borderRadius: '30px',
+                  padding: '14px 32px',
+                  fontSize: '15px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  width: '100%',
+                  boxShadow: theme === 'dark' ? '0 4px 16px rgba(0, 0, 0, 0.3)' : '0 4px 16px rgba(0, 0, 0, 0.1)',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                }}
+              >
+                Show me the solution
+              </button>
             </div>
 
-            <div style={{ height: '1px', background: `linear-gradient(to right, transparent, ${t.accent}, transparent)`, opacity: 0.2, margin: '48px 0' }} />
-
-            <div style={{ marginBottom: '48px', animation: 'slideUp 0.6s ease-out 0.4s backwards' }}>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
+            <div style={{ marginBottom: '32px', animation: 'slideUp 0.6s ease-out 0.4s backwards' }}>
+              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '12px' }}>
                 What if you could ask someone who's already done what you're trying to do?
               </p>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
+              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '12px' }}>
                 Not some guru selling courses. Not ChatGPT giving you safe, generic advice.
               </p>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
+              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '12px' }}>
                 Real people who built real things. Who failed, learned, and won.
               </p>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
+              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '12px' }}>
                 Ask Steve Jobs if your idea is worth pursuing. Get Carnegie's take on pricing your work. Napoleon on handling competition. Marcus Aurelius when the pressure feels like too much.
               </p>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '0' }}>
+              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '24px' }}>
                 Not theory. Real frameworks from people who actually did it.
               </p>
+              <button
+                className="btn-primary"
+                onClick={() => setStep('examples')}
+                style={{
+                  background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 50%, ${t.accent} 100%)`,
+                  backgroundSize: '200% 200%',
+                  color: theme === 'dark' ? '#000' : '#fff',
+                  border: 'none',
+                  borderRadius: '30px',
+                  padding: '16px 32px',
+                  fontSize: '17px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  width: '100%',
+                  boxShadow: theme === 'dark'
+                    ? '0 8px 24px rgba(212, 175, 55, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+                    : '0 8px 24px rgba(196, 154, 58, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
+                  animation: 'shimmer 3s linear infinite',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                }}
+              >
+                See how it works →
+              </button>
             </div>
-            <button
-              className="btn-primary"
-              onClick={() => setStep('examples')}
-              style={{
-                background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 50%, ${t.accent} 100%)`,
-                backgroundSize: '200% 200%',
-                color: '#000',
-                border: 'none',
-                borderRadius: '30px',
-                padding: '16px 48px',
-                fontSize: '16px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                width: '100%',
-                letterSpacing: '0.03em',
-                animation: 'shimmer 3s linear infinite',
-              }}
-            >
-              See how it works →
-            </button>
           </div>
 
           <div style={{
@@ -1068,7 +1029,7 @@ function App() {
                 fontWeight: '600',
                 cursor: 'pointer',
                 width: '100%',
-                boxShadow: theme === 'dark' ? '0 8px 24px rgba(201, 168, 76, 0.3)' : '0 8px 24px rgba(201, 168, 76, 0.25)',
+                boxShadow: theme === 'dark' ? '0 8px 24px rgba(212, 175, 55, 0.4)' : '0 8px 24px rgba(196, 154, 58, 0.3)',
                 animation: 'shimmer 3s linear infinite'
               }}
             >
@@ -1180,7 +1141,7 @@ function App() {
                   fontSize: '17px',
                   fontWeight: '600',
                   cursor: currentAnswer.trim() ? 'pointer' : 'not-allowed',
-                  boxShadow: currentAnswer.trim() ? (theme === 'dark' ? '0 4px 16px rgba(201, 168, 76, 0.25)' : '0 4px 16px rgba(201, 168, 76, 0.25)') : 'none'
+                  boxShadow: currentAnswer.trim() ? (theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.3)' : '0 4px 16px rgba(196, 154, 58, 0.3)') : 'none'
                 }}
               >
                 {questionStep === 5 ? 'Continue →' : 'Next'}
@@ -1224,7 +1185,7 @@ function App() {
               ].map(option => (
                 <div
                   key={option.type}
-                  onClick={() => { setMentorType(option.type); setStep('mentorProfile'); }}
+                  onClick={() => { setMentorType(option.type); setStep('trial'); }}
                   style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '20px', cursor: 'pointer', transition: 'all 0.3s' }}
                 >
                   <h3 style={{ fontSize: '18px', color: t.text, margin: '0 0 8px 0', fontWeight: '500' }}>{option.title}</h3>
@@ -1233,90 +1194,6 @@ function App() {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  // Mentor Profile
-  if (step === 'mentorProfile') {
-    const t = THEMES[theme];
-    const mentorIdMap = { business: 'carnegie', mindset: 'marcus', leadership: 'napoleon' };
-    const profileMentorId = mentorIdMap[mentorType] || 'carnegie';
-    const profileMentor = MENTORS.find(m => m.id === profileMentorId);
-    const traitsMap = {
-      business: ['Strategic Thinker', 'Wealth Builder', 'Ruthless Executor'],
-      mindset: ['Stoic Resilience', 'Self Mastery', 'Inner Clarity'],
-      leadership: ['Bold Decisiveness', 'Strategic Vision', 'Controlled Aggression'],
-    };
-    const traits = traitsMap[mentorType] || traitsMap.business;
-    const firstName = profileMentor.name.split(' ')[0];
-
-    return (
-      <>
-        <GlobalStyles />
-        <ThemeToggle theme={theme} setTheme={setTheme} />
-        <div className="noise" style={{ opacity: t.noise }} />
-
-        {/* Cinematic backdrop */}
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 0,
-          backgroundImage: `url(${MENTOR_IMAGES[profileMentorId]})`,
-          backgroundSize: 'cover', backgroundPosition: 'center top',
-          filter: 'blur(40px) grayscale(100%)',
-          opacity: theme === 'dark' ? 0.07 : 0.04,
-          transform: 'scale(1.1)',
-        }} />
-
-        <div style={{ minHeight: '100vh', background: t.bg, padding: '60px 20px 80px', overflow: 'auto', position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ maxWidth: '460px', width: '100%', textAlign: 'center' }}>
-
-            <p style={{ fontSize: '11px', color: t.accent, letterSpacing: '4px', textTransform: 'uppercase', margin: '0 0 36px 0', animation: 'fadeIn 0.6s ease-out' }}>
-              YOUR MENTOR PROFILE
-            </p>
-
-            {/* Photo with glow ring */}
-            <div style={{ position: 'relative', width: '148px', height: '148px', margin: '0 auto 28px auto', animation: 'fadeIn 0.8s ease-out 0.15s backwards' }}>
-              <div style={{ position: 'absolute', inset: '-3px', borderRadius: '50%', background: `linear-gradient(135deg, ${t.accent}, ${t.accentLight}, ${t.accent})`, animation: 'glowPulse 3s ease-in-out infinite' }} />
-              <img
-                src={MENTOR_IMAGES[profileMentorId]}
-                alt={profileMentor.name}
-                style={{ width: '148px', height: '148px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(80%)', position: 'relative', zIndex: 1 }}
-              />
-            </div>
-
-            <h1 className="gradient-text" style={{ fontSize: '38px', fontWeight: '500', margin: '0 0 10px 0', fontFamily: "'Cormorant Garamond', serif", animation: 'slideUp 0.6s ease-out 0.3s backwards' }}>
-              {profileMentor.name}
-            </h1>
-
-            <p style={{ fontSize: '15px', color: t.textSecondary, margin: '0 0 24px 0', lineHeight: '1.6', animation: 'slideUp 0.6s ease-out 0.4s backwards' }}>
-              Based on where you are, {profileMentor.name} is the mind you need right now.
-            </p>
-
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '32px', animation: 'slideUp 0.6s ease-out 0.5s backwards' }}>
-              {traits.map(trait => (
-                <span key={trait} style={{ fontSize: '12px', color: t.accent, border: `1px solid rgba(201, 168, 76, 0.3)`, borderRadius: '20px', padding: '5px 14px', letterSpacing: '0.3px' }}>
-                  {trait}
-                </span>
-              ))}
-            </div>
-
-            <div style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '20px 24px', marginBottom: '32px', textAlign: 'left', animation: 'slideUp 0.6s ease-out 0.6s backwards' }}>
-              <p style={{ fontSize: '14px', color: t.textMuted, lineHeight: '1.7', margin: 0 }}>
-                You said your biggest challenge is{' '}
-                <em style={{ color: t.textSecondary, fontStyle: 'italic' }}>"{answers.biggestChallenge}"</em>.{' '}
-                {firstName} has faced this. Here's the difference — he won.
-              </p>
-            </div>
-
-            <button
-              onClick={() => setStep('trial')}
-              className="btn-primary"
-              style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '18px', fontSize: '18px', fontWeight: '700', cursor: 'pointer', boxShadow: theme === 'dark' ? '0 4px 16px rgba(201, 168, 76, 0.3)' : '0 4px 16px rgba(201, 168, 76, 0.3)', animation: 'slideUp 0.6s ease-out 0.7s backwards' }}
-            >
-              Meet {firstName} →
-            </button>
           </div>
         </div>
       </>
@@ -1490,7 +1367,7 @@ function App() {
                   fontWeight: '600',
                   cursor: (trialQuestion.trim() && userName.trim() && !loading) ? 'pointer' : 'not-allowed',
                   boxShadow: (trialQuestion.trim() && userName.trim() && !loading)
-                    ? (theme === 'dark' ? '0 4px 16px rgba(201, 168, 76, 0.25)' : '0 4px 16px rgba(201, 168, 76, 0.25)')
+                    ? (theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.3)' : '0 4px 16px rgba(196, 154, 58, 0.3)')
                     : 'none'
                 }}
               >
@@ -1511,7 +1388,7 @@ function App() {
                   fontSize: '17px',
                   fontWeight: '600',
                   cursor: 'pointer',
-                  boxShadow: theme === 'dark' ? '0 4px 16px rgba(201, 168, 76, 0.25)' : '0 4px 16px rgba(201, 168, 76, 0.25)'
+                  boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.3)' : '0 4px 16px rgba(196, 154, 58, 0.3)'
                 }}
               >
                 Continue →
@@ -1569,7 +1446,7 @@ function App() {
             </p>
 
             <button
-              onClick={() => setStep('transformation')}
+              onClick={() => setStep('paywall')}
               style={{
                 width: '100%',
                 background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
@@ -1580,7 +1457,7 @@ function App() {
                 fontSize: '18px',
                 fontWeight: '600',
                 cursor: 'pointer',
-                boxShadow: theme === 'dark' ? '0 4px 16px rgba(201, 168, 76, 0.3)' : '0 4px 16px rgba(201, 168, 76, 0.3)'
+                boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.4)'
               }}
             >
               Show me pricing →
@@ -1591,20 +1468,10 @@ function App() {
     );
   }
 
-  // Transformation Screen
-  if (step === 'transformation') {
-    return <TransformationScreen theme={theme} setTheme={setTheme} setStep={setStep} />;
-  }
-
   // Paywall
   if (step === 'paywall') {
     const t = THEMES[theme];
-    
-    const plans = {
-      weekly: { priceId: 'price_1TM2hnAis1rAntIhstKTtpHk', price: '£7', period: '/week', label: 'Try it out' },
-      monthly: { priceId: 'price_1TM2nSAis1rAntIhrzVU3kBi', price: '£19', period: '/month', label: 'Best value', savings: 'Save £9/month vs weekly' },
-      yearly: { priceId: 'price_1TM2nrAis1rAntIhgHWzLP6j', price: '£297', period: '/year', label: 'One-time payment', savings: 'Never pay again' }
-    };
+    const plans = PLAN_DETAILS;
 
     const handleCheckout = async () => {
       const plan = plans[selectedPlan];
@@ -1647,7 +1514,7 @@ function App() {
 
             <div style={{ display: 'grid', gap: '16px', marginBottom: '32px' }}>
               <div onClick={() => setSelectedPlan('weekly')} style={{ background: selectedPlan === 'weekly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card, border: selectedPlan === 'weekly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '24px', cursor: 'pointer', transition: 'all 0.3s' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <div>
                     <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>Weekly</h3>
                     <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>{plans.weekly.label}</p>
@@ -1657,21 +1524,13 @@ function App() {
                     <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>{plans.weekly.period}</p>
                   </div>
                 </div>
-                {['3 mentors (Carnegie, Marcus Aurelius, Napoleon)', '30 messages per week'].map(f => (
-                  <p key={f} style={{ fontSize: '12px', color: t.textTertiary, margin: '0 0 4px 0', lineHeight: '1.5' }}>✓ {f}</p>
-                ))}
-                {selectedPlan === 'weekly' && (
-                  <button onClick={(e) => { e.stopPropagation(); handleCheckout(); }} className="btn-primary" style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '16px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', marginTop: '16px' }}>
-                    Start Now →
-                  </button>
-                )}
               </div>
 
               <div onClick={() => setSelectedPlan('monthly')} style={{ background: selectedPlan === 'monthly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card, border: selectedPlan === 'monthly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '24px', cursor: 'pointer', position: 'relative', transition: 'all 0.3s' }}>
                 <div style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: t.accent, color: theme === 'dark' ? '#000' : '#fff', padding: '4px 16px', borderRadius: '12px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.5px' }}>
                   MOST POPULAR
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
                   <div>
                     <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>Monthly</h3>
                     <p style={{ fontSize: '13px', color: t.accent, margin: 0 }}>{plans.monthly.label}</p>
@@ -1681,21 +1540,13 @@ function App() {
                     <p style={{ fontSize: '12px', color: t.textTertiary, margin: 0 }}>{plans.monthly.period}</p>
                   </div>
                 </div>
-                {['All 7 mentors', 'Unlimited messages', 'Image uploads (coming soon)', 'Conversation history'].map(f => (
-                  <p key={f} style={{ fontSize: '12px', color: t.textTertiary, margin: '0 0 4px 0', lineHeight: '1.5' }}>✓ {f}</p>
-                ))}
                 <p style={{ fontSize: '12px', color: t.textMuted, margin: '12px 0 0 0' }}>{plans.monthly.savings}</p>
-                {selectedPlan === 'monthly' && (
-                  <button onClick={(e) => { e.stopPropagation(); handleCheckout(); }} className="btn-primary" style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '16px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', marginTop: '16px' }}>
-                    Start Now →
-                  </button>
-                )}
               </div>
 
               <div onClick={() => setSelectedPlan('yearly')} style={{ background: selectedPlan === 'yearly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card, border: selectedPlan === 'yearly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '24px', cursor: 'pointer', transition: 'all 0.3s' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
                   <div>
-                    <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>Lifetime</h3>
+                    <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>Yearly</h3>
                     <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>{plans.yearly.label}</p>
                   </div>
                   <div style={{ textAlign: 'right' }}>
@@ -1703,46 +1554,332 @@ function App() {
                     <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>{plans.yearly.period}</p>
                   </div>
                 </div>
-                {['Everything in Monthly', 'Early access to new mentors', 'Request new mentors', 'Downloadable transcripts'].map(f => (
-                  <p key={f} style={{ fontSize: '12px', color: t.textTertiary, margin: '0 0 4px 0', lineHeight: '1.5' }}>✓ {f}</p>
-                ))}
                 <p style={{ fontSize: '12px', color: t.textMuted, margin: '12px 0 0 0' }}>{plans.yearly.savings}</p>
-                {selectedPlan === 'yearly' && (
-                  <button onClick={(e) => { e.stopPropagation(); handleCheckout(); }} className="btn-primary" style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '16px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', marginTop: '16px' }}>
-                    Start Now →
-                  </button>
-                )}
               </div>
             </div>
+
+            <div style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '12px', padding: '20px', marginBottom: '24px' }}>
+              <p style={{ fontSize: '14px', color: t.textSecondary, margin: '0 0 12px 0', fontWeight: '500' }}>What you get:</p>
+              <p style={{ fontSize: '13px', color: t.textTertiary, margin: '0 0 8px 0', lineHeight: '1.6' }}>✓ Unlimited questions to all 7 mentors</p>
+              <p style={{ fontSize: '13px', color: t.textTertiary, margin: '0 0 8px 0', lineHeight: '1.6' }}>✓ Save all your conversations</p>
+              <p style={{ fontSize: '13px', color: t.textTertiary, margin: '0', lineHeight: '1.6' }}>✓ Cancel anytime</p>
+            </div>
+
+            <button
+              onClick={handleCheckout}
+              className="btn-primary"
+              style={{
+                width: '100%',
+                background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
+                color: theme === 'dark' ? '#000' : '#fff',
+                border: 'none',
+                borderRadius: '30px',
+                padding: '18px',
+                fontSize: '18px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                marginBottom: '16px',
+                boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.4)'
+              }}
+            >
+              Start Now →
+            </button>
 
             <p style={{ fontSize: '12px', color: t.textMuted, textAlign: 'center', margin: 0, lineHeight: '1.5' }}>
               7-day money-back guarantee. Cancel anytime.
             </p>
+          </div>
+        </div>
+      </>
+    );
+  }
 
-            <div style={{ marginTop: '40px' }}>
-              <p style={{ fontSize: '11px', color: t.textMuted, textAlign: 'center', marginBottom: '16px', letterSpacing: '1.5px', textTransform: 'uppercase' }}>FAQ</p>
-              {[
-                { q: "Is this just ChatGPT?", a: "No. These mentors are trained to think, speak and reason exactly as the historical figure would — with their specific philosophies, frameworks and blind spots. You're not getting generic AI. You're getting Carnegie's actual worldview on your problem." },
-                { q: "Will it actually help me or just sound good?", a: "That depends on what you bring to it. Vague questions get vague answers. Specific situations get specific frameworks. The more real you are with it, the more useful it becomes." },
-                { q: "What if I don't know which mentor to ask?", a: "Start with the one whose life most resembles what you're trying to build. Building a business from nothing? Carnegie. Struggling with pressure and discipline? Marcus Aurelius. Making a big strategic decision? Napoleon." },
-                { q: "Can I cancel anytime?", a: "Yes. No forms, no phone calls. Cancel in one click from your Stripe billing portal." },
-                { q: "What if it's not for me?", a: "7-day money-back guarantee. If you don't find it useful in the first week, reply to your welcome email and I'll refund you in full. No questions asked." }
-              ].map((faq, i) => (
-                <div key={i} style={{ borderBottom: `1px solid ${t.inputBorder}` }}>
+  if (step === 'settings') {
+    const t = THEMES[theme];
+    const plan = PLAN_DETAILS[selectedPlan] || PLAN_DETAILS.monthly;
+
+    return (
+      <>
+        <GlobalStyles />
+        <ThemeToggle theme={theme} setTheme={setTheme} />
+        <div className="noise" style={{ opacity: t.noise }} />
+        <div style={{
+          minHeight: '100vh',
+          background: t.bg,
+          padding: '40px 20px 60px',
+          overflow: 'auto'
+        }}>
+          <div style={{ maxWidth: '720px', margin: '0 auto' }}>
+            <button
+              onClick={returnToMainApp}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: 'none',
+                border: 'none',
+                color: t.textTertiary,
+                cursor: 'pointer',
+                padding: '0',
+                marginBottom: '20px',
+                fontSize: '14px'
+              }}
+            >
+              <ArrowLeft size={16} />
+              Back to app
+            </button>
+
+            <div style={{ marginBottom: '28px' }}>
+              <h1 style={{ fontSize: '42px', color: t.text, margin: '0 0 8px 0', fontWeight: '500', fontFamily: "'Cormorant Garamond', serif" }}>
+                Settings
+              </h1>
+              <p style={{ fontSize: '16px', color: t.textTertiary, margin: 0, lineHeight: '1.6' }}>
+                Manage how Mentor looks, how your account appears, and what happens with your subscription.
+              </p>
+            </div>
+
+            <div style={{ display: 'grid', gap: '16px' }}>
+              <section style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '20px', padding: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '18px', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme === 'dark' ? '#000' : '#fff' }}>
+                      {theme === 'dark' ? <Moon size={18} /> : <Sun size={18} />}
+                    </div>
+                    <div>
+                      <h2 style={{ fontSize: '18px', color: t.text, margin: '0 0 4px 0', fontWeight: '600' }}>Appearance</h2>
+                      <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>Your theme preference is saved locally.</p>
+                    </div>
+                  </div>
+
                   <button
-                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    style={{ width: '100%', background: 'none', border: 'none', padding: '16px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', textAlign: 'left', gap: '12px' }}
+                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                    style={{
+                      border: `1px solid ${t.cardBorder}`,
+                      background: t.input,
+                      color: t.text,
+                      borderRadius: '999px',
+                      padding: '12px 16px',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      fontWeight: '600'
+                    }}
                   >
-                    <span style={{ fontSize: '14px', color: t.textSecondary, fontWeight: '500' }}>{faq.q}</span>
-                    <span style={{ fontSize: '20px', color: t.textMuted, flexShrink: 0, transition: 'transform 0.2s', transform: openFaq === i ? 'rotate(45deg)' : 'rotate(0deg)', display: 'inline-block' }}>+</span>
+                    Switch to {theme === 'dark' ? 'light' : 'dark'}
                   </button>
-                  {openFaq === i && (
-                    <p style={{ fontSize: '14px', color: t.textTertiary, lineHeight: '1.6', margin: '0 0 16px 0' }}>
-                      {faq.a}
-                    </p>
+                </div>
+              </section>
+
+              <section style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '20px', padding: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', marginBottom: '18px', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme === 'dark' ? '#000' : '#fff' }}>
+                      <CreditCard size={18} />
+                    </div>
+                    <div>
+                      <h2 style={{ fontSize: '18px', color: t.text, margin: '0 0 4px 0', fontWeight: '600' }}>Billing & Subscription</h2>
+                      <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>Current plan: {plan.name}</p>
+                    </div>
+                  </div>
+
+                  <div style={{ textAlign: 'right' }}>
+                    <p style={{ fontSize: '12px', color: t.textMuted, margin: '0 0 4px 0', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Status</p>
+                    <p style={{ fontSize: '14px', color: t.accent, margin: 0, fontWeight: '600' }}>Active</p>
+                  </div>
+                </div>
+
+                <p style={{ fontSize: '14px', color: t.textSecondary, lineHeight: '1.6', margin: '0 0 18px 0' }}>
+                  Use Stripe to update billing details, switch plans, or cancel your subscription.
+                </p>
+
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                  <button
+                    onClick={openBillingPortal}
+                    disabled={billingBusy}
+                    style={{
+                      background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
+                      color: theme === 'dark' ? '#000' : '#fff',
+                      border: 'none',
+                      borderRadius: '30px',
+                      padding: '14px 18px',
+                      fontSize: '14px',
+                      fontWeight: '700',
+                      cursor: billingBusy ? 'not-allowed' : 'pointer',
+                      boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.3)' : '0 4px 16px rgba(196, 154, 58, 0.3)'
+                    }}
+                  >
+                    {billingBusy ? 'Opening Stripe...' : 'Manage in Stripe'}
+                  </button>
+
+                  <button
+                    onClick={openBillingPortal}
+                    disabled={billingBusy}
+                    style={{
+                      background: 'transparent',
+                      color: t.textSecondary,
+                      border: `1px solid ${t.cardBorder}`,
+                      borderRadius: '30px',
+                      padding: '14px 18px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      cursor: billingBusy ? 'not-allowed' : 'pointer'
+                    }}
+                  >
+                    Cancel via Stripe
+                  </button>
+                </div>
+              </section>
+
+              <section style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '20px', padding: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '18px', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme === 'dark' ? '#000' : '#fff' }}>
+                      <User size={18} />
+                    </div>
+                    <div>
+                      <h2 style={{ fontSize: '18px', color: t.text, margin: '0 0 4px 0', fontWeight: '600' }}>Account details</h2>
+                      <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>Keep your name and email current.</p>
+                    </div>
+                  </div>
+
+                  {!editingAccount && (
+                    <button
+                      onClick={() => setEditingAccount(true)}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        background: 'transparent',
+                        border: `1px solid ${t.cardBorder}`,
+                        color: t.textSecondary,
+                        borderRadius: '999px',
+                        padding: '12px 16px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        fontWeight: '600'
+                      }}
+                    >
+                      <PencilLine size={16} />
+                      Update
+                    </button>
                   )}
                 </div>
-              ))}
+
+                {editingAccount ? (
+                  <div style={{ display: 'grid', gap: '14px' }}>
+                    <label style={{ display: 'grid', gap: '8px' }}>
+                      <span style={{ fontSize: '13px', color: t.textMuted }}>Name</span>
+                      <input
+                        type="text"
+                        value={accountDraft.name}
+                        onChange={(e) => setAccountDraft(prev => ({ ...prev, name: e.target.value }))}
+                        style={{
+                          width: '100%',
+                          background: t.input,
+                          border: `1px solid ${t.inputBorder}`,
+                          borderRadius: '12px',
+                          padding: '14px 16px',
+                          fontSize: '15px',
+                          color: t.text,
+                          outline: 'none'
+                        }}
+                      />
+                    </label>
+
+                    <label style={{ display: 'grid', gap: '8px' }}>
+                      <span style={{ fontSize: '13px', color: t.textMuted }}>Email</span>
+                      <input
+                        type="email"
+                        value={accountDraft.email}
+                        onChange={(e) => setAccountDraft(prev => ({ ...prev, email: e.target.value }))}
+                        style={{
+                          width: '100%',
+                          background: t.input,
+                          border: `1px solid ${t.inputBorder}`,
+                          borderRadius: '12px',
+                          padding: '14px 16px',
+                          fontSize: '15px',
+                          color: t.text,
+                          outline: 'none'
+                        }}
+                      />
+                    </label>
+
+                    <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                      <button
+                        onClick={handleAccountSave}
+                        style={{
+                          background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
+                          color: theme === 'dark' ? '#000' : '#fff',
+                          border: 'none',
+                          borderRadius: '30px',
+                          padding: '14px 18px',
+                          fontSize: '14px',
+                          fontWeight: '700',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Save changes
+                      </button>
+                      <button
+                        onClick={() => {
+                          setAccountDraft(accountProfile);
+                          setEditingAccount(false);
+                        }}
+                        style={{
+                          background: 'transparent',
+                          color: t.textSecondary,
+                          border: `1px solid ${t.cardBorder}`,
+                          borderRadius: '30px',
+                          padding: '14px 18px',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ display: 'grid', gap: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', padding: '14px 16px', borderRadius: '12px', background: t.input, border: `1px solid ${t.inputBorder}` }}>
+                      <span style={{ fontSize: '13px', color: t.textMuted }}>Name</span>
+                      <span style={{ fontSize: '15px', color: t.text, fontWeight: '600' }}>{accountProfile.name || 'Not set'}</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', padding: '14px 16px', borderRadius: '12px', background: t.input, border: `1px solid ${t.inputBorder}` }}>
+                      <span style={{ fontSize: '13px', color: t.textMuted, display: 'inline-flex', alignItems: 'center', gap: '8px' }}><Mail size={14} /> Email</span>
+                      <span style={{ fontSize: '15px', color: t.text, fontWeight: '600' }}>{accountProfile.email || 'Not set'}</span>
+                    </div>
+                  </div>
+                )}
+              </section>
+
+              <button
+                onClick={handleLogout}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  justifyContent: 'center',
+                  background: 'transparent',
+                  border: `1px solid ${t.cardBorder}`,
+                  borderRadius: '16px',
+                  padding: '16px 18px',
+                  color: t.textSecondary,
+                  cursor: 'pointer',
+                  fontSize: '15px',
+                  fontWeight: '600'
+                }}
+              >
+                <LogOut size={16} />
+                Log out
+              </button>
+
+              {editingAccount === false && accountProfile.email === '' && (
+                <p style={{ fontSize: '13px', color: t.textMuted, margin: 0, lineHeight: '1.6' }}>
+                  Add an email address to use Stripe billing management.
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -1752,401 +1889,6 @@ function App() {
 
   return <div>Loading...</div>;
 }
-
-// Daily Drop Screen Component
-const DAY_MAP = [
-  { mentorId: 'seneca',     theme: 'time and what actually matters',   themeLabel: 'Time & What Matters' },
-  { mentorId: 'carnegie',   theme: 'money and pricing',                themeLabel: 'Money & Pricing' },
-  { mentorId: 'napoleon',   theme: 'strategy and competition',         themeLabel: 'Strategy & Competition' },
-  { mentorId: 'marcus',     theme: 'discipline and focus',             themeLabel: 'Discipline & Focus' },
-  { mentorId: 'jobs',       theme: 'building and creating',            themeLabel: 'Building & Creating' },
-  { mentorId: 'rockefeller',theme: 'systems and long-term thinking',   themeLabel: 'Systems & Long-Term' },
-  { mentorId: 'nietzsche',  theme: 'identity and self-overcoming',     themeLabel: 'Identity & Self-Overcoming' },
-];
-const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-const DailyDropScreen = ({ theme, setTheme, setStep, setSelectedMentor }) => {
-  const t = THEMES[theme];
-  const [loading, setLoading] = useState(true);
-  const [response, setResponse] = useState(null);
-
-  const today = new Date().getDay();
-  const dayConfig = DAY_MAP[today];
-  const tomorrowConfig = DAY_MAP[(today + 1) % 7];
-  const mentor = MENTORS.find(m => m.id === dayConfig.mentorId);
-  const tomorrowMentor = MENTORS.find(m => m.id === tomorrowConfig.mentorId);
-  const firstName = mentor.name.split(' ')[0];
-
-  useEffect(() => {
-    const dateKey = new Date().toISOString().split('T')[0];
-    const cacheKey = `daily_drop_${dateKey}_${dayConfig.mentorId}`;
-    const cached = localStorage.getItem(cacheKey);
-    if (cached) { setResponse(cached); setLoading(false); return; }
-
-    fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages: [{ role: 'user', content: `Give me your single most important piece of unsolicited advice on ${dayConfig.theme} for an ambitious young person trying to build something great. Be direct, be specific, be challenging. No fluff.` }],
-        systemPrompt: mentor.systemPrompt,
-      }),
-    })
-      .then(r => r.json())
-      .then(data => {
-        const content = data.content || '';
-        localStorage.setItem(cacheKey, content);
-        setResponse(content);
-        setLoading(false);
-      })
-      .catch(() => { setResponse('Something went wrong. Try again later.'); setLoading(false); });
-  }, []);
-
-  return (
-    <>
-      <GlobalStyles />
-      <ThemeToggle theme={theme} setTheme={setTheme} />
-      <div className="noise" style={{ opacity: t.noise }} />
-      <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto' }}>
-        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-
-          <button onClick={() => setStep('chat')} style={{ background: 'none', border: 'none', color: t.textTertiary, cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', marginBottom: '40px' }}>
-            <ArrowLeft size={20} />
-          </button>
-
-          <div style={{ textAlign: 'center', marginBottom: '40px', animation: 'fadeIn 0.6s ease-out' }}>
-            <p style={{ fontSize: '11px', color: t.accent, letterSpacing: '4px', textTransform: 'uppercase', margin: '0 0 24px 0' }}>
-              {DAY_NAMES[today].toUpperCase()} DROP
-            </p>
-            <div style={{ position: 'relative', width: '120px', height: '120px', margin: '0 auto 20px auto' }}>
-              <div style={{ position: 'absolute', inset: '-3px', borderRadius: '50%', background: `linear-gradient(135deg, ${t.accent}, ${t.accentLight}, ${t.accent})`, animation: 'glowPulse 3s ease-in-out infinite' }} />
-              <img src={MENTOR_IMAGES[dayConfig.mentorId]} alt={mentor.name} style={{ width: '120px', height: '120px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(80%)', position: 'relative', zIndex: 1 }} />
-            </div>
-            <h1 className="gradient-text" style={{ fontSize: '34px', fontWeight: '500', margin: '0 0 12px 0', fontFamily: "'Cormorant Garamond', serif" }}>
-              {mentor.name}
-            </h1>
-            <span style={{ fontSize: '12px', color: t.accent, border: `1px solid rgba(201, 168, 76, 0.3)`, borderRadius: '20px', padding: '5px 14px', letterSpacing: '0.3px' }}>
-              {dayConfig.themeLabel}
-            </span>
-          </div>
-
-          {loading && (
-            <div style={{ textAlign: 'center', padding: '40px 0', animation: 'fadeIn 0.4s ease-out' }}>
-              <img src={MENTOR_IMAGES[dayConfig.mentorId]} alt={mentor.name} style={{ width: '56px', height: '56px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(100%)', border: `2px solid ${t.accent}`, animation: 'pulse 1.5s ease-in-out infinite', marginBottom: '16px', display: 'block', margin: '0 auto 16px' }} />
-              <p style={{ fontSize: '15px', color: t.textMuted, margin: 0 }}>
-                {firstName} is preparing today's insight...
-              </p>
-            </div>
-          )}
-
-          {!loading && response && (
-            <div style={{ animation: 'fadeIn 0.8s ease-out' }}>
-              <p style={{ fontSize: '16px', color: t.textSecondary, lineHeight: '1.8', margin: '0 0 40px 0', whiteSpace: 'pre-wrap' }}>
-                {response}
-              </p>
-              <div style={{ height: '1px', background: `linear-gradient(to right, transparent, ${t.accent}, transparent)`, opacity: 0.3, marginBottom: '24px' }} />
-              <p style={{ fontSize: '13px', color: t.textMuted, textAlign: 'center', marginBottom: '32px', lineHeight: '1.6' }}>
-                Come back tomorrow for {tomorrowMentor.name}'s drop.
-              </p>
-              <button
-                onClick={() => { setSelectedMentor(mentor); setStep('chat'); }}
-                className="btn-primary"
-                style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '18px', fontSize: '17px', fontWeight: '600', cursor: 'pointer', boxShadow: theme === 'dark' ? '0 4px 16px rgba(201, 168, 76, 0.3)' : '0 4px 16px rgba(201, 168, 76, 0.25)' }}
-              >
-                Ask {firstName} a follow-up →
-              </button>
-            </div>
-          )}
-
-        </div>
-      </div>
-    </>
-  );
-};
-
-// War Room Screen Component
-const WarRoomScreen = ({ theme, setTheme, setStep }) => {
-  const t = THEMES[theme];
-  const [question, setQuestion] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [arrivedResponses, setArrivedResponses] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleConsult = async () => {
-    if (!question.trim() || isLoading) return;
-    setIsLoading(true);
-    setSubmitted(true);
-    setArrivedResponses([]);
-
-    const promises = MENTORS.map(mentor =>
-      fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [{ role: 'user', content: question }],
-          systemPrompt: mentor.systemPrompt,
-        }),
-      })
-        .then(r => r.json())
-        .then(data => {
-          setArrivedResponses(prev => [...prev, { mentor, response: data.content || 'No response received.' }]);
-        })
-        .catch(() => {
-          setArrivedResponses(prev => [...prev, { mentor, response: 'My apologies, I could not respond at this time.' }]);
-        })
-    );
-
-    await Promise.allSettled(promises);
-    setIsLoading(false);
-  };
-
-  const stillLoading = isLoading;
-  const allDone = submitted && !isLoading && arrivedResponses.length === MENTORS.length;
-
-  return (
-    <>
-      <GlobalStyles />
-      <ThemeToggle theme={theme} setTheme={setTheme} />
-      <div className="noise" style={{ opacity: t.noise }} />
-      <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto' }}>
-        <div style={{ maxWidth: '700px', margin: '0 auto' }}>
-
-          <button
-            onClick={() => setStep('chat')}
-            style={{ background: 'none', border: 'none', color: t.textTertiary, cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', marginBottom: '40px' }}
-          >
-            <ArrowLeft size={20} />
-          </button>
-
-          <div style={{ textAlign: 'center', marginBottom: '40px', animation: 'fadeIn 0.6s ease-out' }}>
-            <p style={{ fontSize: '11px', color: t.accent, letterSpacing: '4px', textTransform: 'uppercase', margin: '0 0 16px 0' }}>
-              THE WAR ROOM
-            </p>
-            <h1 style={{ fontSize: '36px', color: t.text, margin: '0 0 12px 0', fontFamily: "'Cormorant Garamond', serif", fontWeight: '500' }}>
-              Seven minds. One question.
-            </h1>
-            <p style={{ fontSize: '16px', color: t.textMuted, margin: 0 }}>
-              Ask anything. Every mentor answers.
-            </p>
-          </div>
-
-          {!submitted && (
-            <div style={{ animation: 'slideUp 0.6s ease-out 0.2s backwards' }}>
-              <textarea
-                value={question}
-                onChange={e => setQuestion(e.target.value)}
-                placeholder="Ask something worth debating..."
-                rows={5}
-                style={{ width: '100%', background: t.input, border: `1px solid ${t.inputBorder}`, borderRadius: '16px', padding: '16px', fontSize: '16px', color: t.text, outline: 'none', resize: 'none', fontFamily: 'inherit', lineHeight: '1.6', marginBottom: '16px', boxSizing: 'border-box' }}
-              />
-              <button
-                onClick={handleConsult}
-                disabled={!question.trim()}
-                style={{ width: '100%', background: question.trim() ? `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)` : t.inputBorder, color: question.trim() ? (theme === 'dark' ? '#000' : '#fff') : t.textMuted, border: 'none', borderRadius: '30px', padding: '16px', fontSize: '17px', fontWeight: '600', cursor: question.trim() ? 'pointer' : 'not-allowed', boxShadow: question.trim() ? (theme === 'dark' ? '0 4px 16px rgba(201, 168, 76, 0.3)' : '0 4px 16px rgba(201, 168, 76, 0.25)') : 'none' }}
-              >
-                Consult All Mentors →
-              </button>
-            </div>
-          )}
-
-          {submitted && (
-            <div style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '16px 20px', marginBottom: '32px', animation: 'fadeIn 0.4s ease-out' }}>
-              <p style={{ fontSize: '11px', color: t.textMuted, margin: '0 0 6px 0', textTransform: 'uppercase', letterSpacing: '1px' }}>Your question</p>
-              <p style={{ fontSize: '15px', color: t.textSecondary, margin: 0, lineHeight: '1.6' }}>{question}</p>
-            </div>
-          )}
-
-          {submitted && stillLoading && (
-            <div style={{ textAlign: 'center', marginBottom: '32px', animation: 'fadeIn 0.4s ease-out' }}>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
-                {MENTORS.map((mentor, i) => {
-                  const hasArrived = arrivedResponses.some(r => r.mentor.id === mentor.id);
-                  return (
-                    <img
-                      key={mentor.id}
-                      src={MENTOR_IMAGES[mentor.id]}
-                      alt={mentor.name}
-                      style={{ width: '44px', height: '44px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(100%)', border: `2px solid ${hasArrived ? t.accent : t.inputBorder}`, animation: hasArrived ? 'none' : `pulse 1.5s ease-in-out infinite`, animationDelay: `${i * 0.2}s`, opacity: hasArrived ? 1 : 0.6, transition: 'all 0.4s' }}
-                    />
-                  );
-                })}
-              </div>
-              <p style={{ fontSize: '14px', color: t.textMuted, margin: 0 }}>
-                The council is deliberating... ({arrivedResponses.length}/{MENTORS.length})
-              </p>
-            </div>
-          )}
-
-          <div>
-            {arrivedResponses.map((item) => (
-              <div
-                key={item.mentor.id}
-                style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '20px', marginBottom: '16px', animation: 'slideUp 0.5s ease-out' }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '14px', paddingBottom: '14px', borderBottom: `1px solid ${t.inputBorder}` }}>
-                  <img src={MENTOR_IMAGES[item.mentor.id]} alt={item.mentor.name} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(100%)', border: `2px solid ${t.accent}`, flexShrink: 0 }} />
-                  <div>
-                    <p style={{ fontSize: '15px', color: t.accent, margin: 0, fontWeight: '600' }}>{item.mentor.name}</p>
-                    <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>{item.mentor.title}</p>
-                  </div>
-                </div>
-                <p style={{ fontSize: '15px', color: t.textSecondary, margin: 0, lineHeight: '1.7', whiteSpace: 'pre-wrap' }}>
-                  {item.response}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {allDone && (
-            <button
-              onClick={() => { setSubmitted(false); setArrivedResponses([]); setQuestion(''); setIsLoading(false); }}
-              style={{ width: '100%', background: 'none', border: `1px solid ${t.cardBorder}`, borderRadius: '30px', padding: '14px', fontSize: '15px', color: t.textTertiary, cursor: 'pointer', marginTop: '8px', transition: 'all 0.2s' }}
-            >
-              Ask another question
-            </button>
-          )}
-
-        </div>
-      </div>
-    </>
-  );
-};
-
-// Transformation Screen Component
-const TransformationScreen = ({ theme, setTheme, setStep }) => {
-  const t = THEMES[theme];
-  const ref0 = useRef(null);
-  const ref1 = useRef(null);
-  const ref2 = useRef(null);
-  const featuresRef = useRef(null);
-  const [visible, setVisible] = useState([false, false, false]);
-  const [featuresVisible, setFeaturesVisible] = useState(false);
-
-  useEffect(() => {
-    const items = [
-      { ref: ref0, index: 0 },
-      { ref: ref1, index: 1 },
-      { ref: ref2, index: 2 },
-    ];
-    const observers = items.map(({ ref, index }) => {
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setTimeout(() => setVisible(prev => { const n = [...prev]; n[index] = true; return n; }), index * 150);
-            observer.disconnect();
-          }
-        },
-        { threshold: 0.15 }
-      );
-      if (ref.current) observer.observe(ref.current);
-      return observer;
-    });
-
-    const featObs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setFeaturesVisible(true); featObs.disconnect(); } },
-      { threshold: 0.15 }
-    );
-    if (featuresRef.current) featObs.observe(featuresRef.current);
-
-    return () => { observers.forEach(o => o.disconnect()); featObs.disconnect(); };
-  }, []);
-
-  const outcomes = [
-    { num: '01', title: 'You stop guessing.', body: 'Every decision you make right now is a coin flip. With Mentor, every answer comes from someone who has already solved your exact problem. The guesswork ends.' },
-    { num: '02', title: 'You move faster.', body: "The biggest cost in building anything isn't money. It's time lost to indecision and wrong turns. One conversation with Carnegie or Napoleon can save you months." },
-    { num: '03', title: 'You become someone different.', body: "This isn't information. It's identity. Spending time inside the minds of the greatest people who ever lived changes how you think, how you carry yourself, and what you believe is possible." },
-  ];
-
-  const refs = [ref0, ref1, ref2];
-
-  const features = [
-    '7 legendary mentors', 'Unlimited conversations', 'Reading List — 35 books',
-    'Image uploads (coming soon)', 'Conversation history', 'Downloadable transcripts',
-    'Early access to new mentors', 'Request new mentors',
-  ];
-
-  return (
-    <>
-      <GlobalStyles />
-      <ThemeToggle theme={theme} setTheme={setTheme} />
-      <div className="noise" style={{ opacity: t.noise }} />
-      <div style={{ minHeight: '100vh', background: t.bg, padding: '80px 20px 80px', overflow: 'auto' }}>
-        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-
-          <div style={{ textAlign: 'center', marginBottom: '80px', animation: 'fadeIn 0.8s ease-out' }}>
-            <p style={{ fontSize: '11px', color: t.textMuted, letterSpacing: '4px', textTransform: 'uppercase', margin: '0 0 20px 0' }}>
-              THE DIFFERENCE
-            </p>
-            <h1 className="gradient-text" style={{ fontSize: '42px', fontWeight: '500', margin: '0 0 16px 0', fontFamily: "'Cormorant Garamond', serif", lineHeight: '1.2' }}>
-              This is what changes.
-            </h1>
-            <p style={{ fontSize: '16px', color: t.textMuted, fontWeight: '300', margin: 0, animation: 'fadeIn 0.8s ease-out 0.3s backwards' }}>
-              When you finally have the right people in your corner.
-            </p>
-          </div>
-
-          {outcomes.map((o, i) => (
-            <div key={i}>
-              <div
-                ref={refs[i]}
-                style={{
-                  position: 'relative',
-                  padding: '40px 0',
-                  opacity: visible[i] ? 1 : 0,
-                  transform: visible[i] ? 'translateY(0)' : 'translateY(30px)',
-                  transition: `opacity 0.6s ease-out, transform 0.6s ease-out`,
-                }}
-              >
-                <div style={{ position: 'absolute', top: '10px', left: '-8px', fontSize: '96px', fontWeight: '700', color: t.accent, opacity: 0.12, lineHeight: 1, fontFamily: "'Cormorant Garamond', serif", userSelect: 'none', animation: 'float 6s ease-in-out infinite' }}>
-                  {o.num}
-                </div>
-                <h2 style={{ fontSize: '22px', color: t.text, margin: '0 0 12px 0', fontWeight: '700', position: 'relative' }}>
-                  {o.title}
-                </h2>
-                <p style={{ fontSize: '15px', color: t.textTertiary, lineHeight: '1.7', margin: 0, position: 'relative' }}>
-                  {o.body}
-                </p>
-              </div>
-              {i < 2 && (
-                <div style={{ height: '1px', background: `linear-gradient(to right, transparent, ${t.accent}, transparent)`, opacity: 0.25 }} />
-              )}
-            </div>
-          ))}
-
-          <div
-            ref={featuresRef}
-            style={{ marginTop: '80px', opacity: featuresVisible ? 1 : 0, transform: featuresVisible ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease-out, transform 0.6s ease-out' }}
-          >
-            <p style={{ fontSize: '11px', color: t.accent, letterSpacing: '4px', textTransform: 'uppercase', margin: '0 0 32px 0', textAlign: 'center' }}>
-              INSIDE MENTOR
-            </p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '12px 32px', marginBottom: '64px' }}>
-              {features.map(f => (
-                <div key={f} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ color: t.accent, fontSize: '14px', flexShrink: 0 }}>✓</span>
-                  <span style={{ fontSize: '15px', color: t.textSecondary }}>{f}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ textAlign: 'center' }}>
-            <button
-              onClick={() => setStep('paywall')}
-              className="btn-primary"
-              style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '18px', fontSize: '18px', fontWeight: '700', cursor: 'pointer', marginBottom: '16px', boxShadow: theme === 'dark' ? '0 4px 16px rgba(201, 168, 76, 0.3)' : '0 4px 16px rgba(201, 168, 76, 0.3)' }}
-            >
-              Show me pricing →
-            </button>
-            <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>
-              Join the people who stopped figuring it out alone.
-            </p>
-          </div>
-
-        </div>
-      </div>
-    </>
-  );
-};
 
 // Theme Toggle Component
 const ThemeToggle = ({ theme, setTheme }) => (
@@ -2163,8 +1905,8 @@ const ThemeToggle = ({ theme, setTheme }) => (
         ? 'linear-gradient(145deg, #1a1a1a 0%, #141414 100%)'
         : 'linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%)',
       border: theme === 'dark' 
-        ? '1px solid rgba(201, 168, 76, 0.25)'
-        : '1px solid rgba(201, 168, 76, 0.25)',
+        ? '1px solid rgba(212, 175, 55, 0.3)'
+        : '1px solid rgba(196, 154, 58, 0.3)',
       cursor: 'pointer',
       display: 'flex',
       alignItems: 'center',
@@ -2183,14 +1925,49 @@ const ThemeToggle = ({ theme, setTheme }) => (
   </button>
 );
 
+const SettingsButton = ({ theme, onClick }) => (
+  <button
+    onClick={onClick}
+    aria-label="Open settings"
+    style={{
+      position: 'fixed',
+      top: '20px',
+      right: '88px',
+      width: '56px',
+      height: '56px',
+      borderRadius: '50%',
+      background: theme === 'dark'
+        ? 'linear-gradient(145deg, #1a1a1a 0%, #141414 100%)'
+        : 'linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%)',
+      border: theme === 'dark'
+        ? '1px solid rgba(212, 175, 55, 0.3)'
+        : '1px solid rgba(196, 154, 58, 0.3)',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      boxShadow: theme === 'dark'
+        ? '0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+        : '0 4px 16px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
+      zIndex: 1000,
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      color: theme === 'dark' ? '#f8e5a0' : '#c49a3a'
+    }}
+    onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.1) rotate(15deg)'; }}
+    onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1) rotate(0deg)'; }}
+  >
+    <Settings size={22} />
+  </button>
+);
+
 // Global Styles Component
 const GlobalStyles = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap');
-
+    
     * { box-sizing: border-box; }
-    body { margin: 0; padding: 0; overflow-x: hidden; font-weight: 300; line-height: 1.8; }
-
+    body { margin: 0; padding: 0; overflow-x: hidden; }
+    
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -2215,13 +1992,9 @@ const GlobalStyles = () => (
       0%, 80%, 100% { transform: scale(0); }
       40% { transform: scale(1); }
     }
-    @keyframes glowPulse {
-      0%, 100% { box-shadow: 0 0 20px rgba(201, 168, 76, 0.4), 0 0 40px rgba(201, 168, 76, 0.1); }
-      50% { box-shadow: 0 0 40px rgba(201, 168, 76, 0.8), 0 0 80px rgba(201, 168, 76, 0.3); }
-    }
-
+    
     .gradient-text {
-      background: linear-gradient(135deg, #c9a84c 0%, #e8d08a 50%, #c9a84c 100%);
+      background: linear-gradient(135deg, #d4af37 0%, #f8e5a0 50%, #d4af37 100%);
       background-size: 200% 200%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -2229,10 +2002,11 @@ const GlobalStyles = () => (
       animation: shimmer 3s linear infinite;
     }
     .glass-card {
-      background: rgba(255,255,255,0.03);
+      background: rgba(20, 20, 20, 0.6);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 1px solid rgba(212, 175, 55, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
     .btn-primary {
       position: relative;
@@ -2251,10 +2025,16 @@ const GlobalStyles = () => (
       transform: translate(-50%, -50%);
       transition: width 0.6s, height 0.6s;
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201, 168, 76, 0.35) !important; }
     .btn-primary:active::before { width: 300px; height: 300px; }
-    textarea::placeholder, input::placeholder { color: #555; opacity: 1; }
-    .noise { display: none; }
+    textarea::placeholder, input::placeholder { color: #666; opacity: 1; }
+    .noise {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E");
+    }
   `}</style>
 );
 
