@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Send, ArrowLeft, X, ChevronRight } from 'lucide-react';
+import { Send, ArrowLeft, X, ChevronRight, Settings, LogOut, Moon, Sun, Mail, User, CreditCard, PencilLine } from 'lucide-react';
 import { MENTORS } from './mentors';
 
 const MENTOR_IMAGES = {
@@ -80,10 +80,40 @@ const THEMES = {
   }
 };
 
+const PLAN_DETAILS = {
+  weekly: { name: 'Weekly', priceId: 'price_1TM2nrAis1rAntIhgHWzLP6j', price: '£7', period: '/week', label: 'Try it out' },
+  monthly: { name: 'Monthly', priceId: 'price_1TM2nSAis1rAntIhrzVU3kBi', price: '£19', period: '/month', label: 'Best value', savings: 'Save £9/month vs weekly' },
+  yearly: { name: 'Yearly', priceId: 'price_1TM2nrAis1rAntIhgHWzLP6j', price: '£297', period: '/year', label: 'One-time payment', savings: 'Never pay again' }
+};
+
+const STORAGE_KEYS = {
+  theme: 'mentor-ai-theme',
+  account: 'mentor-ai-account',
+  plan: 'mentor-ai-plan'
+};
+
+const DEFAULT_ACCOUNT = {
+  name: '',
+  email: ''
+};
+
+const readStoredValue = (key, fallback) => {
+  if (typeof window === 'undefined') return fallback;
+
+  const rawValue = window.localStorage.getItem(key);
+  if (rawValue == null) return fallback;
+
+  try {
+    return JSON.parse(rawValue);
+  } catch {
+    return rawValue;
+  }
+};
+
 function App() {
   const [step, setStep] = useState('hero');
-  const [theme, setTheme] = useState('dark');
-  const [selectedPlan, setSelectedPlan] = useState('monthly');
+  const [theme, setTheme] = useState(() => readStoredValue(STORAGE_KEYS.theme, 'dark'));
+  const [selectedPlan, setSelectedPlan] = useState(() => readStoredValue(STORAGE_KEYS.plan, 'monthly'));
   const [userName, setUserName] = useState('');
   const [userGoal, setUserGoal] = useState('');
   const [mentorType, setMentorType] = useState('');
@@ -94,6 +124,10 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [questionStep, setQuestionStep] = useState(1);
+  const [accountProfile, setAccountProfile] = useState(() => readStoredValue(STORAGE_KEYS.account, DEFAULT_ACCOUNT));
+  const [accountDraft, setAccountDraft] = useState(DEFAULT_ACCOUNT);
+  const [editingAccount, setEditingAccount] = useState(false);
+  const [billingBusy, setBillingBusy] = useState(false);
   const [answers, setAnswers] = useState({
     name: '',
     biggestChallenge: '',
@@ -106,8 +140,60 @@ function App() {
   useEffect(() => {
     if (window.location.pathname === '/success') {
       setStep('success');
+    } else if (window.location.pathname === '/settings') {
+      setStep('settings');
     }
   }, []);
+
+  useEffect(() => {
+    const onPopState = () => {
+      if (window.location.pathname === '/success') {
+        setStep('success');
+        return;
+      }
+
+      if (window.location.pathname === '/settings') {
+        setStep('settings');
+        return;
+      }
+
+      setStep(selectedMentor ? 'chat' : 'hero');
+    };
+
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, [selectedMentor]);
+
+  useEffect(() => {
+    window.localStorage.setItem(STORAGE_KEYS.theme, JSON.stringify(theme));
+  }, [theme]);
+
+  useEffect(() => {
+    window.localStorage.setItem(STORAGE_KEYS.plan, JSON.stringify(selectedPlan));
+  }, [selectedPlan]);
+
+  useEffect(() => {
+    window.localStorage.setItem(STORAGE_KEYS.account, JSON.stringify(accountProfile));
+  }, [accountProfile]);
+
+  useEffect(() => {
+    if (answers.name && answers.name !== accountProfile.name) {
+      setAccountProfile(prev => ({ ...prev, name: answers.name }));
+    }
+  }, [answers.name]);
+
+  useEffect(() => {
+    if (userName.includes('@') && userName !== accountProfile.email) {
+      setAccountProfile(prev => ({ ...prev, email: userName }));
+    }
+  }, [userName]);
+
+  useEffect(() => {
+    if (step === 'settings') {
+      setAccountDraft(accountProfile);
+      setEditingAccount(false);
+    }
+  }, [step, accountProfile]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -135,6 +221,70 @@ function App() {
       setMessages(prev => [...prev, { role: 'assistant', content: 'My apologies, I seem to be having difficulty connecting. Please try again.' }]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const openSettings = () => {
+    window.history.pushState({}, '', '/settings');
+    setStep('settings');
+  };
+
+  const returnToMainApp = () => {
+    window.history.pushState({}, '', '/');
+    setStep('chat');
+  };
+
+  const handleLogout = () => {
+    window.history.pushState({}, '', '/');
+    setStep('hero');
+    setSelectedMentor(null);
+    setMessages([]);
+    setInput('');
+    setLoading(false);
+    setTrialQuestion('');
+    setTrialResponse('');
+    setMentorType('');
+  };
+
+  const handleAccountSave = () => {
+    const nextProfile = {
+      name: accountDraft.name.trim(),
+      email: accountDraft.email.trim()
+    };
+
+    setAccountProfile(nextProfile);
+    setAnswers(prev => ({ ...prev, name: nextProfile.name }));
+    setUserName(nextProfile.email);
+    setEditingAccount(false);
+  };
+
+  const openBillingPortal = async () => {
+    const email = accountProfile.email || userName;
+    if (!email) {
+      alert('Add an email address first so Stripe can find your subscription.');
+      return;
+    }
+
+    setBillingBusy(true);
+    try {
+      const response = await fetch('/api/create-portal-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await response.json();
+
+      if (!data.url) {
+        throw new Error(data.error || 'Unable to open Stripe portal');
+      }
+
+      window.location.href = data.url;
+    } catch (error) {
+      console.error('Billing portal error:', error);
+      alert('Unable to open Stripe right now. Please try again.');
+    } finally {
+      setBillingBusy(false);
     }
   };
 
@@ -213,6 +363,7 @@ function App() {
       <>
         <GlobalStyles />
         <ThemeToggle theme={theme} setTheme={setTheme} />
+        <SettingsButton theme={theme} onClick={openSettings} />
         <div className="noise" style={{ opacity: t.noise }} />
         <div style={{
           minHeight: '100vh',
@@ -310,6 +461,7 @@ function App() {
       <>
         <GlobalStyles />
         <ThemeToggle theme={theme} setTheme={setTheme} />
+        <SettingsButton theme={theme} onClick={openSettings} />
         <div className="noise" style={{ opacity: t.noise }} />
         <div style={{
           height: '100vh',
@@ -1319,12 +1471,7 @@ function App() {
   // Paywall
   if (step === 'paywall') {
     const t = THEMES[theme];
-    
-    const plans = {
-      weekly: { priceId: 'price_1TM2nrAis1rAntIhgHWzLP6j', price: '£7', period: '/week', label: 'Try it out' },
-      monthly: { priceId: 'price_1TM2nSAis1rAntIhrzVU3kBi', price: '£19', period: '/month', label: 'Best value', savings: 'Save £9/month vs weekly' },
-      yearly: { priceId: 'price_1TM2nrAis1rAntIhgHWzLP6j', price: '£297', period: '/year', label: 'One-time payment', savings: 'Never pay again' }
-    };
+    const plans = PLAN_DETAILS;
 
     const handleCheckout = async () => {
       const plan = plans[selectedPlan];
@@ -1447,6 +1594,299 @@ function App() {
     );
   }
 
+  if (step === 'settings') {
+    const t = THEMES[theme];
+    const plan = PLAN_DETAILS[selectedPlan] || PLAN_DETAILS.monthly;
+
+    return (
+      <>
+        <GlobalStyles />
+        <ThemeToggle theme={theme} setTheme={setTheme} />
+        <div className="noise" style={{ opacity: t.noise }} />
+        <div style={{
+          minHeight: '100vh',
+          background: t.bg,
+          padding: '40px 20px 60px',
+          overflow: 'auto'
+        }}>
+          <div style={{ maxWidth: '720px', margin: '0 auto' }}>
+            <button
+              onClick={returnToMainApp}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: 'none',
+                border: 'none',
+                color: t.textTertiary,
+                cursor: 'pointer',
+                padding: '0',
+                marginBottom: '20px',
+                fontSize: '14px'
+              }}
+            >
+              <ArrowLeft size={16} />
+              Back to app
+            </button>
+
+            <div style={{ marginBottom: '28px' }}>
+              <h1 style={{ fontSize: '42px', color: t.text, margin: '0 0 8px 0', fontWeight: '500', fontFamily: "'Cormorant Garamond', serif" }}>
+                Settings
+              </h1>
+              <p style={{ fontSize: '16px', color: t.textTertiary, margin: 0, lineHeight: '1.6' }}>
+                Manage how Mentor looks, how your account appears, and what happens with your subscription.
+              </p>
+            </div>
+
+            <div style={{ display: 'grid', gap: '16px' }}>
+              <section style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '20px', padding: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '18px', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme === 'dark' ? '#000' : '#fff' }}>
+                      {theme === 'dark' ? <Moon size={18} /> : <Sun size={18} />}
+                    </div>
+                    <div>
+                      <h2 style={{ fontSize: '18px', color: t.text, margin: '0 0 4px 0', fontWeight: '600' }}>Appearance</h2>
+                      <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>Your theme preference is saved locally.</p>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                    style={{
+                      border: `1px solid ${t.cardBorder}`,
+                      background: t.input,
+                      color: t.text,
+                      borderRadius: '999px',
+                      padding: '12px 16px',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      fontWeight: '600'
+                    }}
+                  >
+                    Switch to {theme === 'dark' ? 'light' : 'dark'}
+                  </button>
+                </div>
+              </section>
+
+              <section style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '20px', padding: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', marginBottom: '18px', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme === 'dark' ? '#000' : '#fff' }}>
+                      <CreditCard size={18} />
+                    </div>
+                    <div>
+                      <h2 style={{ fontSize: '18px', color: t.text, margin: '0 0 4px 0', fontWeight: '600' }}>Billing & Subscription</h2>
+                      <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>Current plan: {plan.name}</p>
+                    </div>
+                  </div>
+
+                  <div style={{ textAlign: 'right' }}>
+                    <p style={{ fontSize: '12px', color: t.textMuted, margin: '0 0 4px 0', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Status</p>
+                    <p style={{ fontSize: '14px', color: t.accent, margin: 0, fontWeight: '600' }}>Active</p>
+                  </div>
+                </div>
+
+                <p style={{ fontSize: '14px', color: t.textSecondary, lineHeight: '1.6', margin: '0 0 18px 0' }}>
+                  Use Stripe to update billing details, switch plans, or cancel your subscription.
+                </p>
+
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                  <button
+                    onClick={openBillingPortal}
+                    disabled={billingBusy}
+                    style={{
+                      background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
+                      color: theme === 'dark' ? '#000' : '#fff',
+                      border: 'none',
+                      borderRadius: '30px',
+                      padding: '14px 18px',
+                      fontSize: '14px',
+                      fontWeight: '700',
+                      cursor: billingBusy ? 'not-allowed' : 'pointer',
+                      boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.3)' : '0 4px 16px rgba(196, 154, 58, 0.3)'
+                    }}
+                  >
+                    {billingBusy ? 'Opening Stripe...' : 'Manage in Stripe'}
+                  </button>
+
+                  <button
+                    onClick={openBillingPortal}
+                    disabled={billingBusy}
+                    style={{
+                      background: 'transparent',
+                      color: t.textSecondary,
+                      border: `1px solid ${t.cardBorder}`,
+                      borderRadius: '30px',
+                      padding: '14px 18px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      cursor: billingBusy ? 'not-allowed' : 'pointer'
+                    }}
+                  >
+                    Cancel via Stripe
+                  </button>
+                </div>
+              </section>
+
+              <section style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '20px', padding: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '18px', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: theme === 'dark' ? '#000' : '#fff' }}>
+                      <User size={18} />
+                    </div>
+                    <div>
+                      <h2 style={{ fontSize: '18px', color: t.text, margin: '0 0 4px 0', fontWeight: '600' }}>Account details</h2>
+                      <p style={{ fontSize: '13px', color: t.textMuted, margin: 0 }}>Keep your name and email current.</p>
+                    </div>
+                  </div>
+
+                  {!editingAccount && (
+                    <button
+                      onClick={() => setEditingAccount(true)}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        background: 'transparent',
+                        border: `1px solid ${t.cardBorder}`,
+                        color: t.textSecondary,
+                        borderRadius: '999px',
+                        padding: '12px 16px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        fontWeight: '600'
+                      }}
+                    >
+                      <PencilLine size={16} />
+                      Update
+                    </button>
+                  )}
+                </div>
+
+                {editingAccount ? (
+                  <div style={{ display: 'grid', gap: '14px' }}>
+                    <label style={{ display: 'grid', gap: '8px' }}>
+                      <span style={{ fontSize: '13px', color: t.textMuted }}>Name</span>
+                      <input
+                        type="text"
+                        value={accountDraft.name}
+                        onChange={(e) => setAccountDraft(prev => ({ ...prev, name: e.target.value }))}
+                        style={{
+                          width: '100%',
+                          background: t.input,
+                          border: `1px solid ${t.inputBorder}`,
+                          borderRadius: '12px',
+                          padding: '14px 16px',
+                          fontSize: '15px',
+                          color: t.text,
+                          outline: 'none'
+                        }}
+                      />
+                    </label>
+
+                    <label style={{ display: 'grid', gap: '8px' }}>
+                      <span style={{ fontSize: '13px', color: t.textMuted }}>Email</span>
+                      <input
+                        type="email"
+                        value={accountDraft.email}
+                        onChange={(e) => setAccountDraft(prev => ({ ...prev, email: e.target.value }))}
+                        style={{
+                          width: '100%',
+                          background: t.input,
+                          border: `1px solid ${t.inputBorder}`,
+                          borderRadius: '12px',
+                          padding: '14px 16px',
+                          fontSize: '15px',
+                          color: t.text,
+                          outline: 'none'
+                        }}
+                      />
+                    </label>
+
+                    <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                      <button
+                        onClick={handleAccountSave}
+                        style={{
+                          background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
+                          color: theme === 'dark' ? '#000' : '#fff',
+                          border: 'none',
+                          borderRadius: '30px',
+                          padding: '14px 18px',
+                          fontSize: '14px',
+                          fontWeight: '700',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Save changes
+                      </button>
+                      <button
+                        onClick={() => {
+                          setAccountDraft(accountProfile);
+                          setEditingAccount(false);
+                        }}
+                        style={{
+                          background: 'transparent',
+                          color: t.textSecondary,
+                          border: `1px solid ${t.cardBorder}`,
+                          borderRadius: '30px',
+                          padding: '14px 18px',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ display: 'grid', gap: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', padding: '14px 16px', borderRadius: '12px', background: t.input, border: `1px solid ${t.inputBorder}` }}>
+                      <span style={{ fontSize: '13px', color: t.textMuted }}>Name</span>
+                      <span style={{ fontSize: '15px', color: t.text, fontWeight: '600' }}>{accountProfile.name || 'Not set'}</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', padding: '14px 16px', borderRadius: '12px', background: t.input, border: `1px solid ${t.inputBorder}` }}>
+                      <span style={{ fontSize: '13px', color: t.textMuted, display: 'inline-flex', alignItems: 'center', gap: '8px' }}><Mail size={14} /> Email</span>
+                      <span style={{ fontSize: '15px', color: t.text, fontWeight: '600' }}>{accountProfile.email || 'Not set'}</span>
+                    </div>
+                  </div>
+                )}
+              </section>
+
+              <button
+                onClick={handleLogout}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  justifyContent: 'center',
+                  background: 'transparent',
+                  border: `1px solid ${t.cardBorder}`,
+                  borderRadius: '16px',
+                  padding: '16px 18px',
+                  color: t.textSecondary,
+                  cursor: 'pointer',
+                  fontSize: '15px',
+                  fontWeight: '600'
+                }}
+              >
+                <LogOut size={16} />
+                Log out
+              </button>
+
+              {editingAccount === false && accountProfile.email === '' && (
+                <p style={{ fontSize: '13px', color: t.textMuted, margin: 0, lineHeight: '1.6' }}>
+                  Add an email address to use Stripe billing management.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return <div>Loading...</div>;
 }
 
@@ -1482,6 +1922,41 @@ const ThemeToggle = ({ theme, setTheme }) => (
     onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1) rotate(0deg)'; }}
   >
     {theme === 'dark' ? '☀️' : '🌙'}
+  </button>
+);
+
+const SettingsButton = ({ theme, onClick }) => (
+  <button
+    onClick={onClick}
+    aria-label="Open settings"
+    style={{
+      position: 'fixed',
+      top: '20px',
+      right: '88px',
+      width: '56px',
+      height: '56px',
+      borderRadius: '50%',
+      background: theme === 'dark'
+        ? 'linear-gradient(145deg, #1a1a1a 0%, #141414 100%)'
+        : 'linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%)',
+      border: theme === 'dark'
+        ? '1px solid rgba(212, 175, 55, 0.3)'
+        : '1px solid rgba(196, 154, 58, 0.3)',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      boxShadow: theme === 'dark'
+        ? '0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+        : '0 4px 16px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
+      zIndex: 1000,
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      color: theme === 'dark' ? '#f8e5a0' : '#c49a3a'
+    }}
+    onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.1) rotate(15deg)'; }}
+    onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1) rotate(0deg)'; }}
+  >
+    <Settings size={22} />
   </button>
 );
 
