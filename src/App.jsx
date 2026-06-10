@@ -154,6 +154,9 @@ function App() {
     failedAt: ''
   });
   const [openFaq, setOpenFaq] = useState(null);
+  const [userTier, setUserTier] = useState(() => {
+    try { return localStorage.getItem('mentor_plan') || 'monthly'; } catch { return 'monthly'; }
+  });
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [upgradeMessage, setUpgradeMessage] = useState('');
   const messagesEndRef = useRef(null);
@@ -294,6 +297,21 @@ function App() {
       <>
         <GlobalStyles />
         <ThemeToggle theme={theme} setTheme={setTheme} />
+        <button
+          onClick={() => setStep('settings')}
+          aria-label="Settings"
+          style={{
+            position: 'fixed', top: '20px', left: '20px', width: '56px', height: '56px',
+            borderRadius: '50%',
+            background: theme === 'dark' ? 'linear-gradient(145deg, #1a1a1a 0%, #141414 100%)' : 'linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%)',
+            border: '1px solid rgba(201, 168, 76, 0.25)', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: theme === 'dark' ? '0 4px 16px rgba(0,0,0,0.4)' : '0 4px 16px rgba(0,0,0,0.1)',
+            zIndex: 1000, fontSize: '22px', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+          }}
+        >
+          ⚙️
+        </button>
         <div className="noise" style={{ opacity: t.noise }} />
         <div style={{
           minHeight: '100vh',
@@ -555,6 +573,13 @@ function App() {
             >
               <ArrowLeft size={20} />
             </button>
+            <button
+              onClick={() => setStep('settings')}
+              aria-label="Settings"
+              style={{ background: 'none', border: 'none', color: t.textMuted, cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', fontSize: '18px' }}
+            >
+              ⚙️
+            </button>
             <img
               src={MENTOR_IMAGES[selectedMentor.id]}
               alt={selectedMentor.name}
@@ -568,8 +593,9 @@ function App() {
               }}
             />
             <div>
-              <h3 style={{ fontSize: '16px', color: t.text, margin: 0, fontWeight: '600' }}>
+              <h3 style={{ fontSize: '16px', color: t.text, margin: 0, fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 {selectedMentor.name}
+                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#c9a84c', display: 'inline-block', flexShrink: 0, animation: 'pulse-dot 1.8s ease-in-out infinite' }} />
               </h3>
               <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>
                 {selectedMentor.title}
@@ -1750,6 +1776,113 @@ function App() {
     );
   }
 
+  if (step === 'settings') {
+    const t = THEMES[theme];
+    const planLabels = { weekly: 'Weekly', monthly: 'Monthly', yearly: 'Yearly', lifetime: 'Lifetime' };
+    return (
+      <>
+        <GlobalStyles />
+        <div className="noise" style={{ opacity: t.noise }} />
+        <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto' }}>
+          <div style={{ maxWidth: '480px', margin: '0 auto' }}>
+            <button
+              onClick={() => setStep('chat')}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '8px',
+                background: 'none', border: 'none', color: t.textTertiary,
+                cursor: 'pointer', padding: '0', marginBottom: '32px', fontSize: '14px'
+              }}
+            >
+              ← Back
+            </button>
+
+            <h1 style={{ fontSize: '36px', color: t.text, margin: '0 0 8px 0', fontWeight: '500', fontFamily: "'Cormorant Garamond', serif" }}>
+              Settings
+            </h1>
+            <p style={{ fontSize: '14px', color: t.textTertiary, margin: '0 0 36px 0' }}>
+              Manage your preferences and account.
+            </p>
+
+            <div style={{ display: 'grid', gap: '16px' }}>
+              <section style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '20px', padding: '24px' }}>
+                <h2 style={{ fontSize: '13px', color: t.textMuted, margin: '0 0 16px 0', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                  Theme
+                </h2>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+                  <p style={{ fontSize: '15px', color: t.text, margin: 0, fontWeight: '500' }}>
+                    {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
+                  </p>
+                  <button
+                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                    style={{
+                      background: t.input, border: `1px solid ${t.cardBorder}`,
+                      color: t.text, borderRadius: '999px', padding: '10px 18px',
+                      cursor: 'pointer', fontSize: '14px', fontWeight: '600',
+                      flexShrink: 0, whiteSpace: 'nowrap'
+                    }}
+                  >
+                    Switch to {theme === 'dark' ? 'Light' : 'Dark'}
+                  </button>
+                </div>
+              </section>
+
+              <section style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '20px', padding: '24px' }}>
+                <h2 style={{ fontSize: '13px', color: t.textMuted, margin: '0 0 16px 0', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                  Subscription
+                </h2>
+                <p style={{ fontSize: '15px', color: t.text, margin: '0 0 4px 0', fontWeight: '500' }}>
+                  {planLabels[userTier] || 'Monthly'} Plan
+                </p>
+                <p style={{ fontSize: '13px', color: t.accent, margin: '0 0 20px 0', fontWeight: '500' }}>Active</p>
+                <button
+                  onClick={() => window.open('https://billing.stripe.com/p/login/test_yourportallink', '_blank')}
+                  style={{
+                    background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`,
+                    color: theme === 'dark' ? '#000' : '#fff',
+                    border: 'none', borderRadius: '30px', padding: '14px 20px',
+                    fontSize: '14px', fontWeight: '700', cursor: 'pointer',
+                    boxShadow: '0 4px 16px rgba(201, 168, 76, 0.3)'
+                  }}
+                >
+                  Manage Subscription →
+                </button>
+              </section>
+
+              <section style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '20px', padding: '24px' }}>
+                <h2 style={{ fontSize: '13px', color: t.textMuted, margin: '0 0 16px 0', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                  Account
+                </h2>
+                <div style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px',
+                  padding: '14px 16px', borderRadius: '12px', background: t.input, border: `1px solid ${t.inputBorder}`
+                }}>
+                  <span style={{ fontSize: '13px', color: t.textMuted }}>Email</span>
+                  <span style={{ fontSize: '14px', color: t.text, fontWeight: '500' }}>{userName || 'Not set'}</span>
+                </div>
+              </section>
+
+              <button
+                onClick={() => {
+                  localStorage.removeItem('mentor_access');
+                  setStep('hero');
+                }}
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  gap: '10px', background: 'transparent',
+                  border: `1px solid ${t.cardBorder}`, borderRadius: '16px',
+                  padding: '16px 20px', color: t.textSecondary,
+                  cursor: 'pointer', fontSize: '15px', fontWeight: '600', width: '100%'
+                }}
+              >
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return <div>Loading...</div>;
 }
 
@@ -2218,6 +2351,10 @@ const GlobalStyles = () => (
     @keyframes glowPulse {
       0%, 100% { box-shadow: 0 0 20px rgba(201, 168, 76, 0.4), 0 0 40px rgba(201, 168, 76, 0.1); }
       50% { box-shadow: 0 0 40px rgba(201, 168, 76, 0.8), 0 0 80px rgba(201, 168, 76, 0.3); }
+    }
+    @keyframes pulse-dot {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.3); }
     }
 
     .gradient-text {
