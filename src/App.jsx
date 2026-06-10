@@ -45,21 +45,21 @@ const MENTOR_INFO = {
 
 const THEMES = {
   dark: {
-    bg: 'radial-gradient(ellipse at top, #1a1a1a 0%, #0a0a0a 50%, #000000 100%)',
-    bgSolid: '#0a0a0a',
+    bg: 'radial-gradient(ellipse at top, #1a1614 0%, #0d0c0a 60%, #0d0c0a 100%)',
+    bgSolid: '#0d0c0a',
     text: '#fff',
     textSecondary: '#ccc',
     textTertiary: '#888',
-    textMuted: '#666',
-    accent: '#d4af37',
-    accentLight: '#f8e5a0',
-    card: 'rgba(20, 20, 20, 0.6)',
-    cardBorder: 'rgba(212, 175, 55, 0.1)',
-    input: '#1a1a1a',
-    inputBorder: '#333',
-    orb1: 'rgba(212, 175, 55, 0.1)',
-    orb2: 'rgba(212, 175, 55, 0.08)',
-    noise: 0.03
+    textMuted: '#555',
+    accent: '#c9a84c',
+    accentLight: '#e8d08a',
+    card: 'rgba(255,255,255,0.03)',
+    cardBorder: 'rgba(255,255,255,0.06)',
+    input: '#141210',
+    inputBorder: '#2a2825',
+    orb1: 'rgba(201, 168, 76, 0.05)',
+    orb2: 'rgba(201, 168, 76, 0.04)',
+    noise: 0
   },
   light: {
     bg: 'radial-gradient(ellipse at top, #ffffff 0%, #f5f5f5 50%, #eeeeee 100%)',
@@ -71,11 +71,11 @@ const THEMES = {
     accent: '#c49a3a',
     accentLight: '#d4af37',
     card: 'rgba(255, 255, 255, 0.8)',
-    cardBorder: 'rgba(196, 154, 58, 0.2)',
+    cardBorder: 'rgba(201, 168, 76, 0.2)',
     input: '#f5f5f5',
     inputBorder: '#ddd',
-    orb1: 'rgba(196, 154, 58, 0.08)',
-    orb2: 'rgba(196, 154, 58, 0.06)',
+    orb1: 'rgba(201, 168, 76, 0.08)',
+    orb2: 'rgba(201, 168, 76, 0.06)',
     noise: 0.015
   }
 };
@@ -236,7 +236,7 @@ function App() {
               justifyContent: 'center',
               margin: '0 auto 32px auto',
               fontSize: '36px',
-              boxShadow: '0 0 40px rgba(212, 175, 55, 0.4)',
+              boxShadow: '0 0 40px rgba(201, 168, 76, 0.3)',
               animation: 'fadeIn 0.6s ease-out'
             }}>
               ✓
@@ -265,7 +265,7 @@ function App() {
                 fontSize: '18px',
                 fontWeight: '700',
                 cursor: 'pointer',
-                boxShadow: '0 4px 16px rgba(212, 175, 55, 0.4)',
+                boxShadow: '0 4px 16px rgba(201, 168, 76, 0.3)',
                 animation: 'fadeIn 0.6s ease-out 0.5s backwards'
               }}
             >
@@ -317,7 +317,7 @@ function App() {
               </p>
             </div>
 
-            <div style={{ display: 'grid', gap: '16px' }}>
+            <div style={{ display: 'grid', gap: '24px' }}>
               {MENTORS.map((mentor, i) => (
                 <div
                   key={mentor.id}
@@ -329,20 +329,20 @@ function App() {
                     background: t.card,
                     border: `1px solid ${t.cardBorder}`,
                     borderRadius: '16px',
-                    padding: '20px',
+                    padding: '28px',
                     cursor: 'pointer',
                     transition: 'all 0.3s',
                     display: 'flex',
-                    gap: '16px',
+                    gap: '20px',
                     alignItems: 'flex-start',
                     animation: `slideUp 0.4s ease-out ${i * 0.05}s backwards`
                   }}
                   onMouseEnter={e => {
-                    e.currentTarget.style.border = `1px solid ${t.accent}`;
+                    e.currentTarget.style.background = theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)';
                     e.currentTarget.style.transform = 'translateY(-2px)';
                   }}
                   onMouseLeave={e => {
-                    e.currentTarget.style.border = `1px solid ${t.cardBorder}`;
+                    e.currentTarget.style.background = t.card;
                     e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
@@ -350,8 +350,8 @@ function App() {
                     src={MENTOR_IMAGES[mentor.id]}
                     alt={mentor.name}
                     style={{
-                      width: '64px',
-                      height: '64px',
+                      width: '80px',
+                      height: '80px',
                       borderRadius: '50%',
                       objectFit: 'cover',
                       filter: 'grayscale(100%)',
@@ -360,18 +360,16 @@ function App() {
                     }}
                   />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
-                      <h3 style={{ fontSize: '18px', color: t.text, margin: 0, fontWeight: '600' }}>
-                        {mentor.name}
-                      </h3>
-                      <span style={{ fontSize: '12px', color: t.textMuted, flexShrink: 0, marginLeft: '8px' }}>
-                        {mentor.era}
-                      </span>
-                    </div>
-                    <p style={{ fontSize: '13px', color: t.accent, margin: '0 0 8px 0', fontWeight: '500' }}>
+                    <p style={{ fontSize: '11px', color: t.textMuted, margin: '0 0 4px 0', letterSpacing: '0.5px' }}>
+                      {mentor.era}
+                    </p>
+                    <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 4px 0', fontWeight: '500', fontFamily: "'Cormorant Garamond', serif" }}>
+                      {mentor.name}
+                    </h3>
+                    <p style={{ fontSize: '13px', color: t.accent, margin: '0 0 10px 0', fontWeight: '400' }}>
                       {MENTOR_INFO[mentor.id]?.knownFor}
                     </p>
-                    <p style={{ fontSize: '13px', color: t.textTertiary, margin: 0, lineHeight: '1.5' }}>
+                    <p style={{ fontSize: '13px', color: t.textTertiary, margin: 0, lineHeight: '1.6' }}>
                       {MENTOR_INFO[mentor.id]?.bestWith}
                     </p>
                   </div>
@@ -379,27 +377,36 @@ function App() {
               ))}
               <div
                 onClick={() => setStep('readingListIntro')}
-                style={{ background: t.card, border: `1px solid ${t.accent}`, borderRadius: '16px', padding: '20px', cursor: 'pointer', transition: 'all 0.3s', display: 'flex', gap: '16px', alignItems: 'center', animation: 'slideUp 0.4s ease-out 0.35s backwards' }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.background = theme === 'dark' ? 'rgba(212, 175, 55, 0.05)' : 'rgba(196, 154, 58, 0.05)'; }}
+                style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '36px 28px', cursor: 'pointer', transition: 'all 0.3s', position: 'relative', textAlign: 'center', animation: 'slideUp 0.4s ease-out 0.35s backwards' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.background = theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)'; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = t.card; }}
               >
-                <span style={{ fontSize: '36px', flexShrink: 0 }}>📚</span>
-                <div>
-                  <h3 style={{ fontSize: '18px', color: t.accent, margin: '0 0 4px 0', fontWeight: '600' }}>Reading List</h3>
-                  <p style={{ fontSize: '13px', color: t.textTertiary, margin: 0, lineHeight: '1.5' }}>The exact books each mentor says shaped their thinking. 35 books. Zero fluff.</p>
-                </div>
+                <div style={{ fontSize: '48px', marginBottom: '16px', lineHeight: 1 }}>📚</div>
+                <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 8px 0', fontWeight: '500', fontFamily: "'Cormorant Garamond', serif" }}>Reading List</h3>
+                <p style={{ fontSize: '14px', color: t.textTertiary, margin: 0, lineHeight: '1.6' }}>The exact books each mentor says shaped their thinking. 35 books. Zero fluff.</p>
+                <span style={{ position: 'absolute', bottom: '20px', right: '24px', fontSize: '16px', color: `rgba(201,168,76,0.5)` }}>→</span>
               </div>
               <div
                 onClick={() => setStep('warRoom')}
-                style={{ background: t.card, border: `1px solid ${t.accent}`, borderRadius: '16px', padding: '20px', cursor: 'pointer', transition: 'all 0.3s', display: 'flex', gap: '16px', alignItems: 'center', animation: 'slideUp 0.4s ease-out 0.4s backwards' }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.background = theme === 'dark' ? 'rgba(212, 175, 55, 0.05)' : 'rgba(196, 154, 58, 0.05)'; }}
+                style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '36px 28px', cursor: 'pointer', transition: 'all 0.3s', position: 'relative', textAlign: 'center', animation: 'slideUp 0.4s ease-out 0.4s backwards' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.background = theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)'; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = t.card; }}
               >
-                <span style={{ fontSize: '36px', flexShrink: 0 }}>⚔️</span>
-                <div>
-                  <h3 style={{ fontSize: '18px', color: t.accent, margin: '0 0 4px 0', fontWeight: '600' }}>The War Room</h3>
-                  <p style={{ fontSize: '13px', color: t.textTertiary, margin: 0, lineHeight: '1.5' }}>Bring every mentor into one room. One question. Seven answers.</p>
-                </div>
+                <div style={{ fontSize: '48px', marginBottom: '16px', lineHeight: 1 }}>⚔️</div>
+                <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 8px 0', fontWeight: '500', fontFamily: "'Cormorant Garamond', serif" }}>The War Room</h3>
+                <p style={{ fontSize: '14px', color: t.textTertiary, margin: 0, lineHeight: '1.6' }}>Bring every mentor into one room. One question. Seven answers.</p>
+                <span style={{ position: 'absolute', bottom: '20px', right: '24px', fontSize: '16px', color: `rgba(201,168,76,0.5)` }}>→</span>
+              </div>
+              <div
+                onClick={() => setStep('dailyDrop')}
+                style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '36px 28px', cursor: 'pointer', transition: 'all 0.3s', position: 'relative', textAlign: 'center', animation: 'slideUp 0.4s ease-out 0.45s backwards' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.background = theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = t.card; }}
+              >
+                <div style={{ fontSize: '48px', marginBottom: '16px', lineHeight: 1 }}>🔥</div>
+                <h3 style={{ fontSize: '20px', color: t.text, margin: '0 0 8px 0', fontWeight: '500', fontFamily: "'Cormorant Garamond', serif" }}>Daily Drop</h3>
+                <p style={{ fontSize: '14px', color: t.textTertiary, margin: 0, lineHeight: '1.6' }}>One mentor. One insight. Every day.</p>
+                <span style={{ position: 'absolute', bottom: '20px', right: '24px', fontSize: '16px', color: `rgba(201,168,76,0.5)` }}>→</span>
               </div>
             </div>
           </div>
@@ -411,6 +418,10 @@ function App() {
   // Reading List Intro Screen
   if (step === 'warRoom') {
     return <WarRoomScreen theme={theme} setTheme={setTheme} setStep={setStep} />;
+  }
+
+  if (step === 'dailyDrop') {
+    return <DailyDropScreen theme={theme} setTheme={setTheme} setStep={setStep} setSelectedMentor={setSelectedMentor} />;
   }
 
   if (step === 'readingListIntro') {
@@ -442,7 +453,7 @@ function App() {
             </div>
             <button
               onClick={() => setStep('readingList')}
-              style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '18px', fontSize: '17px', fontWeight: '600', cursor: 'pointer', boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.3)', animation: 'fadeIn 0.6s ease-out 0.3s backwards' }}
+              style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '18px', fontSize: '17px', fontWeight: '600', cursor: 'pointer', boxShadow: theme === 'dark' ? '0 4px 16px rgba(201, 168, 76, 0.3)' : '0 4px 16px rgba(201, 168, 76, 0.25)', animation: 'fadeIn 0.6s ease-out 0.3s backwards' }}
             >
               Show me the books →
             </button>
@@ -621,10 +632,10 @@ function App() {
                   padding: '12px 16px',
                   borderRadius: msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
                   background: msg.role === 'user'
-                    ? `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`
-                    : (theme === 'dark' ? '#1a1a1a' : '#ffffff'),
-                  border: msg.role === 'assistant' ? `1px solid ${t.inputBorder}` : 'none',
-                  color: msg.role === 'user' ? '#000' : t.textSecondary,
+                    ? 'rgba(255,255,255,0.08)'
+                    : (theme === 'dark' ? '#141210' : '#ffffff'),
+                  border: msg.role === 'assistant' ? `1px solid ${t.inputBorder}` : '1px solid rgba(255,255,255,0.1)',
+                  color: t.textSecondary,
                   fontSize: '15px',
                   lineHeight: '1.6',
                   whiteSpace: 'pre-wrap'
@@ -718,7 +729,7 @@ function App() {
                   flex: 1,
                   background: t.input,
                   border: `1px solid ${t.inputBorder}`,
-                  borderRadius: '24px',
+                  borderRadius: '32px',
                   padding: '14px 20px',
                   fontSize: '15px',
                   color: t.text,
@@ -742,7 +753,6 @@ function App() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
-                  boxShadow: (input.trim() && !loading) ? '0 4px 12px rgba(212, 175, 55, 0.4)' : 'none',
                   transition: 'all 0.2s'
                 }}
               >
@@ -805,22 +815,22 @@ function App() {
             animation: 'fadeIn 1s ease-out'
           }}>
             <h1 className="gradient-text" style={{
-              fontSize: '56px',
+              fontSize: '72px',
               fontWeight: '500',
-              margin: '0 0 20px 0',
-              letterSpacing: '3px',
+              margin: '0 0 24px 0',
+              letterSpacing: '4px',
               fontFamily: "'Cormorant Garamond', serif",
-              textShadow: `0 0 40px ${t.orb1}`
             }}>
               Mentor
             </h1>
             <p style={{
-              fontSize: '18px',
+              fontSize: '20px',
               color: t.textTertiary,
-              maxWidth: '500px',
-              margin: '0 auto 60px',
-              lineHeight: '1.6',
+              maxWidth: '480px',
+              margin: '0 auto 64px',
+              lineHeight: '1.8',
               fontWeight: '300',
+              letterSpacing: '0.01em',
               opacity: 0,
               animation: 'fadeIn 1s ease-out 0.3s forwards'
             }}>
@@ -832,16 +842,14 @@ function App() {
               style={{
                 background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 50%, ${t.accent} 100%)`,
                 backgroundSize: '200% 200%',
-                color: theme === 'dark' ? '#000' : '#fff',
+                color: '#000',
                 border: 'none',
                 borderRadius: '30px',
-                padding: '18px 56px',
-                fontSize: '17px',
+                padding: '16px 48px',
+                fontSize: '16px',
                 fontWeight: '600',
                 cursor: 'pointer',
-                boxShadow: theme === 'dark'
-                  ? '0 8px 24px rgba(212, 175, 55, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
-                  : '0 8px 24px rgba(196, 154, 58, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
+                letterSpacing: '0.03em',
                 opacity: 0,
                 animation: 'fadeIn 1s ease-out 0.6s forwards, shimmer 3s linear infinite'
               }}
@@ -872,126 +880,86 @@ function App() {
         }}>
           <div style={{ maxWidth: '600px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
             <h2 style={{
-              fontSize: '28px',
-              color: t.accent,
-              marginBottom: '40px',
+              fontSize: '48px',
+              color: t.text,
+              marginBottom: '56px',
               textAlign: 'center',
               fontWeight: '400',
               fontFamily: "'Cormorant Garamond', serif",
+              lineHeight: '1.2',
               animation: 'fadeIn 0.8s ease-out'
             }}>
-              You know you're capable of more. But you're figuring it out alone.
+              You know you're capable of more.<br />But you're figuring it out alone.
             </h2>
 
-            <div style={{ marginBottom: '32px', animation: 'slideUp 0.6s ease-out' }}>
-              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '12px' }}>
+            <div style={{ marginBottom: '0', animation: 'slideUp 0.6s ease-out' }}>
+              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
                 You're ambitious. You want to build something. Achieve something. Become someone.
               </p>
-              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '12px' }}>
+              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
                 But the path isn't clear. Should you start that business? Ask for the raise? Quit and bet on yourself?
               </p>
-              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '24px' }}>
+              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '0' }}>
                 You're making life-changing decisions with YouTube videos and Reddit threads.
               </p>
-              <button
-                className="btn-primary"
-                onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
-                style={{
-                  background: theme === 'dark'
-                    ? 'linear-gradient(145deg, #1a1a1a 0%, #141414 100%)'
-                    : 'linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%)',
-                  color: t.accent,
-                  border: `1px solid ${t.cardBorder}`,
-                  borderRadius: '30px',
-                  padding: '14px 32px',
-                  fontSize: '15px',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  width: '100%',
-                  boxShadow: theme === 'dark' ? '0 4px 16px rgba(0, 0, 0, 0.3)' : '0 4px 16px rgba(0, 0, 0, 0.1)',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                }}
-              >
-                This sounds familiar
-              </button>
             </div>
 
-            <div style={{ marginBottom: '32px', animation: 'slideUp 0.6s ease-out 0.2s backwards' }}>
-              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '12px' }}>
+            <div style={{ height: '1px', background: `linear-gradient(to right, transparent, ${t.accent}, transparent)`, opacity: 0.2, margin: '48px 0' }} />
+
+            <div style={{ marginBottom: '0', animation: 'slideUp 0.6s ease-out 0.2s backwards' }}>
+              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
                 Meanwhile, people who aren't smarter than you are winning.
               </p>
-              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '12px' }}>
+              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
                 They have mentors. People who've been there. Who know what works and what's a waste of time.
               </p>
-              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '12px' }}>
+              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
                 You? You're Googling it. Trial and error. Learning the hard way.
               </p>
-              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '24px' }}>
+              <p style={{ fontSize: '28px', color: t.text, lineHeight: '1.4', margin: '0', fontFamily: "'Cormorant Garamond', serif", fontWeight: '400' }}>
                 The gap isn't talent. It's guidance.
               </p>
-              <button
-                className="btn-primary"
-                onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
-                style={{
-                  background: theme === 'dark'
-                    ? 'linear-gradient(145deg, #1a1a1a 0%, #141414 100%)'
-                    : 'linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%)',
-                  color: t.accent,
-                  border: `1px solid ${t.cardBorder}`,
-                  borderRadius: '30px',
-                  padding: '14px 32px',
-                  fontSize: '15px',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  width: '100%',
-                  boxShadow: theme === 'dark' ? '0 4px 16px rgba(0, 0, 0, 0.3)' : '0 4px 16px rgba(0, 0, 0, 0.1)',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                }}
-              >
-                Show me the solution
-              </button>
             </div>
 
-            <div style={{ marginBottom: '32px', animation: 'slideUp 0.6s ease-out 0.4s backwards' }}>
-              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '12px' }}>
+            <div style={{ height: '1px', background: `linear-gradient(to right, transparent, ${t.accent}, transparent)`, opacity: 0.2, margin: '48px 0' }} />
+
+            <div style={{ marginBottom: '48px', animation: 'slideUp 0.6s ease-out 0.4s backwards' }}>
+              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
                 What if you could ask someone who's already done what you're trying to do?
               </p>
-              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '12px' }}>
+              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
                 Not some guru selling courses. Not ChatGPT giving you safe, generic advice.
               </p>
-              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '12px' }}>
+              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
                 Real people who built real things. Who failed, learned, and won.
               </p>
-              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '12px' }}>
+              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
                 Ask Steve Jobs if your idea is worth pursuing. Get Carnegie's take on pricing your work. Napoleon on handling competition. Marcus Aurelius when the pressure feels like too much.
               </p>
-              <p style={{ fontSize: '17px', color: t.textSecondary, lineHeight: '1.7', marginBottom: '24px' }}>
+              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '0' }}>
                 Not theory. Real frameworks from people who actually did it.
               </p>
-              <button
-                className="btn-primary"
-                onClick={() => setStep('examples')}
-                style={{
-                  background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 50%, ${t.accent} 100%)`,
-                  backgroundSize: '200% 200%',
-                  color: theme === 'dark' ? '#000' : '#fff',
-                  border: 'none',
-                  borderRadius: '30px',
-                  padding: '16px 32px',
-                  fontSize: '17px',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  width: '100%',
-                  boxShadow: theme === 'dark'
-                    ? '0 8px 24px rgba(212, 175, 55, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
-                    : '0 8px 24px rgba(196, 154, 58, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
-                  animation: 'shimmer 3s linear infinite',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                }}
-              >
-                See how it works →
-              </button>
             </div>
+            <button
+              className="btn-primary"
+              onClick={() => setStep('examples')}
+              style={{
+                background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 50%, ${t.accent} 100%)`,
+                backgroundSize: '200% 200%',
+                color: '#000',
+                border: 'none',
+                borderRadius: '30px',
+                padding: '16px 48px',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                width: '100%',
+                letterSpacing: '0.03em',
+                animation: 'shimmer 3s linear infinite',
+              }}
+            >
+              See how it works →
+            </button>
           </div>
 
           <div style={{
@@ -1100,7 +1068,7 @@ function App() {
                 fontWeight: '600',
                 cursor: 'pointer',
                 width: '100%',
-                boxShadow: theme === 'dark' ? '0 8px 24px rgba(212, 175, 55, 0.4)' : '0 8px 24px rgba(196, 154, 58, 0.3)',
+                boxShadow: theme === 'dark' ? '0 8px 24px rgba(201, 168, 76, 0.3)' : '0 8px 24px rgba(201, 168, 76, 0.25)',
                 animation: 'shimmer 3s linear infinite'
               }}
             >
@@ -1212,7 +1180,7 @@ function App() {
                   fontSize: '17px',
                   fontWeight: '600',
                   cursor: currentAnswer.trim() ? 'pointer' : 'not-allowed',
-                  boxShadow: currentAnswer.trim() ? (theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.3)' : '0 4px 16px rgba(196, 154, 58, 0.3)') : 'none'
+                  boxShadow: currentAnswer.trim() ? (theme === 'dark' ? '0 4px 16px rgba(201, 168, 76, 0.25)' : '0 4px 16px rgba(201, 168, 76, 0.25)') : 'none'
                 }}
               >
                 {questionStep === 5 ? 'Continue →' : 'Next'}
@@ -1328,7 +1296,7 @@ function App() {
 
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '32px', animation: 'slideUp 0.6s ease-out 0.5s backwards' }}>
               {traits.map(trait => (
-                <span key={trait} style={{ fontSize: '12px', color: t.accent, border: `1px solid rgba(212, 175, 55, 0.4)`, borderRadius: '20px', padding: '5px 14px', letterSpacing: '0.3px' }}>
+                <span key={trait} style={{ fontSize: '12px', color: t.accent, border: `1px solid rgba(201, 168, 76, 0.3)`, borderRadius: '20px', padding: '5px 14px', letterSpacing: '0.3px' }}>
                   {trait}
                 </span>
               ))}
@@ -1345,7 +1313,7 @@ function App() {
             <button
               onClick={() => setStep('trial')}
               className="btn-primary"
-              style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '18px', fontSize: '18px', fontWeight: '700', cursor: 'pointer', boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.4)', animation: 'slideUp 0.6s ease-out 0.7s backwards' }}
+              style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '18px', fontSize: '18px', fontWeight: '700', cursor: 'pointer', boxShadow: theme === 'dark' ? '0 4px 16px rgba(201, 168, 76, 0.3)' : '0 4px 16px rgba(201, 168, 76, 0.3)', animation: 'slideUp 0.6s ease-out 0.7s backwards' }}
             >
               Meet {firstName} →
             </button>
@@ -1522,7 +1490,7 @@ function App() {
                   fontWeight: '600',
                   cursor: (trialQuestion.trim() && userName.trim() && !loading) ? 'pointer' : 'not-allowed',
                   boxShadow: (trialQuestion.trim() && userName.trim() && !loading)
-                    ? (theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.3)' : '0 4px 16px rgba(196, 154, 58, 0.3)')
+                    ? (theme === 'dark' ? '0 4px 16px rgba(201, 168, 76, 0.25)' : '0 4px 16px rgba(201, 168, 76, 0.25)')
                     : 'none'
                 }}
               >
@@ -1543,7 +1511,7 @@ function App() {
                   fontSize: '17px',
                   fontWeight: '600',
                   cursor: 'pointer',
-                  boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.3)' : '0 4px 16px rgba(196, 154, 58, 0.3)'
+                  boxShadow: theme === 'dark' ? '0 4px 16px rgba(201, 168, 76, 0.25)' : '0 4px 16px rgba(201, 168, 76, 0.25)'
                 }}
               >
                 Continue →
@@ -1612,7 +1580,7 @@ function App() {
                 fontSize: '18px',
                 fontWeight: '600',
                 cursor: 'pointer',
-                boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.4)'
+                boxShadow: theme === 'dark' ? '0 4px 16px rgba(201, 168, 76, 0.3)' : '0 4px 16px rgba(201, 168, 76, 0.3)'
               }}
             >
               Show me pricing →
@@ -1693,7 +1661,7 @@ function App() {
                   <p key={f} style={{ fontSize: '12px', color: t.textTertiary, margin: '0 0 4px 0', lineHeight: '1.5' }}>✓ {f}</p>
                 ))}
                 {selectedPlan === 'weekly' && (
-                  <button onClick={(e) => { e.stopPropagation(); handleCheckout(); }} className="btn-primary" style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '16px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', marginTop: '16px', boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.4)' }}>
+                  <button onClick={(e) => { e.stopPropagation(); handleCheckout(); }} className="btn-primary" style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '16px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', marginTop: '16px' }}>
                     Start Now →
                   </button>
                 )}
@@ -1718,7 +1686,7 @@ function App() {
                 ))}
                 <p style={{ fontSize: '12px', color: t.textMuted, margin: '12px 0 0 0' }}>{plans.monthly.savings}</p>
                 {selectedPlan === 'monthly' && (
-                  <button onClick={(e) => { e.stopPropagation(); handleCheckout(); }} className="btn-primary" style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '16px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', marginTop: '16px', boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.4)' }}>
+                  <button onClick={(e) => { e.stopPropagation(); handleCheckout(); }} className="btn-primary" style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '16px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', marginTop: '16px' }}>
                     Start Now →
                   </button>
                 )}
@@ -1740,7 +1708,7 @@ function App() {
                 ))}
                 <p style={{ fontSize: '12px', color: t.textMuted, margin: '12px 0 0 0' }}>{plans.yearly.savings}</p>
                 {selectedPlan === 'yearly' && (
-                  <button onClick={(e) => { e.stopPropagation(); handleCheckout(); }} className="btn-primary" style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '16px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', marginTop: '16px', boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.4)' }}>
+                  <button onClick={(e) => { e.stopPropagation(); handleCheckout(); }} className="btn-primary" style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '16px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', marginTop: '16px' }}>
                     Start Now →
                   </button>
                 )}
@@ -1784,6 +1752,116 @@ function App() {
 
   return <div>Loading...</div>;
 }
+
+// Daily Drop Screen Component
+const DAY_MAP = [
+  { mentorId: 'seneca',     theme: 'time and what actually matters',   themeLabel: 'Time & What Matters' },
+  { mentorId: 'carnegie',   theme: 'money and pricing',                themeLabel: 'Money & Pricing' },
+  { mentorId: 'napoleon',   theme: 'strategy and competition',         themeLabel: 'Strategy & Competition' },
+  { mentorId: 'marcus',     theme: 'discipline and focus',             themeLabel: 'Discipline & Focus' },
+  { mentorId: 'jobs',       theme: 'building and creating',            themeLabel: 'Building & Creating' },
+  { mentorId: 'rockefeller',theme: 'systems and long-term thinking',   themeLabel: 'Systems & Long-Term' },
+  { mentorId: 'nietzsche',  theme: 'identity and self-overcoming',     themeLabel: 'Identity & Self-Overcoming' },
+];
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+const DailyDropScreen = ({ theme, setTheme, setStep, setSelectedMentor }) => {
+  const t = THEMES[theme];
+  const [loading, setLoading] = useState(true);
+  const [response, setResponse] = useState(null);
+
+  const today = new Date().getDay();
+  const dayConfig = DAY_MAP[today];
+  const tomorrowConfig = DAY_MAP[(today + 1) % 7];
+  const mentor = MENTORS.find(m => m.id === dayConfig.mentorId);
+  const tomorrowMentor = MENTORS.find(m => m.id === tomorrowConfig.mentorId);
+  const firstName = mentor.name.split(' ')[0];
+
+  useEffect(() => {
+    const dateKey = new Date().toISOString().split('T')[0];
+    const cacheKey = `daily_drop_${dateKey}_${dayConfig.mentorId}`;
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) { setResponse(cached); setLoading(false); return; }
+
+    fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: `Give me your single most important piece of unsolicited advice on ${dayConfig.theme} for an ambitious young person trying to build something great. Be direct, be specific, be challenging. No fluff.` }],
+        systemPrompt: mentor.systemPrompt,
+      }),
+    })
+      .then(r => r.json())
+      .then(data => {
+        const content = data.content || '';
+        localStorage.setItem(cacheKey, content);
+        setResponse(content);
+        setLoading(false);
+      })
+      .catch(() => { setResponse('Something went wrong. Try again later.'); setLoading(false); });
+  }, []);
+
+  return (
+    <>
+      <GlobalStyles />
+      <ThemeToggle theme={theme} setTheme={setTheme} />
+      <div className="noise" style={{ opacity: t.noise }} />
+      <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto' }}>
+        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+
+          <button onClick={() => setStep('chat')} style={{ background: 'none', border: 'none', color: t.textTertiary, cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', marginBottom: '40px' }}>
+            <ArrowLeft size={20} />
+          </button>
+
+          <div style={{ textAlign: 'center', marginBottom: '40px', animation: 'fadeIn 0.6s ease-out' }}>
+            <p style={{ fontSize: '11px', color: t.accent, letterSpacing: '4px', textTransform: 'uppercase', margin: '0 0 24px 0' }}>
+              {DAY_NAMES[today].toUpperCase()} DROP
+            </p>
+            <div style={{ position: 'relative', width: '120px', height: '120px', margin: '0 auto 20px auto' }}>
+              <div style={{ position: 'absolute', inset: '-3px', borderRadius: '50%', background: `linear-gradient(135deg, ${t.accent}, ${t.accentLight}, ${t.accent})`, animation: 'glowPulse 3s ease-in-out infinite' }} />
+              <img src={MENTOR_IMAGES[dayConfig.mentorId]} alt={mentor.name} style={{ width: '120px', height: '120px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(80%)', position: 'relative', zIndex: 1 }} />
+            </div>
+            <h1 className="gradient-text" style={{ fontSize: '34px', fontWeight: '500', margin: '0 0 12px 0', fontFamily: "'Cormorant Garamond', serif" }}>
+              {mentor.name}
+            </h1>
+            <span style={{ fontSize: '12px', color: t.accent, border: `1px solid rgba(201, 168, 76, 0.3)`, borderRadius: '20px', padding: '5px 14px', letterSpacing: '0.3px' }}>
+              {dayConfig.themeLabel}
+            </span>
+          </div>
+
+          {loading && (
+            <div style={{ textAlign: 'center', padding: '40px 0', animation: 'fadeIn 0.4s ease-out' }}>
+              <img src={MENTOR_IMAGES[dayConfig.mentorId]} alt={mentor.name} style={{ width: '56px', height: '56px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(100%)', border: `2px solid ${t.accent}`, animation: 'pulse 1.5s ease-in-out infinite', marginBottom: '16px', display: 'block', margin: '0 auto 16px' }} />
+              <p style={{ fontSize: '15px', color: t.textMuted, margin: 0 }}>
+                {firstName} is preparing today's insight...
+              </p>
+            </div>
+          )}
+
+          {!loading && response && (
+            <div style={{ animation: 'fadeIn 0.8s ease-out' }}>
+              <p style={{ fontSize: '16px', color: t.textSecondary, lineHeight: '1.8', margin: '0 0 40px 0', whiteSpace: 'pre-wrap' }}>
+                {response}
+              </p>
+              <div style={{ height: '1px', background: `linear-gradient(to right, transparent, ${t.accent}, transparent)`, opacity: 0.3, marginBottom: '24px' }} />
+              <p style={{ fontSize: '13px', color: t.textMuted, textAlign: 'center', marginBottom: '32px', lineHeight: '1.6' }}>
+                Come back tomorrow for {tomorrowMentor.name}'s drop.
+              </p>
+              <button
+                onClick={() => { setSelectedMentor(mentor); setStep('chat'); }}
+                className="btn-primary"
+                style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '18px', fontSize: '17px', fontWeight: '600', cursor: 'pointer', boxShadow: theme === 'dark' ? '0 4px 16px rgba(201, 168, 76, 0.3)' : '0 4px 16px rgba(201, 168, 76, 0.25)' }}
+              >
+                Ask {firstName} a follow-up →
+              </button>
+            </div>
+          )}
+
+        </div>
+      </div>
+    </>
+  );
+};
 
 // War Room Screen Component
 const WarRoomScreen = ({ theme, setTheme, setStep }) => {
@@ -1863,7 +1941,7 @@ const WarRoomScreen = ({ theme, setTheme, setStep }) => {
               <button
                 onClick={handleConsult}
                 disabled={!question.trim()}
-                style={{ width: '100%', background: question.trim() ? `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)` : t.inputBorder, color: question.trim() ? (theme === 'dark' ? '#000' : '#fff') : t.textMuted, border: 'none', borderRadius: '30px', padding: '16px', fontSize: '17px', fontWeight: '600', cursor: question.trim() ? 'pointer' : 'not-allowed', boxShadow: question.trim() ? (theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.3)') : 'none' }}
+                style={{ width: '100%', background: question.trim() ? `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)` : t.inputBorder, color: question.trim() ? (theme === 'dark' ? '#000' : '#fff') : t.textMuted, border: 'none', borderRadius: '30px', padding: '16px', fontSize: '17px', fontWeight: '600', cursor: question.trim() ? 'pointer' : 'not-allowed', boxShadow: question.trim() ? (theme === 'dark' ? '0 4px 16px rgba(201, 168, 76, 0.3)' : '0 4px 16px rgba(201, 168, 76, 0.25)') : 'none' }}
               >
                 Consult All Mentors →
               </button>
@@ -2055,7 +2133,7 @@ const TransformationScreen = ({ theme, setTheme, setStep }) => {
             <button
               onClick={() => setStep('paywall')}
               className="btn-primary"
-              style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '18px', fontSize: '18px', fontWeight: '700', cursor: 'pointer', marginBottom: '16px', boxShadow: theme === 'dark' ? '0 4px 16px rgba(212, 175, 55, 0.4)' : '0 4px 16px rgba(196, 154, 58, 0.4)' }}
+              style={{ width: '100%', background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 100%)`, color: theme === 'dark' ? '#000' : '#fff', border: 'none', borderRadius: '30px', padding: '18px', fontSize: '18px', fontWeight: '700', cursor: 'pointer', marginBottom: '16px', boxShadow: theme === 'dark' ? '0 4px 16px rgba(201, 168, 76, 0.3)' : '0 4px 16px rgba(201, 168, 76, 0.3)' }}
             >
               Show me pricing →
             </button>
@@ -2085,8 +2163,8 @@ const ThemeToggle = ({ theme, setTheme }) => (
         ? 'linear-gradient(145deg, #1a1a1a 0%, #141414 100%)'
         : 'linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%)',
       border: theme === 'dark' 
-        ? '1px solid rgba(212, 175, 55, 0.3)'
-        : '1px solid rgba(196, 154, 58, 0.3)',
+        ? '1px solid rgba(201, 168, 76, 0.25)'
+        : '1px solid rgba(201, 168, 76, 0.25)',
       cursor: 'pointer',
       display: 'flex',
       alignItems: 'center',
@@ -2109,10 +2187,10 @@ const ThemeToggle = ({ theme, setTheme }) => (
 const GlobalStyles = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap');
-    
+
     * { box-sizing: border-box; }
-    body { margin: 0; padding: 0; overflow-x: hidden; }
-    
+    body { margin: 0; padding: 0; overflow-x: hidden; font-weight: 300; line-height: 1.8; }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -2138,12 +2216,12 @@ const GlobalStyles = () => (
       40% { transform: scale(1); }
     }
     @keyframes glowPulse {
-      0%, 100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.4), 0 0 40px rgba(212, 175, 55, 0.1); }
-      50% { box-shadow: 0 0 40px rgba(212, 175, 55, 0.8), 0 0 80px rgba(212, 175, 55, 0.3); }
+      0%, 100% { box-shadow: 0 0 20px rgba(201, 168, 76, 0.4), 0 0 40px rgba(201, 168, 76, 0.1); }
+      50% { box-shadow: 0 0 40px rgba(201, 168, 76, 0.8), 0 0 80px rgba(201, 168, 76, 0.3); }
     }
-    
+
     .gradient-text {
-      background: linear-gradient(135deg, #d4af37 0%, #f8e5a0 50%, #d4af37 100%);
+      background: linear-gradient(135deg, #c9a84c 0%, #e8d08a 50%, #c9a84c 100%);
       background-size: 200% 200%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -2151,11 +2229,10 @@ const GlobalStyles = () => (
       animation: shimmer 3s linear infinite;
     }
     .glass-card {
-      background: rgba(20, 20, 20, 0.6);
+      background: rgba(255,255,255,0.03);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(212, 175, 55, 0.1);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255,255,255,0.06);
     }
     .btn-primary {
       position: relative;
@@ -2174,16 +2251,10 @@ const GlobalStyles = () => (
       transform: translate(-50%, -50%);
       transition: width 0.6s, height 0.6s;
     }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201, 168, 76, 0.35) !important; }
     .btn-primary:active::before { width: 300px; height: 300px; }
-    textarea::placeholder, input::placeholder { color: #666; opacity: 1; }
-    .noise {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 1;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E");
-    }
+    textarea::placeholder, input::placeholder { color: #555; opacity: 1; }
+    .noise { display: none; }
   `}</style>
 );
 
