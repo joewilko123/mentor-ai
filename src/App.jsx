@@ -510,8 +510,16 @@ function App() {
               }}
             />
             <div>
-              <h3 style={{ fontSize: '16px', color: t.text, margin: 0, fontWeight: '600' }}>
+              <h3 style={{ fontSize: '16px', color: t.text, margin: 0, fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 {selectedMentor.name}
+                <span style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  background: '#c9a84c',
+                  display: 'inline-block',
+                  animation: 'pulse-dot 1.8s ease-in-out infinite'
+                }} />
               </h3>
               <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>
                 {selectedMentor.title}
@@ -1993,6 +2001,10 @@ const GlobalStyles = () => (
     @keyframes bounce {
       0%, 80%, 100% { transform: scale(0); }
       40% { transform: scale(1); }
+    }
+    @keyframes pulse-dot {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.3); }
     }
     
     .gradient-text {
