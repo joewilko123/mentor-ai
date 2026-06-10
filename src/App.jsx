@@ -80,6 +80,58 @@ const THEMES = {
   }
 };
 
+const READING_LIST = {
+  carnegie: [
+    { title: 'The Gospel of Wealth', author: 'Andrew Carnegie', reason: 'I wrote it. Read what I actually believed about money and responsibility.' },
+    { title: 'How to Win Friends and Influence People', author: 'Dale Carnegie', reason: 'Master people. Everything else follows.' },
+    { title: 'The Autobiography of Benjamin Franklin', author: 'Benjamin Franklin', reason: 'The original self-made man. Study him.' },
+    { title: 'Think and Grow Rich', author: 'Napoleon Hill', reason: 'He interviewed me. The principles are sound.' },
+    { title: 'The Score Takes Care of Itself', author: 'Bill Walsh', reason: 'Systems beat talent every time. This is why.' },
+  ],
+  jobs: [
+    { title: "Zen Mind, Beginner's Mind", author: 'Shunryu Suzuki', reason: "See everything fresh. Experts are blind to what's obvious." },
+    { title: "The Innovator's Dilemma", author: 'Clayton Christensen', reason: "Understand why great companies die. Then don't." },
+    { title: 'Autobiography of a Yogi', author: 'Paramahansa Yogananda', reason: "Changed my life at 17. Still the most important book I've read." },
+    { title: 'King Lear', author: 'Shakespeare', reason: 'Power, betrayal, vision. Everything about building something great is in here.' },
+    { title: 'Only the Paranoid Survive', author: 'Andy Grove', reason: "Stay hungry. Stay paranoid. They're the same thing." },
+  ],
+  marcus: [
+    { title: 'Meditations', author: 'Marcus Aurelius', reason: 'My private notes. Not written for you — which is exactly why you should read them.' },
+    { title: 'Letters from a Stoic', author: 'Seneca', reason: 'My contemporary. Sharper than most give him credit for.' },
+    { title: 'The Obstacle Is the Way', author: 'Ryan Holiday', reason: 'A modern translation of what we actually meant.' },
+    { title: 'Discourses', author: 'Epictetus', reason: 'He was a slave who understood freedom better than any emperor.' },
+    { title: "Man's Search for Meaning", author: 'Viktor Frankl', reason: 'Stoicism tested in the worst conditions imaginable. He passed.' },
+  ],
+  napoleon: [
+    { title: 'The Art of War', author: 'Sun Tzu', reason: 'I read it. Then I improved on it.' },
+    { title: 'Julius Caesar', author: 'Shakespeare', reason: "Study Caesar's mistakes. I did." },
+    { title: 'On War', author: 'Carl von Clausewitz', reason: 'He wrote about me. The principles are correct.' },
+    { title: 'The 48 Laws of Power', author: 'Robert Greene', reason: 'Every law is something I either used or had used against me.' },
+    { title: 'Genghis Khan and the Making of the Modern World', author: 'Jack Weatherford', reason: 'The greatest conqueror. Understand his system.' },
+  ],
+  seneca: [
+    { title: 'Letters from a Stoic', author: 'Seneca', reason: 'Start here. Everything I believed is in these letters.' },
+    { title: 'Meditations', author: 'Marcus Aurelius', reason: 'My student emperor. He listened better than most.' },
+    { title: 'The Shortness of Life', author: 'Seneca', reason: 'You are wasting time reading this list instead of living. Go.' },
+    { title: 'Essays', author: 'Michel de Montaigne', reason: 'He understood that self-knowledge is the only knowledge worth having.' },
+    { title: 'The Death of Ivan Ilyich', author: 'Leo Tolstoy', reason: 'A man who realised too late he had lived wrong. Do not be him.' },
+  ],
+  rockefeller: [
+    { title: 'Random Reminiscences of Men and Events', author: 'John D. Rockefeller', reason: 'My own words. Unfiltered.' },
+    { title: 'Titan', author: 'Ron Chernow', reason: 'The most accurate account of how I actually operated.' },
+    { title: 'The Outsiders', author: 'William Thorndike', reason: 'Capital allocation is the only skill that truly compounds. This book proves it.' },
+    { title: "Poor Charlie's Almanack", author: 'Charlie Munger', reason: 'Mental models built wealth for Buffett. They will for you too.' },
+    { title: 'The Richest Man in Babylon', author: 'George S. Clason', reason: 'Simple principles. Almost nobody actually follows them.' },
+  ],
+  nietzsche: [
+    { title: 'Thus Spoke Zarathustra', author: 'Friedrich Nietzsche', reason: 'My masterpiece. You will not understand it the first time. Read it anyway.' },
+    { title: 'Beyond Good and Evil', author: 'Friedrich Nietzsche', reason: 'Everything you were taught about morality is a cage. This is the key.' },
+    { title: 'The Will to Power', author: 'Friedrich Nietzsche', reason: 'My unfinished work. The most honest thing I ever wrote.' },
+    { title: 'Antifragile', author: 'Nassim Taleb', reason: 'He understood what I meant by what does not kill me.' },
+    { title: 'The Trial', author: 'Franz Kafka', reason: 'A man destroyed by systems he never questioned. Do not be Josef K.' },
+  ],
+};
+
 function App() {
   const [step, setStep] = useState('hero');
   const [theme, setTheme] = useState('dark');
@@ -219,6 +271,16 @@ function App() {
             >
               Meet your mentors →
             </button>
+            <div style={{ marginTop: '24px', animation: 'fadeIn 0.6s ease-out 0.7s backwards' }}>
+              <p style={{ fontSize: '12px', color: t.textMuted, margin: '0 0 4px 0' }}>
+                Add to your home screen for the best experience.
+              </p>
+              <p style={{ fontSize: '12px', color: t.textMuted, margin: 0, lineHeight: '1.5' }}>
+                {/iphone|ipad|ipod/i.test(navigator.userAgent)
+                  ? 'Tap the share button below then tap Add to Home Screen.'
+                  : 'Tap the menu button then Add to Home Screen.'}
+              </p>
+            </div>
           </div>
         </div>
       </>
@@ -250,9 +312,17 @@ function App() {
               }}>
                 Mentor
               </h1>
-              <p style={{ fontSize: '16px', color: t.textTertiary, margin: 0 }}>
+              <p style={{ fontSize: '16px', color: t.textTertiary, margin: '0 0 16px 0' }}>
                 Choose your mentor. Ask anything.
               </p>
+              <button
+                onClick={() => setStep('readingList')}
+                style={{ background: 'none', border: `1px solid ${t.cardBorder}`, borderRadius: '20px', padding: '8px 20px', fontSize: '13px', color: t.textTertiary, cursor: 'pointer', transition: 'all 0.2s' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = t.accent; e.currentTarget.style.color = t.accent; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = t.cardBorder; e.currentTarget.style.color = t.textTertiary; }}
+              >
+                Reading List
+              </button>
             </div>
 
             <div style={{ display: 'grid', gap: '16px' }}>
@@ -316,6 +386,58 @@ function App() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // Reading List Screen
+  if (step === 'readingList') {
+    const t = THEMES[theme];
+    return (
+      <>
+        <GlobalStyles />
+        <ThemeToggle theme={theme} setTheme={setTheme} />
+        <div className="noise" style={{ opacity: t.noise }} />
+        <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto' }}>
+          <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '40px' }}>
+              <button
+                onClick={() => setStep('chat')}
+                style={{ background: 'none', border: 'none', color: t.textTertiary, cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', flexShrink: 0 }}
+              >
+                <ArrowLeft size={20} />
+              </button>
+              <h1 className="gradient-text" style={{ fontSize: '28px', fontWeight: '500', margin: 0, letterSpacing: '2px', fontFamily: "'Cormorant Garamond', serif" }}>
+                Reading List
+              </h1>
+            </div>
+
+            {MENTORS.map((mentor, mi) => (
+              <div key={mentor.id} style={{ marginBottom: '40px', animation: `slideUp 0.4s ease-out ${mi * 0.05}s backwards` }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '14px' }}>
+                  <img
+                    src={MENTOR_IMAGES[mentor.id]}
+                    alt={mentor.name}
+                    style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(100%)', border: `2px solid ${t.accent}`, flexShrink: 0 }}
+                  />
+                  <div>
+                    <h2 style={{ fontSize: '17px', color: t.accent, margin: '0 0 2px 0', fontWeight: '600' }}>{mentor.name}</h2>
+                    <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>{mentor.era}</p>
+                  </div>
+                </div>
+                <div style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', overflow: 'hidden' }}>
+                  {READING_LIST[mentor.id].map((book, bi) => (
+                    <div key={bi} style={{ padding: '16px 20px', borderBottom: bi < READING_LIST[mentor.id].length - 1 ? `1px solid ${t.inputBorder}` : 'none' }}>
+                      <p style={{ fontSize: '14px', color: t.textSecondary, margin: '0 0 2px 0', fontWeight: '600' }}>{book.title}</p>
+                      <p style={{ fontSize: '12px', color: t.textMuted, margin: '0 0 6px 0' }}>{book.author}</p>
+                      <p style={{ fontSize: '13px', color: t.textTertiary, margin: 0, lineHeight: '1.5', fontStyle: 'italic' }}>"{book.reason}"</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </>
