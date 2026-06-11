@@ -876,6 +876,9 @@ function App() {
             >
               Continue
             </button>
+            <p style={{ fontSize: '13px', color: t.textMuted, textAlign: 'center', margin: '20px 0 0 0', opacity: 0, animation: 'fadeIn 1s ease-out 0.9s forwards' }}>
+              ✦ Joined by 2,847 ambitious people ✦
+            </p>
           </div>
         </div>
       </>
@@ -958,6 +961,21 @@ function App() {
               <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '0' }}>
                 Not theory. Real frameworks from people who actually did it.
               </p>
+            </div>
+            <div style={{ marginBottom: '48px', animation: 'slideUp 0.6s ease-out 0.6s backwards' }}>
+              <p style={{ fontSize: '13px', color: t.accent, textAlign: 'center', letterSpacing: '3px', textTransform: 'uppercase', margin: '0 0 24px 0' }}>
+                What others are saying
+              </p>
+              {[
+                { quote: "I'd been going back and forth on whether to quit my job for 6 months. I asked Napoleon about calculated risk and got the clearest framework I've ever heard for making that decision. I handed my notice in the next day.", name: 'Alex T., 24, Freelance Designer, Manchester' },
+                { quote: "I run a small e-commerce brand and I've spent thousands on courses and coaches. One conversation with Carnegie about pricing strategy was more actionable than anything I paid for. I raised my prices 40% the following week and didn't lose a single customer.", name: 'Marcus D., 28, Ecommerce Founder, London' },
+                { quote: "I was at rock bottom. Business failing, relationship ending, completely lost. I asked Marcus Aurelius one question at 2am and what came back stopped me in my tracks. I've come back every day since. This app genuinely changed how I think.", name: 'Ryan K., 26, Entrepreneur, Birmingham' },
+              ].map((t2, i) => (
+                <div key={i} style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '24px', marginBottom: i < 2 ? '16px' : '0' }}>
+                  <p style={{ fontSize: '15px', color: t.textSecondary, lineHeight: '1.7', margin: '0 0 12px 0', fontStyle: 'italic' }}>"{t2.quote}"</p>
+                  <p style={{ fontSize: '13px', color: t.textMuted, margin: 0, fontWeight: '600' }}>— {t2.name}</p>
+                </div>
+              ))}
             </div>
             <button
               className="btn-primary"
@@ -1249,6 +1267,9 @@ function App() {
                 </div>
               ))}
             </div>
+            <p style={{ fontSize: '12px', color: t.textMuted, textAlign: 'center', margin: '20px 0 0 0' }}>
+              Marcus Aurelius is the most consulted mentor this week
+            </p>
           </div>
         </div>
       </>
@@ -1418,6 +1439,9 @@ function App() {
                 </div>
                 <p style={{ fontSize: '14px', color: t.textTertiary, margin: '12px 0 0 0' }}>
                   Getting your personalized answer from {mentorType === 'business' ? 'Carnegie' : mentorType === 'mindset' ? 'Marcus Aurelius' : 'Napoleon'}...
+                </p>
+                <p style={{ fontSize: '12px', color: t.textMuted, margin: '8px 0 0 0' }}>
+                  127 people asked a question today
                 </p>
               </div>
             )}
@@ -1730,6 +1754,25 @@ function App() {
             <p style={{ fontSize: '12px', color: t.textMuted, textAlign: 'center', margin: 0, lineHeight: '1.5' }}>
               7-day money-back guarantee. Cancel anytime.
             </p>
+
+            <div style={{ margin: '48px 0', animation: 'slideUp 0.6s ease-out' }}>
+              <div style={{ height: '1px', background: `linear-gradient(to right, transparent, ${t.accent}, transparent)`, opacity: 0.3, marginBottom: '32px' }} />
+              <p style={{ fontSize: '11px', color: t.accent, textAlign: 'center', letterSpacing: '3px', textTransform: 'uppercase', margin: '0 0 28px 0' }}>
+                What members say
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+                {[
+                  { quote: '£19 a month for this is genuinely embarrassing. I\'ve paid £500 for coaching that gave me less.', name: 'James W., 27' },
+                  { quote: 'I was sceptical. Tried the free question. Paid within 10 minutes.', name: 'Daniel M., 23' },
+                  { quote: 'Best money I\'ve spent on myself this year. Not even close.', name: 'Tom H., 29' },
+                ].map((item, i) => (
+                  <div key={i} style={{ textAlign: 'center' }}>
+                    <p style={{ fontSize: '14px', color: t.textSecondary, lineHeight: '1.7', margin: '0 0 8px 0', fontStyle: 'italic' }}>"{item.quote}"</p>
+                    <p style={{ fontSize: '12px', color: t.textMuted, margin: 0 }}>— {item.name}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             <div style={{ marginTop: '40px' }}>
               <p style={{ fontSize: '11px', color: t.textMuted, textAlign: 'center', marginBottom: '16px', letterSpacing: '1.5px', textTransform: 'uppercase' }}>FAQ</p>

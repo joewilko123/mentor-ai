@@ -78,6 +78,25 @@ export default async function handler(req, res) {
     console.error('Supabase upsert error:', err);
   }
 
+  // Send Loops event to mark contact as a paying customer
+  try {
+    const loopsEventRes = await fetch('https://app.loops.so/api/v1/events/send', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.LOOPS_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, eventName: 'payment_completed', userGroup: tier }),
+    });
+
+    if (!loopsEventRes.ok) {
+      const text = await loopsEventRes.text();
+      console.error('Loops event failed:', text);
+    }
+  } catch (err) {
+    console.error('Loops event error:', err);
+  }
+
   // Update Loops contact with purchased tier
   try {
     const loopsRes = await fetch('https://app.loops.so/api/v1/contacts/update', {
