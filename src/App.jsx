@@ -218,8 +218,7 @@ function App() {
     return (
       <>
         <GlobalStyles />
-        <ThemeToggle theme={theme} setTheme={setTheme} />
-        <div className="noise" style={{ opacity: t.noise }} />
+                <div className="noise" style={{ opacity: t.noise }} />
         <div style={{
           minHeight: '100vh',
           background: t.bg,
@@ -296,8 +295,7 @@ function App() {
     return (
       <>
         <GlobalStyles />
-        <ThemeToggle theme={theme} setTheme={setTheme} />
-        <button
+                <button
           onClick={() => setStep('settings')}
           aria-label="Settings"
           style={{
@@ -435,11 +433,11 @@ function App() {
 
   // Reading List Intro Screen
   if (step === 'warRoom') {
-    return <WarRoomScreen theme={theme} setTheme={setTheme} setStep={setStep} />;
+    return <WarRoomScreen theme={theme} setStep={setStep} />;
   }
 
   if (step === 'dailyDrop') {
-    return <DailyDropScreen theme={theme} setTheme={setTheme} setStep={setStep} setSelectedMentor={setSelectedMentor} />;
+    return <DailyDropScreen theme={theme} setStep={setStep} setSelectedMentor={setSelectedMentor} />;
   }
 
   if (step === 'readingListIntro') {
@@ -447,8 +445,7 @@ function App() {
     return (
       <>
         <GlobalStyles />
-        <ThemeToggle theme={theme} setTheme={setTheme} />
-        <div className="noise" style={{ opacity: t.noise }} />
+                <div className="noise" style={{ opacity: t.noise }} />
         <div style={{ minHeight: '100vh', background: t.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
           <div style={{ maxWidth: '500px', width: '100%' }}>
             <button
@@ -487,8 +484,7 @@ function App() {
     return (
       <>
         <GlobalStyles />
-        <ThemeToggle theme={theme} setTheme={setTheme} />
-        <div className="noise" style={{ opacity: t.noise }} />
+                <div className="noise" style={{ opacity: t.noise }} />
         <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto' }}>
           <div style={{ maxWidth: '700px', margin: '0 auto' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '40px' }}>
@@ -539,8 +535,7 @@ function App() {
     return (
       <>
         <GlobalStyles />
-        <ThemeToggle theme={theme} setTheme={setTheme} />
-        <div className="noise" style={{ opacity: t.noise }} />
+                <div className="noise" style={{ opacity: t.noise }} />
         <div style={{
           height: '100vh',
           background: t.bg,
@@ -798,8 +793,7 @@ function App() {
     return (
       <>
         <GlobalStyles />
-        <ThemeToggle theme={theme} setTheme={setTheme} />
-        <div className="noise" style={{ opacity: t.noise }} />
+                <div className="noise" style={{ opacity: t.noise }} />
         <div style={{
           minHeight: '100vh',
           background: t.bg,
@@ -895,8 +889,7 @@ function App() {
     return (
       <>
         <GlobalStyles />
-        <ThemeToggle theme={theme} setTheme={setTheme} />
-        <div className="noise" style={{ opacity: t.noise }} />
+                <div className="noise" style={{ opacity: t.noise }} />
         <div style={{
           minHeight: '100vh',
           background: t.bg,
@@ -1012,8 +1005,7 @@ function App() {
     return (
       <>
         <GlobalStyles />
-        <ThemeToggle theme={theme} setTheme={setTheme} />
-        <div className="noise" style={{ opacity: t.noise }} />
+                <div className="noise" style={{ opacity: t.noise }} />
         <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto' }}>
           <div style={{ maxWidth: '600px', margin: '0 auto' }}>
             <h2 style={{ fontSize: '24px', color: t.accent, marginBottom: '32px', textAlign: 'center', fontWeight: '400' }}>
@@ -1138,8 +1130,7 @@ function App() {
     return (
       <>
         <GlobalStyles />
-        <ThemeToggle theme={theme} setTheme={setTheme} />
-        <div className="noise" style={{ opacity: t.noise }} />
+                <div className="noise" style={{ opacity: t.noise }} />
         <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto', display: 'flex', flexDirection: 'column' }}>
           <div style={{ maxWidth: '500px', margin: '0 auto', width: '100%' }}>
             <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', justifyContent: 'center' }}>
@@ -1231,8 +1222,7 @@ function App() {
     return (
       <>
         <GlobalStyles />
-        <ThemeToggle theme={theme} setTheme={setTheme} />
-        <div className="noise" style={{ opacity: t.noise }} />
+                <div className="noise" style={{ opacity: t.noise }} />
         <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto' }}>
           <div style={{ maxWidth: '500px', margin: '0 auto' }}>
             <h2 style={{ fontSize: '24px', color: t.accent, marginBottom: '12px', textAlign: 'center', fontWeight: '400' }}>
@@ -1282,8 +1272,7 @@ function App() {
     return (
       <>
         <GlobalStyles />
-        <ThemeToggle theme={theme} setTheme={setTheme} />
-        <div className="noise" style={{ opacity: t.noise }} />
+                <div className="noise" style={{ opacity: t.noise }} />
 
         {/* Cinematic backdrop */}
         <div style={{
@@ -1356,8 +1345,7 @@ function App() {
     return (
       <>
         <GlobalStyles />
-        <ThemeToggle theme={theme} setTheme={setTheme} />
-        <div className="noise" style={{ opacity: t.noise }} />
+                <div className="noise" style={{ opacity: t.noise }} />
         <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto', position: 'relative' }}>
           <div style={{ maxWidth: '500px', margin: '0 auto' }}>
             <h2 style={{ fontSize: '24px', color: t.accent, marginBottom: '12px', textAlign: 'center', fontWeight: '400' }}>
@@ -1556,8 +1544,7 @@ function App() {
     return (
       <>
         <GlobalStyles />
-        <ThemeToggle theme={theme} setTheme={setTheme} />
-        <div className="noise" style={{ opacity: t.noise }} />
+                <div className="noise" style={{ opacity: t.noise }} />
         <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto' }}>
           <div style={{ maxWidth: '600px', margin: '0 auto' }}>
             <h2 style={{ fontSize: '24px', color: t.accent, marginBottom: '24px', textAlign: 'center', fontWeight: '400' }}>
@@ -1619,7 +1606,7 @@ function App() {
 
   // Transformation Screen
   if (step === 'transformation') {
-    return <TransformationScreen theme={theme} setTheme={setTheme} setStep={setStep} />;
+    return <TransformationScreen theme={theme} setStep={setStep} />;
   }
 
   // Paywall
@@ -1660,8 +1647,7 @@ function App() {
     return (
       <>
         <GlobalStyles />
-        <ThemeToggle theme={theme} setTheme={setTheme} />
-        <div className="noise" style={{ opacity: t.noise }} />
+                <div className="noise" style={{ opacity: t.noise }} />
         <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto' }}>
           <div style={{ maxWidth: '500px', margin: '0 auto' }}>
             <h2 style={{ fontSize: '28px', color: t.accent, marginBottom: '12px', textAlign: 'center', fontWeight: '400', fontFamily: "'Cormorant Garamond', serif" }}>
@@ -1806,23 +1792,28 @@ function App() {
             <div style={{ display: 'grid', gap: '16px' }}>
               <section style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '20px', padding: '24px' }}>
                 <h2 style={{ fontSize: '13px', color: t.textMuted, margin: '0 0 16px 0', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                  Theme
+                  Appearance
                 </h2>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
-                  <p style={{ fontSize: '15px', color: t.text, margin: 0, fontWeight: '500' }}>
-                    {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
-                  </p>
-                  <button
-                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                    style={{
-                      background: t.input, border: `1px solid ${t.cardBorder}`,
-                      color: t.text, borderRadius: '999px', padding: '10px 18px',
-                      cursor: 'pointer', fontSize: '14px', fontWeight: '600',
-                      flexShrink: 0, whiteSpace: 'nowrap'
-                    }}
-                  >
-                    Switch to {theme === 'dark' ? 'Light' : 'Dark'}
-                  </button>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  {['dark', 'light'].map(mode => (
+                    <button
+                      key={mode}
+                      onClick={() => setTheme(mode)}
+                      style={{
+                        flex: 1,
+                        padding: '12px',
+                        borderRadius: '12px',
+                        background: t.input,
+                        border: theme === mode ? `2px solid ${t.accent}` : `1px solid ${t.inputBorder}`,
+                        color: t.text,
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        fontWeight: theme === mode ? '600' : '400'
+                      }}
+                    >
+                      {mode === 'dark' ? 'Dark' : 'Light'}
+                    </button>
+                  ))}
                 </div>
               </section>
 
@@ -1898,7 +1889,7 @@ const DAY_MAP = [
 ];
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-const DailyDropScreen = ({ theme, setTheme, setStep, setSelectedMentor }) => {
+const DailyDropScreen = ({ theme, setStep, setSelectedMentor }) => {
   const t = THEMES[theme];
   const [loading, setLoading] = useState(true);
   const [response, setResponse] = useState(null);
@@ -1937,8 +1928,7 @@ const DailyDropScreen = ({ theme, setTheme, setStep, setSelectedMentor }) => {
   return (
     <>
       <GlobalStyles />
-      <ThemeToggle theme={theme} setTheme={setTheme} />
-      <div className="noise" style={{ opacity: t.noise }} />
+            <div className="noise" style={{ opacity: t.noise }} />
       <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto' }}>
         <div style={{ maxWidth: '600px', margin: '0 auto' }}>
 
@@ -1997,7 +1987,7 @@ const DailyDropScreen = ({ theme, setTheme, setStep, setSelectedMentor }) => {
 };
 
 // War Room Screen Component
-const WarRoomScreen = ({ theme, setTheme, setStep }) => {
+const WarRoomScreen = ({ theme, setStep }) => {
   const t = THEMES[theme];
   const [question, setQuestion] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -2038,8 +2028,7 @@ const WarRoomScreen = ({ theme, setTheme, setStep }) => {
   return (
     <>
       <GlobalStyles />
-      <ThemeToggle theme={theme} setTheme={setTheme} />
-      <div className="noise" style={{ opacity: t.noise }} />
+            <div className="noise" style={{ opacity: t.noise }} />
       <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto' }}>
         <div style={{ maxWidth: '700px', margin: '0 auto' }}>
 
@@ -2145,7 +2134,7 @@ const WarRoomScreen = ({ theme, setTheme, setStep }) => {
 };
 
 // Transformation Screen Component
-const TransformationScreen = ({ theme, setTheme, setStep }) => {
+const TransformationScreen = ({ theme, setStep }) => {
   const t = THEMES[theme];
   const ref0 = useRef(null);
   const ref1 = useRef(null);
@@ -2200,8 +2189,7 @@ const TransformationScreen = ({ theme, setTheme, setStep }) => {
   return (
     <>
       <GlobalStyles />
-      <ThemeToggle theme={theme} setTheme={setTheme} />
-      <div className="noise" style={{ opacity: t.noise }} />
+            <div className="noise" style={{ opacity: t.noise }} />
       <div style={{ minHeight: '100vh', background: t.bg, padding: '80px 20px 80px', overflow: 'auto' }}>
         <div style={{ maxWidth: '600px', margin: '0 auto' }}>
 
@@ -2281,40 +2269,6 @@ const TransformationScreen = ({ theme, setTheme, setStep }) => {
   );
 };
 
-// Theme Toggle Component
-const ThemeToggle = ({ theme, setTheme }) => (
-  <button
-    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-    style={{
-      position: 'fixed',
-      top: '20px',
-      right: '20px',
-      width: '56px',
-      height: '56px',
-      borderRadius: '50%',
-      background: theme === 'dark' 
-        ? 'linear-gradient(145deg, #1a1a1a 0%, #141414 100%)'
-        : 'linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%)',
-      border: theme === 'dark' 
-        ? '1px solid rgba(201, 168, 76, 0.25)'
-        : '1px solid rgba(201, 168, 76, 0.25)',
-      cursor: 'pointer',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      boxShadow: theme === 'dark'
-        ? '0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
-        : '0 4px 16px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
-      zIndex: 1000,
-      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-      fontSize: '24px'
-    }}
-    onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.1) rotate(15deg)'; }}
-    onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1) rotate(0deg)'; }}
-  >
-    {theme === 'dark' ? '☀️' : '🌙'}
-  </button>
-);
 
 // Global Styles Component
 const GlobalStyles = () => (
