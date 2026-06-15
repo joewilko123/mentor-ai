@@ -888,129 +888,168 @@ function App() {
   // Sales Page
   if (step === 'sales') {
     const t = THEMES[theme];
-    
+
+    const contrastBlocks = [
+      {
+        num: '01',
+        headline: "The people winning aren't smarter than you.",
+        body: "They have mentors. People who've been there. Who know what works and what wastes years. You? You're Googling it."
+      },
+      {
+        num: '02',
+        headline: "The gap isn't talent. It's guidance.",
+        body: "One conversation with the right person at the right moment changes outcomes. That's not motivational. That's just true."
+      },
+      {
+        num: '03',
+        headline: "History's greatest minds solved your exact problem.",
+        body: "Carnegie on pricing. Napoleon on competition. Marcus Aurelius when the pressure feels like too much. Not theory — real frameworks from people who actually did it."
+      }
+    ];
+
+    const testimonials = [
+      { quote: "asked napoleon about whether to quit my job. got a framework i'd never heard anywhere else. handed my notice in 3 days later. genuinely didn't expect it to hit that hard", name: 'ALEX, 24', rotate: '-0.5deg' },
+      { quote: "spent like £2k on courses last year. one carnegie conversation on pricing was more useful than all of it combined. raised my rates, kept every client", name: 'MARCUS, 28', rotate: '0.3deg' },
+      { quote: "was having a really bad night tbh. asked marcus aurelius something at like 2am not really expecting much. what came back actually stopped me. been on it every day since", name: 'RYAN, 26', rotate: '-0.3deg' },
+    ];
+
     return (
       <>
         <GlobalStyles />
-                <div className="noise" style={{ opacity: t.noise }} />
-        <div style={{
-          minHeight: '100vh',
-          background: t.bg,
-          padding: '40px 20px 60px',
-          overflow: 'auto',
-          position: 'relative'
-        }}>
-          <div style={{ maxWidth: '600px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
-            <h2 style={{
-              fontSize: '48px',
-              color: t.text,
-              marginBottom: '56px',
-              textAlign: 'center',
-              fontWeight: '400',
+        <div className="noise" style={{ opacity: t.noise }} />
+        <div style={{ minHeight: '100vh', background: t.bg, padding: '80px 20px 100px', overflow: 'auto' }}>
+          <div style={{ maxWidth: '560px', margin: '0 auto' }}>
+
+            {/* Opening pull quote */}
+            <p style={{
+              fontSize: '42px',
+              color: t.accent,
               fontFamily: "'Cormorant Garamond', serif",
-              lineHeight: '1.2',
-              animation: 'fadeIn 0.8s ease-out'
+              fontWeight: '300',
+              lineHeight: '1.4',
+              fontStyle: 'italic',
+              textAlign: 'center',
+              margin: '0 0 32px 0',
+              textShadow: '0 0 80px rgba(212,175,55,0.15)',
+              animation: 'fadeIn 0.8s ease-out 0.5s backwards'
             }}>
-              You know you're capable of more.<br />But you're figuring it out alone.
-            </h2>
+              'You're not behind because you're not trying hard enough.'
+            </p>
+            <div style={{ width: '40px', height: '1px', background: t.accent, margin: '0 auto 32px auto', opacity: 0.6 }} />
+            <p style={{
+              fontSize: '17px',
+              color: t.textSecondary,
+              lineHeight: '1.8',
+              fontWeight: '300',
+              textAlign: 'center',
+              margin: '0 0 80px 0',
+              animation: 'fadeIn 0.8s ease-out 0.7s backwards'
+            }}>
+              You're behind because you're figuring it out alone. With the wrong information. From people who haven't done what you're trying to do.
+            </p>
 
-            <div style={{ marginBottom: '0', animation: 'slideUp 0.6s ease-out' }}>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
-                You're ambitious. You want to build something. Achieve something. Become someone.
-              </p>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
-                But the path isn't clear. Should you start that business? Ask for the raise? Quit and bet on yourself?
-              </p>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '0' }}>
-                You're making life-changing decisions with YouTube videos and Reddit threads.
-              </p>
-            </div>
+            {/* Three contrast blocks */}
+            {contrastBlocks.map((block, i) => (
+              <div
+                key={i}
+                style={{
+                  borderLeft: '3px solid rgba(212,175,55,0.3)',
+                  paddingLeft: '24px',
+                  paddingBottom: '48px',
+                  marginBottom: '48px',
+                  borderBottom: theme === 'dark' ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.06)',
+                  animation: `slideUp 0.6s ease-out ${0.1 + i * 0.15}s backwards`
+                }}
+              >
+                <span style={{
+                  display: 'block',
+                  fontSize: '120px',
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontWeight: '300',
+                  color: t.accent,
+                  opacity: 0.12,
+                  lineHeight: '1',
+                  userSelect: 'none'
+                }}>
+                  {block.num}
+                </span>
+                <p style={{ fontSize: '26px', color: t.text, fontWeight: '600', margin: '-20px 0 0 0', lineHeight: '1.3' }}>
+                  {block.headline}
+                </p>
+                <p style={{ fontSize: '16px', color: t.textSecondary, lineHeight: '1.8', fontWeight: '300', margin: '12px 0 0 0' }}>
+                  {block.body}
+                </p>
+              </div>
+            ))}
 
-            <div style={{ height: '1px', background: `linear-gradient(to right, transparent, ${t.accent}, transparent)`, opacity: 0.2, margin: '48px 0' }} />
-
-            <div style={{ marginBottom: '0', animation: 'slideUp 0.6s ease-out 0.2s backwards' }}>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
-                Meanwhile, people who aren't smarter than you are winning.
-              </p>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
-                They have mentors. People who've been there. Who know what works and what's a waste of time.
-              </p>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
-                You? You're Googling it. Trial and error. Learning the hard way.
-              </p>
-              <p style={{ fontSize: '28px', color: t.text, lineHeight: '1.4', margin: '0', fontFamily: "'Cormorant Garamond', serif", fontWeight: '400' }}>
-                The gap isn't talent. It's guidance.
-              </p>
-            </div>
-
-            <div style={{ height: '1px', background: `linear-gradient(to right, transparent, ${t.accent}, transparent)`, opacity: 0.2, margin: '48px 0' }} />
-
-            <div style={{ marginBottom: '48px', animation: 'slideUp 0.6s ease-out 0.4s backwards' }}>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
-                What if you could ask someone who's already done what you're trying to do?
-              </p>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
-                Not some guru selling courses. Not ChatGPT giving you safe, generic advice.
-              </p>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
-                Real people who built real things. Who failed, learned, and won.
-              </p>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '16px' }}>
-                Ask Steve Jobs if your idea is worth pursuing. Get Carnegie's take on pricing your work. Napoleon on handling competition. Marcus Aurelius when the pressure feels like too much.
-              </p>
-              <p style={{ fontSize: '18px', color: t.textSecondary, lineHeight: '1.8', marginBottom: '0' }}>
-                Not theory. Real frameworks from people who actually did it.
-              </p>
-            </div>
-            <div style={{ marginBottom: '48px', animation: 'slideUp 0.6s ease-out 0.6s backwards' }}>
-              <p style={{ fontSize: '13px', color: t.accent, textAlign: 'center', letterSpacing: '3px', textTransform: 'uppercase', margin: '0 0 24px 0' }}>
+            {/* Testimonials */}
+            <div style={{ marginBottom: '80px' }}>
+              <p style={{ fontSize: '11px', color: t.accent, textAlign: 'center', letterSpacing: '4px', textTransform: 'uppercase', margin: '0 0 32px 0' }}>
                 What others are saying
               </p>
-              {[
-                { quote: "I'd been going back and forth on whether to quit my job for 6 months. I asked Napoleon about calculated risk and got the clearest framework I've ever heard for making that decision. I handed my notice in the next day.", name: 'Alex T., 24, Freelance Designer, Manchester' },
-                { quote: "I run a small e-commerce brand and I've spent thousands on courses and coaches. One conversation with Carnegie about pricing strategy was more actionable than anything I paid for. I raised my prices 40% the following week and didn't lose a single customer.", name: 'Marcus D., 28, Ecommerce Founder, London' },
-                { quote: "I was at rock bottom. Business failing, relationship ending, completely lost. I asked Marcus Aurelius one question at 2am and what came back stopped me in my tracks. I've come back every day since. This app genuinely changed how I think.", name: 'Ryan K., 26, Entrepreneur, Birmingham' },
-              ].map((t2, i) => (
-                <div key={i} style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '24px', marginBottom: i < 2 ? '16px' : '0' }}>
-                  <p style={{ fontSize: '15px', color: t.textSecondary, lineHeight: '1.7', margin: '0 0 12px 0', fontStyle: 'italic' }}>"{t2.quote}"</p>
-                  <p style={{ fontSize: '13px', color: t.textMuted, margin: 0, fontWeight: '600' }}>— {t2.name}</p>
+              {testimonials.map((item, i) => (
+                <div key={i}>
+                  <div style={{
+                    transform: `rotate(${item.rotate})`,
+                    padding: '28px 0',
+                    animation: `fadeIn 0.6s ease-out ${0.2 + i * 0.2}s backwards`
+                  }}>
+                    <p style={{ fontSize: '15px', color: t.textSecondary, lineHeight: '1.7', fontStyle: 'normal', fontWeight: '400', margin: '0 0 10px 0' }}>
+                      "{item.quote}"
+                    </p>
+                    <p style={{ fontSize: '12px', color: t.accent, fontWeight: '600', letterSpacing: '1px', margin: 0 }}>
+                      {item.name}
+                    </p>
+                  </div>
+                  {i < testimonials.length - 1 && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '4px 0' }}>
+                      <div style={{ flex: 1, height: '1px', background: 'rgba(212,175,55,0.2)' }} />
+                      <span style={{ fontSize: '12px', color: t.textMuted }}>✦</span>
+                      <div style={{ flex: 1, height: '1px', background: 'rgba(212,175,55,0.2)' }} />
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
-            <button
-              className="btn-primary"
-              onClick={() => setStep('examples')}
-              style={{
-                background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 50%, ${t.accent} 100%)`,
-                backgroundSize: '200% 200%',
-                color: '#000',
-                border: 'none',
-                borderRadius: '30px',
-                padding: '16px 48px',
-                fontSize: '16px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                width: '100%',
-                letterSpacing: '0.03em',
-                animation: 'shimmer 3s linear infinite',
-              }}
-            >
-              See how it works →
-            </button>
-          </div>
 
-          <div style={{
-            position: 'absolute',
-            top: '10%',
-            right: '5%',
-            width: '400px',
-            height: '400px',
-            background: `radial-gradient(circle, ${t.orb2} 0%, transparent 70%)`,
-            borderRadius: '50%',
-            filter: 'blur(80px)',
-            animation: 'float 8s ease-in-out infinite',
-            pointerEvents: 'none'
-          }} />
+            {/* CTA */}
+            <div style={{ textAlign: 'center' }}>
+              <p style={{
+                fontSize: '32px',
+                color: t.text,
+                fontFamily: "'Cormorant Garamond', serif",
+                fontWeight: '400',
+                margin: '0 0 32px 0',
+                lineHeight: '1.3'
+              }}>
+                Stop figuring it out alone.
+              </p>
+              <button
+                className="btn-primary"
+                onClick={() => setStep('examples')}
+                style={{
+                  background: `linear-gradient(135deg, ${t.accent} 0%, ${t.accentLight} 50%, ${t.accent} 100%)`,
+                  backgroundSize: '200% 200%',
+                  color: '#000',
+                  border: 'none',
+                  borderRadius: '30px',
+                  padding: '16px 48px',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  letterSpacing: '0.03em',
+                  animation: 'shimmer 3s linear infinite',
+                  display: 'inline-block'
+                }}
+              >
+                See how it works →
+              </button>
+              <p style={{ fontSize: '12px', color: t.textMuted, margin: '16px 0 0 0' }}>
+                Joined by 2,847 ambitious people
+              </p>
+            </div>
+
+          </div>
         </div>
       </>
     );
