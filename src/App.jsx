@@ -132,6 +132,44 @@ const READING_LIST = {
   ],
 };
 
+const SUGGESTED_QUESTIONS = {
+  carnegie: [
+    "I'm undercharging for my work. How do I raise my prices without losing clients?",
+    "How do I build something from nothing when I have no capital?",
+    "What's the single most important skill for building wealth?"
+  ],
+  jobs: [
+    "How do I know if my idea is worth pursuing?",
+    "I'm torn between two directions. How do I decide?",
+    "How do I make something people love, not just use?"
+  ],
+  marcus: [
+    "I feel completely overwhelmed and behind. What do I do?",
+    "How do I stay disciplined when I have no motivation?",
+    "I'm letting other people's opinions control me. How do I stop?"
+  ],
+  napoleon: [
+    "I'm up against someone bigger and better resourced than me. How do I win?",
+    "When is the right moment to make a bold move?",
+    "How do I get people to follow me and execute on my vision?"
+  ],
+  seneca: [
+    "I'm wasting my days on things that don't matter. How do I fix this?",
+    "How do I find peace when everything feels uncertain?",
+    "I'm scared of failure. How do I overcome it?"
+  ],
+  rockefeller: [
+    "How do I build a system that makes money without me?",
+    "How do I think about long-term strategy when I'm focused on surviving today?",
+    "How do I dominate my market?"
+  ],
+  nietzsche: [
+    "I feel like I'm living someone else's life. How do I change?",
+    "I keep playing it safe. How do I overcome my own limitations?",
+    "What does it actually mean to become who I'm capable of being?"
+  ]
+};
+
 function App() {
   const [step, setStep] = useState('hero');
   const [theme, setTheme] = useState('dark');
@@ -159,7 +197,14 @@ function App() {
   });
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [upgradeMessage, setUpgradeMessage] = useState('');
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (window.location.pathname === '/success') {
@@ -174,9 +219,10 @@ function App() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSendMessage = async () => {
-    if (!input.trim() || loading || !selectedMentor) return;
-    const userMessage = { role: 'user', content: input };
+  const handleSendMessage = async (override = null) => {
+    const text = override ?? input;
+    if (!text.trim() || loading || !selectedMentor) return;
+    const userMessage = { role: 'user', content: text };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setLoading(true);
@@ -190,6 +236,7 @@ function App() {
           email: userName,
           mentorId: selectedMentor.id,
         }),
+
       });
       if (response.status === 403) {
         const data = await response.json();
@@ -345,7 +392,7 @@ function App() {
                     background: t.card,
                     border: `1px solid ${t.cardBorder}`,
                     borderRadius: '16px',
-                    padding: '28px',
+                    padding: isMobile ? '16px' : '28px',
                     cursor: 'pointer',
                     transition: 'all 0.3s',
                     display: 'flex',
@@ -366,8 +413,8 @@ function App() {
                     src={MENTOR_IMAGES[mentor.id]}
                     alt={mentor.name}
                     style={{
-                      width: '80px',
-                      height: '80px',
+                      width: isMobile ? '52px' : '80px',
+                      height: isMobile ? '52px' : '80px',
                       borderRadius: '50%',
                       objectFit: 'cover',
                       filter: 'grayscale(100%)',
@@ -433,11 +480,11 @@ function App() {
 
   // Reading List Intro Screen
   if (step === 'warRoom') {
-    return <WarRoomScreen theme={theme} setStep={setStep} />;
+    return <WarRoomScreen theme={theme} setStep={setStep} isMobile={isMobile} />;
   }
 
   if (step === 'dailyDrop') {
-    return <DailyDropScreen theme={theme} setStep={setStep} setSelectedMentor={setSelectedMentor} />;
+    return <DailyDropScreen theme={theme} setStep={setStep} setSelectedMentor={setSelectedMentor} isMobile={isMobile} />;
   }
 
   if (step === 'readingListIntro') {
@@ -485,7 +532,7 @@ function App() {
       <>
         <GlobalStyles />
                 <div className="noise" style={{ opacity: t.noise }} />
-        <div style={{ minHeight: '100vh', background: t.bg, padding: '40px 20px 60px', overflow: 'auto' }}>
+        <div style={{ minHeight: '100vh', background: t.bg, padding: isMobile ? '24px 16px 40px' : '40px 20px 60px', overflow: 'auto' }}>
           <div style={{ maxWidth: '700px', margin: '0 auto' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '40px' }}>
               <button
@@ -619,6 +666,39 @@ function App() {
                 <p style={{ fontSize: '13px', color: t.textMuted, maxWidth: '400px', margin: '16px auto 0', lineHeight: '1.6' }}>
                   Ask me anything. Be specific — the more context you give, the better my advice.
                 </p>
+
+                <div style={{ marginTop: '32px' }}>
+                  <p style={{ fontSize: '12px', color: t.textMuted, textTransform: 'uppercase', letterSpacing: '2px', margin: '0 0 12px 0' }}>
+                    Suggested Questions
+                  </p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', maxWidth: '480px', margin: '0 auto' }}>
+                    {(SUGGESTED_QUESTIONS[selectedMentor.id] || []).map((q, i) => (
+                      <button
+                        key={i}
+                        onClick={() => handleSendMessage(q)}
+                        style={{
+                          border: `1px solid ${t.cardBorder}`,
+                          background: t.card,
+                          padding: '10px 16px',
+                          borderRadius: '20px',
+                          fontSize: '13px',
+                          color: t.textSecondary,
+                          cursor: 'pointer',
+                          fontFamily: 'inherit',
+                          textAlign: 'left',
+                          lineHeight: '1.4',
+                          minHeight: '44px',
+                          animation: `slideUp 0.4s ease-out ${i * 0.1}s backwards`,
+                          transition: 'border-color 0.2s'
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.borderColor = t.accent}
+                        onMouseLeave={e => e.currentTarget.style.borderColor = t.cardBorder}
+                      >
+                        {q}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             )}
 
@@ -732,7 +812,9 @@ function App() {
             borderTop: `1px solid ${t.cardBorder}`,
             background: theme === 'dark' ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.8)',
             backdropFilter: 'blur(10px)',
-            flexShrink: 0
+            flexShrink: 0,
+            position: 'sticky',
+            bottom: 0
           }}>
             <div style={{ display: 'flex', gap: '12px', maxWidth: '700px', margin: '0 auto' }}>
               <input
@@ -835,10 +917,10 @@ function App() {
             animation: 'fadeIn 1s ease-out'
           }}>
             <h1 className="gradient-text" style={{
-              fontSize: '72px',
+              fontSize: isMobile ? '48px' : '72px',
               fontWeight: '500',
               margin: '0 0 24px 0',
-              letterSpacing: '4px',
+              letterSpacing: isMobile ? '2px' : '4px',
               fontFamily: "'Cormorant Garamond', serif",
             }}>
               Mentor
@@ -866,6 +948,7 @@ function App() {
                 border: 'none',
                 borderRadius: '30px',
                 padding: '16px 48px',
+                width: isMobile ? '100%' : 'auto',
                 fontSize: '16px',
                 fontWeight: '600',
                 cursor: 'pointer',
@@ -917,12 +1000,12 @@ function App() {
       <>
         <GlobalStyles />
         <div className="noise" style={{ opacity: t.noise }} />
-        <div style={{ minHeight: '100vh', background: t.bg, padding: '80px 20px 100px', overflow: 'auto' }}>
+        <div style={{ minHeight: '100vh', background: t.bg, padding: isMobile ? '40px 20px 60px' : '80px 20px 100px', overflow: 'auto' }}>
           <div style={{ maxWidth: '560px', margin: '0 auto' }}>
 
             {/* Opening pull quote */}
             <p style={{
-              fontSize: '42px',
+              fontSize: isMobile ? '28px' : '42px',
               color: t.accent,
               fontFamily: "'Cormorant Garamond', serif",
               fontWeight: '300',
@@ -973,7 +1056,7 @@ function App() {
                 }}>
                   {block.num}
                 </span>
-                <p style={{ fontSize: '26px', color: t.text, fontWeight: '600', margin: '-20px 0 0 0', lineHeight: '1.3' }}>
+                <p style={{ fontSize: isMobile ? '20px' : '26px', color: t.text, fontWeight: '600', margin: '-20px 0 0 0', lineHeight: '1.3' }}>
                   {block.headline}
                 </p>
                 <p style={{ fontSize: '16px', color: t.textSecondary, lineHeight: '1.8', fontWeight: '300', margin: '12px 0 0 0' }}>
@@ -1069,7 +1152,7 @@ function App() {
               Here's how it works:
             </h2>
 
-            <div className="glass-card" style={{ borderRadius: '16px', padding: '24px', marginBottom: '24px', animation: 'slideUp 0.6s ease-out', background: t.card, border: `1px solid ${t.cardBorder}` }}>
+            <div className="glass-card" style={{ borderRadius: '16px', padding: isMobile ? '16px' : '24px', marginBottom: '24px', animation: 'slideUp 0.6s ease-out', background: t.card, border: `1px solid ${t.cardBorder}` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
                 <img src={MENTOR_IMAGES.jobs} alt="Steve Jobs" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(100%)', border: `2px solid ${t.accent}` }} />
                 <div>
@@ -1089,7 +1172,7 @@ function App() {
               </div>
             </div>
 
-            <div className="glass-card" style={{ borderRadius: '16px', padding: '24px', marginBottom: '24px', animation: 'slideUp 0.6s ease-out 0.2s backwards', background: t.card, border: `1px solid ${t.cardBorder}` }}>
+            <div className="glass-card" style={{ borderRadius: '16px', padding: isMobile ? '16px' : '24px', marginBottom: '24px', animation: 'slideUp 0.6s ease-out 0.2s backwards', background: t.card, border: `1px solid ${t.cardBorder}` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
                 <img src={MENTOR_IMAGES.marcus} alt="Marcus Aurelius" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(100%)', border: `2px solid ${t.accent}` }} />
                 <div>
@@ -1109,7 +1192,7 @@ function App() {
               </div>
             </div>
 
-            <div className="glass-card" style={{ borderRadius: '16px', padding: '24px', marginBottom: '32px', animation: 'slideUp 0.6s ease-out 0.4s backwards', background: t.card, border: `1px solid ${t.cardBorder}` }}>
+            <div className="glass-card" style={{ borderRadius: '16px', padding: isMobile ? '16px' : '24px', marginBottom: '32px', animation: 'slideUp 0.6s ease-out 0.4s backwards', background: t.card, border: `1px solid ${t.cardBorder}` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
                 <img src={MENTOR_IMAGES.carnegie} alt="Andrew Carnegie" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(100%)', border: `2px solid ${t.accent}` }} />
                 <div>
@@ -1720,7 +1803,7 @@ function App() {
               Choose your plan:
             </p>
 
-            <div style={{ display: 'grid', gap: '16px', marginBottom: '32px' }}>
+            <div style={{ display: 'grid', gap: isMobile ? '12px' : '16px', marginBottom: '32px' }}>
               <div onClick={() => setSelectedPlan('weekly')} style={{ background: selectedPlan === 'weekly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card, border: selectedPlan === 'weekly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '24px', cursor: 'pointer', transition: 'all 0.3s' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
                   <div>
@@ -1743,7 +1826,7 @@ function App() {
               </div>
 
               <div onClick={() => setSelectedPlan('monthly')} style={{ background: selectedPlan === 'monthly' ? (theme === 'dark' ? '#0f0f0f' : '#ffffff') : t.card, border: selectedPlan === 'monthly' ? `2px solid ${t.accent}` : `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '24px', cursor: 'pointer', position: 'relative', transition: 'all 0.3s' }}>
-                <div style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: t.accent, color: theme === 'dark' ? '#000' : '#fff', padding: '4px 16px', borderRadius: '12px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.5px' }}>
+                <div style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: t.accent, color: theme === 'dark' ? '#000' : '#fff', padding: '4px 16px', borderRadius: '12px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.5px', whiteSpace: 'nowrap' }}>
                   MOST POPULAR
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
@@ -1971,7 +2054,7 @@ const DAY_MAP = [
 ];
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-const DailyDropScreen = ({ theme, setStep, setSelectedMentor }) => {
+const DailyDropScreen = ({ theme, setStep, setSelectedMentor, isMobile }) => {
   const t = THEMES[theme];
   const [loading, setLoading] = useState(true);
   const [response, setResponse] = useState(null);
@@ -2026,7 +2109,7 @@ const DailyDropScreen = ({ theme, setStep, setSelectedMentor }) => {
               <div style={{ position: 'absolute', inset: '-3px', borderRadius: '50%', background: `linear-gradient(135deg, ${t.accent}, ${t.accentLight}, ${t.accent})`, animation: 'glowPulse 3s ease-in-out infinite' }} />
               <img src={MENTOR_IMAGES[dayConfig.mentorId]} alt={mentor.name} style={{ width: '120px', height: '120px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(80%)', position: 'relative', zIndex: 1 }} />
             </div>
-            <h1 className="gradient-text" style={{ fontSize: '34px', fontWeight: '500', margin: '0 0 12px 0', fontFamily: "'Cormorant Garamond', serif" }}>
+            <h1 className="gradient-text" style={{ fontSize: isMobile ? '26px' : '34px', fontWeight: '500', margin: '0 0 12px 0', fontFamily: "'Cormorant Garamond', serif" }}>
               {mentor.name}
             </h1>
             <span style={{ fontSize: '12px', color: t.accent, border: `1px solid rgba(201, 168, 76, 0.3)`, borderRadius: '20px', padding: '5px 14px', letterSpacing: '0.3px' }}>
@@ -2036,8 +2119,15 @@ const DailyDropScreen = ({ theme, setStep, setSelectedMentor }) => {
 
           {loading && (
             <div style={{ textAlign: 'center', padding: '40px 0', animation: 'fadeIn 0.4s ease-out' }}>
-              <img src={MENTOR_IMAGES[dayConfig.mentorId]} alt={mentor.name} style={{ width: '56px', height: '56px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(100%)', border: `2px solid ${t.accent}`, animation: 'pulse 1.5s ease-in-out infinite', marginBottom: '16px', display: 'block', margin: '0 auto 16px' }} />
-              <p style={{ fontSize: '15px', color: t.textMuted, margin: 0 }}>
+              <img
+                src={MENTOR_IMAGES[dayConfig.mentorId]}
+                alt={mentor.name}
+                style={{ width: '96px', height: '96px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(100%)', border: `2px solid ${t.accent}`, animation: 'pulse 2s ease-in-out infinite', display: 'block', margin: '0 auto 20px' }}
+              />
+              <div style={{ width: '200px', height: '2px', background: t.inputBorder, borderRadius: '1px', margin: '0 auto 16px', overflow: 'hidden' }}>
+                <div style={{ height: '100%', background: t.accent, borderRadius: '1px', animation: 'progress 3s ease-out forwards' }} />
+              </div>
+              <p style={{ fontSize: '15px', color: t.textMuted, margin: 0, fontStyle: 'italic' }}>
                 {firstName} is preparing today's insight...
               </p>
             </div>
@@ -2069,7 +2159,7 @@ const DailyDropScreen = ({ theme, setStep, setSelectedMentor }) => {
 };
 
 // War Room Screen Component
-const WarRoomScreen = ({ theme, setStep }) => {
+const WarRoomScreen = ({ theme, setStep, isMobile }) => {
   const t = THEMES[theme];
   const [question, setQuestion] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -2161,7 +2251,7 @@ const WarRoomScreen = ({ theme, setStep }) => {
 
           {submitted && stillLoading && (
             <div style={{ textAlign: 'center', marginBottom: '32px', animation: 'fadeIn 0.4s ease-out' }}>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
                 {MENTORS.map((mentor, i) => {
                   const hasArrived = arrivedResponses.some(r => r.mentor.id === mentor.id);
                   return (
@@ -2169,13 +2259,25 @@ const WarRoomScreen = ({ theme, setStep }) => {
                       key={mentor.id}
                       src={MENTOR_IMAGES[mentor.id]}
                       alt={mentor.name}
-                      style={{ width: '44px', height: '44px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(100%)', border: `2px solid ${hasArrived ? t.accent : t.inputBorder}`, animation: hasArrived ? 'none' : `pulse 1.5s ease-in-out infinite`, animationDelay: `${i * 0.2}s`, opacity: hasArrived ? 1 : 0.6, transition: 'all 0.4s' }}
+                      style={{
+                        width: '48px',
+                        height: '48px',
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                        filter: 'grayscale(100%)',
+                        border: `2px solid ${hasArrived ? t.accent : t.inputBorder}`,
+                        animation: hasArrived ? 'none' : `pulse 1.4s ease-in-out infinite both`,
+                        animationDelay: `${i * 0.2}s`,
+                        opacity: hasArrived ? 1 : 0.6,
+                        boxShadow: hasArrived ? '0 0 16px rgba(212,175,55,0.6)' : 'none',
+                        transition: 'all 0.4s'
+                      }}
                     />
                   );
                 })}
               </div>
-              <p style={{ fontSize: '14px', color: t.textMuted, margin: 0 }}>
-                The council is deliberating... ({arrivedResponses.length}/{MENTORS.length})
+              <p style={{ fontSize: '14px', color: t.textMuted, margin: 0, fontStyle: 'italic' }}>
+                The council is deliberating...
               </p>
             </div>
           )}
@@ -2184,7 +2286,7 @@ const WarRoomScreen = ({ theme, setStep }) => {
             {arrivedResponses.map((item) => (
               <div
                 key={item.mentor.id}
-                style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: '20px', marginBottom: '16px', animation: 'slideUp 0.5s ease-out' }}
+                style={{ background: t.card, border: `1px solid ${t.cardBorder}`, borderRadius: '16px', padding: isMobile ? '14px' : '20px', marginBottom: '16px', animation: 'slideUp 0.5s ease-out' }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '14px', paddingBottom: '14px', borderBottom: `1px solid ${t.inputBorder}` }}>
                   <img src={MENTOR_IMAGES[item.mentor.id]} alt={item.mentor.name} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', filter: 'grayscale(100%)', border: `2px solid ${t.accent}`, flexShrink: 0 }} />
@@ -2357,7 +2459,7 @@ const GlobalStyles = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap');
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body { margin: 0; padding: 0; overflow-x: hidden; font-weight: 300; line-height: 1.8; }
 
     @keyframes fadeIn {
@@ -2391,6 +2493,10 @@ const GlobalStyles = () => (
     @keyframes pulse-dot {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.3); }
+    }
+    @keyframes progress {
+      from { width: 0% }
+      to { width: 100% }
     }
 
     .gradient-text {
